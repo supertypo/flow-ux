@@ -1,0 +1,42 @@
+{
+  "name": "flow-ux",
+  "version": "0.0.10",
+  "description": "",
+  "main": "flow-ux.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aspectron/flow-ux"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "@webcomponents/webcomponentsjs": "*",
+    "fs-extra": "*",
+    "lit-element": "*"
+  },
+  "devDependencies": {
+    "eslint": "*",
+    "eslint-config-google": "*",
+    "jsdoc": "*",
+    "flow-jsdoc-template": "git+https://github.com/aspectron/flow-jsdoc-template"
+  },
+  "scripts": {
+    "docs": "node_modules/.bin/jsdoc --configure .jsdoc.js --verbose"
+  },
+  "author": {
+    "name": "ASPECTRON Inc.",
+    "email": "info@aspectron.com",
+    "url": "https://aspectron.com"
+  },
+  "files": [
+    "flow-ux.js",
+    "flow-ux.css",
+    "src",
+    "README.md",
+    ".jsdoc.js",
+    "resources",
+    "flow-app.js",
+    "flow-rpc.js",
+    "flow-utils.js"
+  ]
+}

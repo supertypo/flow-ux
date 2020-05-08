@@ -1,0 +1,169 @@
+body{
+	height:100vh;overflow:hidden;padding:0px;margin:0px;box-sizing:border-box;
+	min-width:0px;
+	--flow-folder-input-trbr:0px;
+	--flow-folder-input-brbr:0px;
+	--flow-folder-input-tlbr:0px;
+	--flow-folder-input-blbr:0px;
+	--flow-folder-input-vmr:-2px;
+    --flow-caption-logo-bg-color:transparent;
+    --flow-font-weight:bold;
+    --flow-primary-color:rgba(0,151,115,1.0);
+    --flow-border-color:rgba(0,151,115,1.0);
+    --flow-border-hover-color:rgba(2, 97, 74, 1);
+    --flow-tab-font-size:1.5rem;
+
+    --flow-font-family:sans-serif;
+    --flow-background-color: #fff;
+    --flow-background-inverse: #000,
+    --flow-box-shadow:0 2px 2px 0 rgba(0,0,0,.14),
+            0 3px 1px -2px rgba(0,0,0,.2),
+            0 1px 5px 0 rgba(0,0,0,.12);
+
+    --flow-btn-success-bg-color:#007E33;
+    --flow-btn-success-color:#FFF;
+    --flow-btn-hover-success-bg-color:#00C851;
+    --flow-btn-hover-success-color:#FFF;
+    --flow-btn-danger-bg-color:#CC0000;
+    --flow-btn-danger-color:#FFF;
+    --flow-btn-hover-danger-bg-color:#ff4444;
+    --flow-btn-hover-danger-color:#FFF;
+    --flow-btn-warning-bg-color:#FF8800;
+    --flow-btn-warning-color:#FFF;
+    --flow-btn-hover-warning-bg-color:#ffbb33;
+    --flow-btn-hover-warning-color:#FFF;
+    --flow-btn-info-bg-color:#0099CC;
+    --flow-btn-info-color:#FFF;
+    --flow-btn-hover-info-bg-color:#33b5e5;
+    --flow-btn-hover-info-color:#FFF;
+    --flow-list-item-border:1px solid #ddd;
+    --flow-list-item-active-border:1px solid var(--flow-primary-color);
+    --flow-list-item-hover-bg:#ddd;
+    --flow-list-item-active-bg:var(--flow-primary-color);
+    --flow-list-item-active-color:#FFF;
+
+    --flow-link-color:rgba(0,151,115,1.0);
+    --flow-link-hover-color:rgba(0,121,85,1.0);
+
+    --flow-data-field-caption: #000;
+    --flow-data-field-caption-shawod: rgba(0,151,115,1.0);
+}
+
+body.flow-theme-dark{
+    --flow-box-shadow:0 2px 2px 0 rgba(10,10,10,.14),
+            0 3px 1px -2px rgba(10,10,10,.2),
+            0 1px 5px 0 rgba(10,10,10,.12);
+    background-color: #232323;
+    --flow-background-inverse: #FFF;
+    --flow-background-color: #232323;
+    color: #b1b1b1;
+    --flow-color: #b1b1b1;
+    /*--flow-primary-color: #b1b1b1;*/
+    --flow-primary-color: #017b68;
+    --flow-border-color: #017b68;
+    --flow-tab-bg-top: #363537;
+    --flow-tab-bg-bottom: #363537;
+    --flow-tab-active-bg-top: #333;
+    --flow-tab-active-bg-bottom: #232323;
+    --flow-input-bg: #2f2f2f;
+    --flow-checkbox-checked-bg:#b1b1b1;
+    --flow-list-item-border:1px solid #585858;
+    --flow-list-item-active-border:1px solid var(--flow-primary-color);
+    --flow-list-item-hover-bg:#585858;
+    --flow-list-item-active-bg:var(--flow-primary-color);
+    --flow-list-item-active-color:#FFF;
+}
+
+.hide{display:none;}
+
+flow-checkbox.block{margin:5px 0px;}
+flow-dialog{display:block;}
+flow-dialog [hide]{display:none}
+flow-dialog dialog{
+    margin:10% auto;min-width:200px;border-radius:3px;
+    background-color:var(--flow-background-color);
+    color:var(--flow-color);
+    box-shadow:var(--flow-box-shadow);
+    border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+}
+flow-dialog dialog .heading{padding:10px 10px 20px 10px;font-size:1.25rem;}
+flow-dialog dialog .body{padding:15px;}
+flow-dialog dialog .buttons{
+    margin:10px;flex-wrap:wrap;justify-content:flex-end;
+}
+flow-dialog dialog .buttons:not([hide]){display:flex;}
+flow-dialog dialog .buttons flow-btn{margin:0px 5px;}
+flow-dialog dialog textarea,
+flow-dialog dialog input[type="text"],
+flow-dialog dialog input:not([type]),
+flow-dialog dialog input[type="text"],
+flow-dialog dialog input[type="url"]{
+    width:100%;margin:10px 0px;padding:5px;
+    box-sizing:border-box;
+    background-color:var(--flow-input-bg, #FFF);
+    color:var(--flow-input-color, var(--flow-color, #000));
+    border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+}
+flow-dialog dialog flow-checkbox{margin:10px 0px;}
+flow-dialog dialog textarea{min-height:50px;}
+flow-dialog.flow-menu{position:fixed;z-index:10000;width:200px;box-sizing:border-box;}
+flow-dialog.flow-menu dialog{margin:0px;}
+flow-dialog.flow-menu dialog .body{padding:0px;}
+flow-dialog.flow-menu ul.menu{margin:0px;padding:0px;list-style:none}
+flow-dialog.flow-menu ul.menu>li{
+    padding:10px;border-bottom:var(--flow-list-item-border)
+}
+flow-dialog.flow-menu ul.menu>li:not([disabled]){cursor:pointer;}
+flow-dialog.flow-menu ul.menu>li:not([disabled]):not(.active):hover{
+    background-color:var(--flow-list-item-hover-bg);
+}
+flow-dialog.flow-menu ul.menu>li.active{
+    background-color:var(--flow-list-item-active-bg);
+    color:var(--flow-list-item-active-color);
+    border-bottom:var(--flow-list-item-active-border);
+    cursor:default;
+}
+flow-dialog.flow-menu ul.menu>li:last-child{border-bottom:0px;}
+
+
+flow-pages>h1,
+flow-pages>.title{
+    padding:10px;
+    font-size:2rem;
+}
+flow-pages .buttons{margin:10px;display:flex;justify-content:flex-end;z-index:10}
+flow-pages .buttons .flex{flex:1;}
+flow-pages .buttons flow-btn{
+    margin:0px 5px;padding:5px 5px;user-select:none;
+}
+flow-pages .buttons flow-btn svg{
+    width:20px;
+    height:20px;
+    margin-right:10px;
+    fill:var(--flow-primary-color, rgba(0,151,115,1.0));
+    pointer-events:none;
+}
+flow-pages .buttons flow-btn span+svg{
+    margin-left:10px;
+    margin-right:0px;
+}
+flow-doc{
+    display:inline-block;margin:5px 0px;padding:0px 0px 10px;
+    width:fit-content;border-radius:5px;
+    border:2px solid var(--flow-primary-color);
+}
+flow-doc>h4:first-child{
+    margin:0px 0px 5px;padding:8px;background-color:var(--flow-border-color);
+    color:#FFF;border-bottom:1px solid var(--flow-border-color);
+    text-transform:uppercase;
+}
+flow-doc>*{margin-left:10px;margin-right:10px;}
+flow-doc flow-code{
+    --flow-code-padding:10px;
+    background-color:#EEE;
+    border-top:1px solid var(--flow-border-color);
+    border-bottom:1px solid var(--flow-border-color);
+    margin:10px 0px 15px;
+}
+flow-doc-boxes{display:flex;flex-wrap:wrap;}
+flow-doc-boxes>flow-doc{margin:10px;min-width:20%;flex:1;width:300px}
