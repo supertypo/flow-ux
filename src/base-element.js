@@ -26,6 +26,8 @@ let FlowIcons = icons || {};
 
 if(!resolveIcon){
 	resolveIcon = (cname, name, i)=>{
+		if(!name)
+			return `${cname}:invalid icon`;
 		if(/\.(.{3,4}|.{3,4}#.*)$/.test(name))
 			return name
 		

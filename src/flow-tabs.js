@@ -103,6 +103,7 @@ export class FlowTabs extends BaseElement {
 			    border:0px;
 			    height:0px;
 			}
+			flow-tab[hidden]{display:none}
 		`;
 	}
 
@@ -143,9 +144,11 @@ export class FlowTabs extends BaseElement {
 			</div>
 			<div class="tab-items front">
 			${
-				tabs.filter(t => !t.disable).map(t=>{
+				tabs.map(t=>{
 					if(t.sep)
 						return html`<div class="line-break"></div>`;
+					if(t.disable)
+						return html`<flow-tab id='${t.id}' hidden="1"></flow-tab>`;
 					return html`<flow-tab id='${t.id}' class="${t.cls||''}" part="${t.part||''}"
 						style="z-index:${t.zIndex || (t.id==this.active? 2:1)}">${this.renderTab(t)}</flow-tab>`
 				})
@@ -156,6 +159,18 @@ export class FlowTabs extends BaseElement {
 	}
 	updated(changed) {
 		//this.log("UPDATING UPDATING UPDATING", this.active, changed)
+		if(changed.has("tabs") && this._tabs){
+			let lastHash = this.lastTabHash;
+			let tabs = this.tabs.map(t=>{
+				return Object.assign({}, t, {zIndex:undefined});
+			})
+			this.lastTabHash = JSON.stringify(tabs)
+			if(lastHash != this.lastTabHash){
+				console.log('ssss', lastHash, this.lastTabHash)
+				this._tabs = null;
+				return this.update();
+			}
+		}
 		let root = this.tabs ? this.shadowRoot : this;
 		root = root.querySelector(".tab-items.front");
 		if(!root)
@@ -163,19 +178,17 @@ export class FlowTabs extends BaseElement {
 
 		let tabs = [...root.querySelectorAll("flow-tab")];
 
-		//console.log("tabs", tabs)
+		//console.log("tabs", tabs, this.tabs, this._tabs)
 
 		let i = tabs.length;
 		if(!i)
 			return false;
 
 		let activeIsSet = false;
-		let activeTab;
 		tabs.forEach((tab) => {
 			let target = document.querySelector(`tab-content[for="${tab.id}"]`);
-			if(tab.id == this.active) {
+			if(!tab.getAttribute('hidden') && tab.id == this.active) {
 				tab.active = true;
-				activeTab = tab;
 				activeIsSet = true;
 				//tab.style['z-index'] = 2;
 				if(target){
@@ -208,10 +221,14 @@ export class FlowTabs extends BaseElement {
 				}, 15)
 			}
 			*/
+			//console.log("updateRows", this.active)
 			if(this.active){
-				this.updateRows(activeTab);
+				this.updateRows();
 				setTimeout(()=>{
 					this.updateRows();
+					setTimeout(()=>{
+						this.updateRows();
+					}, 1000)
 				}, 15)
 			}
 		}

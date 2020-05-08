@@ -12,11 +12,13 @@ import {BaseElement, html, css} from './base-element.js';
 export class FaIcon extends BaseElement {
 	static get properties() {
 		return {
-			color: String,
-			class_: { attribute: 'class' },
+			color:String,
 			src: String,
 			style: String,
-			size: Number
+			size:Number,
+			w:Number,
+			h:Number,
+			icon:String
 		};
 	}
 	static get styles() {
@@ -26,38 +28,15 @@ export class FaIcon extends BaseElement {
 			padding: 0;
 			margin: 0;
 		}
+		svg{
+			width: var(--fa-icon-size);
+			height: var(--fa-icon-size);
+			fill: var(--fa-icon-color);
+		}
 		`;
-	}
-	static getPrefix(cls){
-		let data = cls.split(' ');
-		return [this.PREFIX_TO_STYLE[data[0]], this.normalizeIconName(data[1])];
-	}
-
-	static get PREFIX_TO_STYLE(){
-		return {
-			fas: 'solid',
-			far: 'regular',
-			fal: 'light',
-			fab: 'brands',
-			fa: 'solid'
-		};
-	}
-
-	static normalizeIconName(name){
-		return name.replace('fa-', '');
-	}
-	/**
-	 * parse className string
-	 * @param {String} className i.e `fa fa-chart-network`
-	 * @returns {String} url to fontawesome sprites image file
-	 */
-	getSources(className) {
-		let data = this.constructor.getPrefix(className);
-		return this.iconPath(data[1]);
 	}
 	constructor() {
 		super();
-		this.class_ = '';
 		this.src = '';
 		this.style = '';
 		this.size = 19;
@@ -67,20 +46,13 @@ export class FaIcon extends BaseElement {
 		//this.src = this.getSources(this.class_);
 	}
 	render() {
-		this.src = this.getSources(this.class_);
+		this.src = this.iconPath(this.icon);
+		let {size, color, w, h} = this;
+		w = (w||size)?`width:${w||size}px;`:'';
+		h = (h||size)?`height:${h||size}px;`:'';
+		color = color?`fill:${color};`:'';
 		return html`
-		<div class="fa-icon">
-		<style>
-		svg {
-			width: var(--fa-icon-size);
-			height: var(--fa-icon-size);
-			fill: var(--fa-icon-color);
-		}
-		</style>
-		<svg style="${this.style}">
-		<use href="${this.src}"></use>
-		</svg>
-		</div>
+		<svg style="${w}${h}${color}${this.style};"><use href="${this.src}"></use></svg>
 		`;
 	}
 }
