@@ -18,6 +18,7 @@
     "eslint": "*",
     "eslint-config-google": "*",
     "jsdoc": "*",
+    "serve-static": "*",
     "flow-jsdoc-template": "git+https://github.com/aspectron/flow-jsdoc-template"
   },
   "scripts": {

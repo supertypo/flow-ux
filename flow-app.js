@@ -1,5 +1,5 @@
 const os = require('os');
-const fs = require('fs-extra');
+const fs = require('fs');
 const path = require('path');
 const utils = require('./flow-utils');
 const {FlowRPC} = require('./flow-rpc');
@@ -9,11 +9,17 @@ const EventEmitter = require('events');
 class FlowApp extends EventEmitter{
 	constructor(options={}){
 		super();
+		
 		this.options = Object.assign({
 			ident:'flow-app',
-			initlizeDataFolder: false,
-			rpc:{}
+			rpc:{},
+			config:false,
 		}, options);
+		this.log = Function.prototype.bind.call(
+			console.log,
+			console,
+			`[${this.options.logPrefix || this.constructor.name}]`
+		);
 
 		let {rpc} = this.options;
 		if(rpc && !rpc.bcastChannel)
@@ -29,13 +35,14 @@ class FlowApp extends EventEmitter{
 	/**
 	* initlizing starts here
 	*/
-	init(){
+	async init(){
 		this.flags = {};
 		this.initFlags();
-		this.initConfig();
-		if(this.isNw && utils.isObject(this.options.rpc)){
-			this.initRPC();
-		}
+		await this.initConfig(this.options.config);
+		if(this.isNw && utils.isObject(this.options.rpc))
+			await this.initRPC();
+
+		this.emit("init");
 	}
 
 	/**
@@ -54,19 +61,44 @@ class FlowApp extends EventEmitter{
 	/**
 	* initlize config object
 	*/
-	initConfig(){
+	async initConfig(config){
+		if(config){
+			this.config = config;
+			return;
+		}
 		this.configFolder = this.getConfigFolderPath();
-		fs.ensureDirSync(this.configFolder);
+		this.ensureDirSync(this.configFolder);
 		this.config = {};
 		this.configFile = this.getConfigFilePath();
 		if(!fs.existsSync(this.configFile) || this.flags['reset-config']){
-			this.initConfigFromDefault();
+			await this.initConfigFromDefault();
 		}else{
-			this.config = this.getConfig();
-			this.loadConfig(this.config);
+			this.config = await this.getConfig();
+			await this.loadConfig(this.config);
 		}
-		if(this.options.initlizeDataFolder)
-			this.initDataFolder();
+	}
+
+	ensureDirSync(dir){
+		if(!fs.existsSync(dir))
+			return fs.mkdirSync(dir);
+		let stat = fs.statSync(dir);
+		if(stat.isDirectory())
+			return true;
+		fs.mkdirSync(dir)
+	}
+
+	readJSONSync(filePath, defaults={}){
+		if(!fs.existsSync(filePath))
+			return defaults;
+		let stat = fs.statSync(filePath);
+		if(stat.isDirectory())
+			return defaults;
+		try{
+			let data = fs.readFileSync(filePath)+"";
+			return JSON.parse(data);
+		}catch(e){
+			return defaults;
+		}
 	}
 
 	/**
@@ -84,110 +116,55 @@ class FlowApp extends EventEmitter{
 	}
 
 	/**
-	* @return {String} default path to data folder 
-	*/
-	getDefaultDataFolderPath(){
-		return this.getConfigFolderPath();
-	}
-
-	/**
 	* @return {Object} default config
 	*/
 	getDefaultConfig(){
 		let file = path.join(this.appFolder, "default-config.json");
-		return fs.readJSONSync(file, {throws:false}) || {};
+		return this.readJSONSync(file, {});
 	}
 
 	/**
 	* initlize config from defaults
 	*/
-	initConfigFromDefault(){
-		this.config = this.getDefaultConfig();
-		this.loadConfig(this.config);
+	async initConfigFromDefault(){
+		this.config = await this.getDefaultConfig();
+		await this.loadConfig(this.config);
 	}
 
 	/**
 	* config initlizing
 	*/
-	loadConfig(config){
-		this.setConfig(config)
-	}
-
-	/**
-	* initlize data folder
-	*/
-	initDataFolder(){
-		if(typeof this.config.dataDir == 'undefined' && !this.flags.init)
-			return this.dataDirInitError();
-
-		let {init} = this.flags;
-		if(init && init != '<default>' && init != '.')
-			this.config.dataDir = init;
-
-		if(this.config.dataDir){
-			let dataDir = this.config.dataDir.replace('~', os.homedir());
-			if(!path.isAbsolute(dataDir))
-				return `config.dataDir (${this.config.dataDir}) is not a absolute path.`;
-			this.dataFolder = dataDir;
-		}else{
-			this.dataFolder = this.getDefaultDataFolderPath();
-			this.config.dataDir = '';
-		}
-
-		if(init)
-			this.setConfig(this.config);
-
-		this.log("DataFolder", this.dataFolder)
-		fs.ensureDirSync(this.dataFolder);
-		this.onDataDirInit();
-	}
-
-	/**
-	* initlizing data folder error handler
-	*/
-	dataDirInitError(){
-		console.log(`Please start app with --init=/path/to/data/dir [or] --init=~/.flow-app [or] --init=<default>`);
-		this.exit();
-	}
-
-	onDataDirInit(){
-		//placeholder
-	}
-
-	/**
-	* @return {String} path to Binaries Folder 
-	*/
-	getBinaryFolder(){
-		return path.join(this.appFolder, 'bin', utils.platform);
-	}
-
-	/**
-	* set dataDir
-	* @param {String} dataDir dataDir
-	*/
-	setDataDir(dataDir){
-		this.config.dataDir = dataDir;
-		this.setConfig(this.config);
+	async loadConfig(config){
+		await this.setConfig(config)
 	}
 
 	/**
 	* save theme
 	* @param {String} theme theme name (dark/light)
 	*/
-	setTheme(theme){
+	async setTheme(theme){
 		this.config.theme = theme;
-		this.setConfig(this.config);
+		await this.setConfig(this.config);
 	}
 
 	/**
-	* save config
+	* set config
 	* @param {Object} config JSON config
 	*/
-	setConfig(config){
+	async setConfig(config){
 		if(typeof config == 'object')
 			config = JSON.stringify(config, null, "\t")
-		fs.writeFileSync(this.configFile, config);
-		this.config = this.getConfig();
+		await this.saveConfig(config);
+		this.config = await this.getConfig();
+	}
+
+	/**
+	* save config, implement/define in your inherited class
+	* @param {Object} config JSON config
+	*/
+	async saveConfig(config={}){
+		if(this.configFile)
+			fs.writeFileSync(this.configFile, config);
 	}
 
 	/**
@@ -195,94 +172,110 @@ class FlowApp extends EventEmitter{
 	* @param {Object} [defaults={}] default config object
 	* @return {Object} config as JSON
 	*/
-	getConfig(defaults = {}){
-		let text = fs.readFileSync(this.configFile, 'utf-8');
-		return eval(`(${text})`);
-		// return fs.readJSONSync(this.configFile, {throws:false}) || defaults;
+	async getConfig(defaults = {}){
+		if(this.configFile){
+			let text = fs.readFileSync(this.configFile, 'utf-8');
+			return eval(`(${text})`);
+		}
+		return this.config || defaults;
 	}
 
 	/**
 	* initilize FlowRPC
 	*/
-	initRPC(){
+	async initRPC(){
 		let klass = this.options.RPC || FlowRPC;
 		let rpc = new klass(this.options.rpc);
 		this.rpc = rpc;
-
-		rpc.on("get-config", (args, callback)=>{
-			console.log("get-config:args", args)
-			callback(null, this.config)
-		});
-		rpc.on("set-config", (args)=>{
-			let {config} = args;
-			if(!config || !config.modules)
-				return
-			this.setConfig(config);
-		});
-
-		rpc.on("get-init-data", (args, callback)=>{
-			console.log("get-init-data: args")
-			let {config, configFolder, appFolder, dataFolder} = this;
-			let {modules} = config;
-			callback(null, {config, configFolder, modules, appFolder, dataFolder})
-		});
-
-		rpc.on("set-theme", (args)=>{
-			let {theme} = args;
-			if(!theme)
-				return
-			this.setTheme(theme);
-		});
-
-		rpc.on("set-data-dir", (args, callback)=>{
-			let {dataDir, restartDelay} = args;
-			//return callback({error: "Invalid directory"});
-			if(dataDir === ""){
-				this.setDataDir(dataDir, restartDelay||2000);
-				return
+		this.initRPCHooks();
+	}
+	initRPCHooks(rpc){
+		rpc = rpc || this.rpc;
+		let {op} = this.options.rpc;
+		this._defaultRPCHooks = {
+			'get-app-config':(args, callback)=>{
+				console.log("get-app-config:args", args)
+				callback(null, this.config)
+			},
+			'set-app-config':async(args)=>{
+				let {config} = args;
+				if(!config || !config.modules)
+					return
+				this.setConfig(config);
+			},
+			'get-app-data':(args, callback)=>{
+				let {config, configFolder, appFolder, dataFolder} = this;
+				let {modules} = config;
+				callback(null, {config, configFolder, modules, appFolder, dataFolder})
+			},
+			'set-app-theme':(args)=>{
+				let {theme} = args;
+				if(!theme)
+					return
+				this.setTheme(theme);
+			},
+			'set-app-i18n-entries':(args, callback)=>{
+				let {entries} = args;
+				if(!entries)
+					return callback({error:"Invalid entries"});
+				this.saveI18nEntries(entries);
+			},
+			'get-app-i18n-entries':(args, callback)=>{
+				let entries = this.getI18nEntries();
+				console.log("get-app-i18n-entries", entries)
+				callback(null, {entries});
 			}
-			if(dataDir == undefined || !fs.existsSync(dataDir))
-				return callback({error: "Invalid directory"})
-			fs.stat(dataDir, (err, stats)=>{
-				if(err)
-					return callback(err);
-				if(!stats.isDirectory())
-					return callback({error: "Invalid directory"});
+		}
+		let ops = Object.assign({}, this._defaultRPCHooks, op || {});
 
-				this.setDataDir(dataDir, restartDelay||2000);
-			})
-		});
-
-		rpc.on("set-i18n-entries", (args, callback)=>{
-			let {entries} = args;
-			if(!entries)
-				return callback({error:"Invalid entries"});
-			this.saveI18nEntries(entries);
+		Object.entries(ops).forEach(([k, fn])=>{
+			if(this.utils.isString(fn)){
+				let _k = fn;
+				fn = this._defaultRPCHooks[k];
+				k = _k;
+			}
+			if(!fn)
+				return
+			rpc.on(k, fn);
 		})
-
-		rpc.on("get-i18n-entries", (args, callback)=>{
-			let entries = this.getI18nEntries();
-			console.log("get-i18n-entries", entries)
-			callback(null, {entries});
-		})
+		
 	}
 
 	/**
 	* @return {String} path i18n entries file
 	*/
-	getI18nFilePath(){
-		return path.join(this.appFolder, 'i18n.data');
+	getI18nFilePath(name){
+		return path.join(this.appFolder, name);
 	}
 
 	/**
 	* @return {Array} i18n entries
 	*/
 	getI18nEntries(){
-		let file = this.getI18nFilePath();
-		if(!fs.existsSync(file))
+		let localEntries = this._getI18nEntries('i18n.entries');
+		let dataEntries = this._getI18nEntries('i18n.data');
+		if(!dataEntries.length)
+			return localEntries;
+		let localEntriesMap = this.createI18nEntriesMap(localEntries);
+		let dataEntriesMap = this.createI18nEntriesMap(dataEntries);
+		return Object.values(Object.assign(localEntriesMap, dataEntriesMap))
+	}
+	createI18nEntriesMap(entries){
+		let map = {}
+		entries.forEach(e=>{
+			if(!e.en)
+				return
+			map[e.en] = e;
+		});
+
+		return map;
+	}
+	_getI18nEntries(fileName){
+		let dataFile = this.getI18nFilePath(fileName);
+		if(!fs.existsSync(dataFile))
 			return [];
 
-		let data = (fs.readFileSync(file)+"").trim();
+		let data = (fs.readFileSync(dataFile)+"").trim();
 		if(!data.length)
 			return [];
 		try{
@@ -299,7 +292,10 @@ class FlowApp extends EventEmitter{
 	* @param {Array} i18n entries
 	*/
 	saveI18nEntries(entries){
-		fs.writeFileSync(this.getI18nFilePath(), JSON.stringify(entries, null, "\t"))
+		fs.writeFileSync(
+			this.getI18nFilePath('i18n.entries'),
+			JSON.stringify(entries, null, "\t")
+		)
 	}
 
 	/**
@@ -307,7 +303,7 @@ class FlowApp extends EventEmitter{
 	* @param {...*} args
 	*/
 	log(...args) {
-		args.unshift('TT:');
+		args.unshift('FlowApp:');
 		console.log(args);
 	}
 

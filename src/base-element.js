@@ -3,18 +3,48 @@ import {LitElement, html, css} from 'lit-element';
 export * from 'lit-element';
 export * from 'lit-html/lit-html.js';
 
-let {debug, baseUrl, iconsPath, icons} = window.flowConfig || {}
+let {debug, baseUrl, theme} = window.flowConfig || {}
+let {iconPath, icons, resolveIcon, iconMap, iconFile} = theme || {};
 
 if(!baseUrl){
 	baseUrl = (new URL("../", import.meta.url)).href;
 	debug && console.log("FlowUX: baseUrl", baseUrl)
 }
 
-let FlowIconsPath = iconsPath || baseUrl+'resources/images/icons.svg';
+let IconMap = Object.assign({
+	fal:'light',
+	far:'regular',
+	fab:'brands',
+	fa: 'solid',
+	fas:'solid'
+}, iconMap || {});
+
+iconFile = iconFile||'icons';
+let NativeIcons = baseUrl+'resources/icons/sprites/';
+let FlowIconPath = iconPath || NativeIcons;
 let FlowIcons = icons || {};
+
+if(!resolveIcon){
+	resolveIcon = (cname, name, i)=>{
+		if(/\.(.{3,4}|.{3,4}#.*)$/.test(name))
+			return name
+		
+		let icon = FlowIcons[`${cname}:${name}${i?'-'+i:''}`]
+			||FlowIcons[name]
+			||(name.indexOf(":")>-1?name:iconFile+':'+name);
+
+		if(/\.(.{3,4}|.{3,4}#.*)$/.test(icon))
+			return icon
+
+		let [file, hash] = icon.split(":");
+		if(file == "icons")
+			return `${NativeIcons}icons.svg#${hash}`;
+		return `${FlowIconPath}${IconMap[file]||file}.svg#${hash}`;
+	}
+}
 console.log("FlowIcons", FlowIcons)
 
-export {baseUrl, debug, FlowIconsPath, FlowIcons};
+export {baseUrl, debug, FlowIconPath, FlowIcons};
 
 /**
 * @class BaseElement
@@ -92,6 +122,7 @@ export class BaseElement extends LitElement{
 	constructor(){
 		super();
 		const name = this.constructor.name;
+		this.__cname = name.toLowerCase().replace("flow", "");
 		this.log = Function.prototype.bind.call(
 			console.log,
 			console,
@@ -190,15 +221,7 @@ export class BaseElement extends LitElement{
 		return this.constructor.baseUrl + url;
 	}
 	iconPath(name, i){
-		let cname = this.constructor.name.toLowerCase();
-		let icon = FlowIcons[`${cname}-${name}${i?'-'+i:''}`]||FlowIcons[name];
-		if(icon){
-			if(icon[0] == "#")
-				return FlowIconsPath+icon;
-			return icon
-		}
-
-		return FlowIconsPath+"#"+name;
+		return resolveIcon(this.__cname, name, i);
 	}
 
 	/**
@@ -208,6 +231,7 @@ export class BaseElement extends LitElement{
 	log(...args){
 	}
 }
+
 let getLocalSetting = BaseElement.getLocalSetting.bind(BaseElement);
 let setLocalSetting = BaseElement.setLocalSetting.bind(BaseElement);
 export {getLocalSetting, setLocalSetting}

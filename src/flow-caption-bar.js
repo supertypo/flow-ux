@@ -1,4 +1,4 @@
-import {BaseElement, html, css, FlowIcons, FlowIconsPath, baseUrl} from './base-element.js';
+import {BaseElement, html, css} from './base-element.js';
 import {FlowI18nDialog} from './flow-i18n.js';
 
 /**
