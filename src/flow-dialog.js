@@ -24,9 +24,9 @@ export class FlowDialog extends BaseElement {
 			args = {
 				title:args,
 				body:arg.shift(),
-				modal:arg.shift(),
 				cls:arg.shift(),
-				btns:arg.shift()
+				btns:arg.shift(),
+				modal:arg.shift(),
 			};
 		}
 		args.handler = args.handler || args.callback;

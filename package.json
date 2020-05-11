@@ -11,14 +11,12 @@
   "license": "MIT",
   "dependencies": {
     "@webcomponents/webcomponentsjs": "*",
-    "fs-extra": "*",
     "lit-element": "*"
   },
   "devDependencies": {
     "eslint": "*",
     "eslint-config-google": "*",
     "jsdoc": "*",
-    "serve-static": "*",
     "flow-jsdoc-template": "git+https://github.com/aspectron/flow-jsdoc-template"
   },
   "scripts": {
@@ -35,9 +33,6 @@
     "src",
     "README.md",
     ".jsdoc.js",
-    "resources",
-    "flow-app.js",
-    "flow-rpc.js",
-    "flow-utils.js"
+    "resources"
   ]
 }
