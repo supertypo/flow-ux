@@ -55,11 +55,32 @@ export class FlowCheckboxStyled extends BaseElement {
 		.checkbox__toggle {
 			display: none;
 		}
-		.checkbox__toggle:checked + .checkbox__checker {
+		:host(:not(.size-animate)) .checkbox__toggle:checked + .checkbox__checker {
 			left: calc(100% - 43px);
 			-webkit-transform: rotateZ(360deg);
 			transform: rotateZ(360deg);
 		}
+		:host(.size-animate) .checkbox__toggle+.checkbox__checker{
+			animation:animate1 .3s;
+		}
+		:host(.size-animate) .checkbox__toggle:checked + .checkbox__checker {
+			left: calc(100% - 43px);
+			/*-webkit-transform: rotateZ(360deg);
+			transform: rotateZ(360deg);*/
+			animation:animate .3s;
+		}
+		
+		@keyframes animate1{
+			0%{-webkit-transform:scale(1) rotateZ(360deg);transform:scale(1) rotateZ(360deg)}
+			50%{-webkit-transform:scale(0.3) rotateZ(180deg);transform:scale(0.3) rotateZ(180deg)}
+			100%{-webkit-transform:scale(1) rotateZ(0deg);transform:scale(1) rotateZ(0deg)}
+		}
+		@keyframes animate{
+			0%{-webkit-transform:scale(1) rotateZ(0deg);transform:scale(1) rotateZ(0deg)}
+			50%{-webkit-transform:scale(0.3) rotateZ(180deg);transform:scale(0.3) rotateZ(180deg)}
+			100%{-webkit-transform:scale(1) rotateZ(360deg);transform:scale(1) rotateZ(360deg)}
+		}
+
 		.checkbox__checker, .checkbox__cross, .checkbox__ok {
 			display: block;
 			position: absolute;
