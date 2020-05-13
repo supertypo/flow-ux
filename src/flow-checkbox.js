@@ -26,6 +26,7 @@ export class FlowCheckbox extends BaseElement {
 			}
 			:host(.block){
 				display: block;
+				width: max-content;
 			}
 			:host(:not([disabled])) .checkbox{
 				cursor:pointer;
