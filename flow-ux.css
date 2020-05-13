@@ -72,6 +72,9 @@ body.flow-theme-dark{
     --flow-list-item-hover-bg:#585858;
     --flow-list-item-active-bg:var(--flow-primary-color);
     --flow-list-item-active-color:#FFF;
+
+    --flow-data-field-caption: #fff;
+    --flow-data-field-caption-shawod: rgba(0,151,115,1.0);
 }
 
 .hide{display:none;}
