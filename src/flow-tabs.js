@@ -158,7 +158,7 @@ export class FlowTabs extends BaseElement {
 		`;
 	}
 	updated(changed) {
-		//this.log("UPDATING UPDATING UPDATING", this.active, changed)
+		this.log("UPDATING", this.active, changed)
 		if(changed.has("tabs") && this._tabs){
 			let lastHash = this.lastTabHash;
 			let tabs = this.tabs.map(t=>{
@@ -166,9 +166,10 @@ export class FlowTabs extends BaseElement {
 			})
 			this.lastTabHash = JSON.stringify(tabs)
 			if(lastHash != this.lastTabHash){
-				console.log('ssss', lastHash, this.lastTabHash)
+				this.log("updated:\n", lastHash+"\n-----------\n", this.lastTabHash)
 				this._tabs = null;
-				return this.update();
+				this._lastHash = null;
+				return this.requestUpdate("tabs");
 			}
 		}
 		let root = this.tabs ? this.shadowRoot : this;
@@ -181,8 +182,10 @@ export class FlowTabs extends BaseElement {
 		//console.log("tabs", tabs, this.tabs, this._tabs)
 
 		let i = tabs.length;
-		if(!i)
+		if(!i){
+			this.log("Tab not found")
 			return false;
+		}
 
 		let activeIsSet = false;
 		tabs.forEach((tab) => {
@@ -208,7 +211,7 @@ export class FlowTabs extends BaseElement {
 
 		//console.log("changed", changed)
 
-		if(changed.has("tabs") || changed.has("active")){
+		//if(changed.has("tabs") || changed.has("active")){
 			/*
 			this.addFillerTabs();
 			setTimeout(()=>{
@@ -231,20 +234,21 @@ export class FlowTabs extends BaseElement {
 					}, 1000)
 				}, 15)
 			}
-		}
+		//}
 	}
 
 	hashTabs(tabs){
 		return JSON.stringify(tabs);
 	}
 
-	updateRows(activeTab){
+	updateRows(){
 		let container = this.tabs ? this.shadowRoot : this;
 		container = container.querySelector(".tab-items.proxy");
-		//this.log("this.active", this.active)
-		activeTab = container && container.querySelector(`[data-id=${this.active}]`);
-		if(!activeTab)
+		let activeTab = container && container.querySelector(`[data-id=${this.active}]`);
+		if(!activeTab){
+			this.log("activeTab is null", activeTab)
 			return
+		}
 		let offsetTop = activeTab.offsetTop;
 		let bottomOffset = container.querySelector("flow-tab:last-child").offsetTop;
 		let map = {};
@@ -286,12 +290,13 @@ export class FlowTabs extends BaseElement {
 			}
 		})
 		let hash1 =  this.hashTabs(_tabs);
-		let hash2 =  this.hashTabs(this.tabs);
+		//let hash2 =  this.hashTabs(this.tabs);
 
 		//this.log("updateRows:_tabs\n", _tabs.map(t=>t.id+"::"+t.zIndex).join("\n"))
 
 		
-		if(hash1 != hash2 || this._lastHash != hash1){
+		if(/*hash1 != hash2 ||*/this._lastHash != hash1){
+			this.log("updateRows\n", this._lastHash+"\n----\n", hash1+"\n")
 			this._lastHash = hash1;
 			this._tabs = _tabs;
 			this.requestUpdate("_tabs")
