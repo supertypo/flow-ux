@@ -1,5 +1,34 @@
 import {BaseElement, html, css} from './base-element.js';
 
+let flowPagesStyle = css`
+	flow-pages>h1,
+	flow-pages>.title{
+	    padding:10px;
+	    font-size:2rem;
+	}
+	flow-pages .buttons{margin:10px;display:flex;justify-content:flex-end;z-index:10}
+	flow-pages .buttons .flex{flex:1;}
+	flow-pages .buttons flow-btn{margin:0px 5px;padding:5px 5px;user-select:none;}
+	flow-pages .buttons flow-btn svg{
+	    width:20px;
+	    height:20px;
+	    margin-right:10px;
+	    fill:var(--flow-primary-color, rgba(0,151,115,1.0));
+	    pointer-events:none;
+	}
+	flow-pages .buttons flow-btn span+svg{
+	    margin-left:10px;
+	    margin-right:0px;
+	}
+`
+
+let style = document.head.querySelector('style.flow-pages-style') || document.createElement("style");
+style.innerHTML = flowPagesStyle.toString();
+style.classList.add("flow-pages-style");
+if(!style.parentNode)
+	document.head.insertBefore(style, document.head.querySelector('link[href*="flow-ux.css"], :last-child').nextSibling);
+export {flowPagesStyle};
+
 /**
  * @export
  * @class FlowPages
@@ -194,7 +223,6 @@ export class FlowPages extends BaseElement {
 		//console.log("index", index, this.maxIndex)
 		let prevBtn = this.prevBtn;
 		let nextBtn = this.nextBtn;
-		console.log("nextBtn", nextBtn)
 		if(prevBtn){
 			if(index<=0)
 				prevBtn.setAttribute("disabled", true);
@@ -207,13 +235,13 @@ export class FlowPages extends BaseElement {
 			else
 				nextBtn.removeAttribute("disabled");
 		}
-		
+		this.fireChangeEvent();
 	}
 	getPage(index){
 		return this.pages[index];
 	}
 	fireChangeEvent(){
-		this.fire("changed", {checked: this.active})
+		this.fire("change", {index: this.index})
 	}
 }
 

@@ -129,25 +129,6 @@ flow-dialog.flow-menu ul.menu>li.active{
 flow-dialog.flow-menu ul.menu>li:last-child{border-bottom:0px;}
 
 
-flow-pages>h1,
-flow-pages>.title{
-    padding:10px;
-    font-size:2rem;
-}
-flow-pages .buttons{margin:10px;display:flex;justify-content:flex-end;z-index:10}
-flow-pages .buttons .flex{flex:1;}
-flow-pages .buttons flow-btn{margin:0px 5px;padding:5px 5px;user-select:none;}
-flow-pages .buttons flow-btn svg{
-    width:20px;
-    height:20px;
-    margin-right:10px;
-    fill:var(--flow-primary-color, rgba(0,151,115,1.0));
-    pointer-events:none;
-}
-flow-pages .buttons flow-btn span+svg{
-    margin-left:10px;
-    margin-right:0px;
-}
 flow-doc{
     display:inline-block;margin:5px 0px;padding:0px 0px 10px;
     width:fit-content;border-radius:5px;
