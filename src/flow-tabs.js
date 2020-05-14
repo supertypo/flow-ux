@@ -158,7 +158,7 @@ export class FlowTabs extends BaseElement {
 		`;
 	}
 	updated(changed) {
-		this.log("UPDATING", this.active, changed)
+		//this.log("UPDATING", this.active, changed)
 		if(changed.has("tabs") && this._tabs){
 			let lastHash = this.lastTabHash;
 			let tabs = this.tabs.map(t=>{
