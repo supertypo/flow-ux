@@ -95,7 +95,7 @@ flow-dialog dialog .buttons{
     margin:10px;flex-wrap:wrap;justify-content:flex-end;
 }
 flow-dialog dialog .buttons:not([hide]){display:flex;}
-flow-dialog dialog .buttons flow-btn{margin:0px 5px;}
+flow-dialog dialog .buttons flow-btn{margin:0px 5px;align-items:center;display:flex;}
 flow-dialog dialog textarea,
 flow-dialog dialog input[type="text"],
 flow-dialog dialog input:not([type]),
@@ -136,9 +136,7 @@ flow-pages>.title{
 }
 flow-pages .buttons{margin:10px;display:flex;justify-content:flex-end;z-index:10}
 flow-pages .buttons .flex{flex:1;}
-flow-pages .buttons flow-btn{
-    margin:0px 5px;padding:5px 5px;user-select:none;
-}
+flow-pages .buttons flow-btn{margin:0px 5px;padding:5px 5px;user-select:none;}
 flow-pages .buttons flow-btn svg{
     width:20px;
     height:20px;
