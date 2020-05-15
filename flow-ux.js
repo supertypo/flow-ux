@@ -21,5 +21,6 @@ export * from './src/flow-dialog.js';
 export * from './src/flow-pages.js';
 export * from './src/flow-i18n.js';
 export * from './src/flow-code.js';
+export * from './src/flow-color-selector.js';
 export * from './src/base-element.js';
 
