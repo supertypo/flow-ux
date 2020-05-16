@@ -49,8 +49,8 @@ export class FlowBtn extends BaseElement {
 			}
 			:host([primary]),
 			:host(.primary){
-				background-color:var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
-				color:var(--flow-border-invert-color, var(--flow-primary-invert-color, #FFF));
+				background-color:var(--flow-btn-primary-bg-color, var(--flow-primary-color, rgba(0,151,115,1)));
+				color:var(--flow-btn-primary-invert-color, var(--flow-primary-invert-color, #FFF));
 			}
 			:host([primary]:not([disabled]):hover),
 			:host(.primary:not([disabled]):hover){
