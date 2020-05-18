@@ -608,8 +608,6 @@ export class FlowTerminal extends BaseElement {
 				resolve();
 				return;
 			}
-			if(cmd == 'reload')
-				return window.location.reload();
 
 			if(cmd == 'history') {
 				[...new Set(this.history)].forEach(t => this.write(t));
