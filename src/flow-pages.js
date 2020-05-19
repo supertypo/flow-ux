@@ -160,6 +160,9 @@ export class FlowPages extends BaseElement {
 	get prevBtn(){
 		return this.btns.prev;
 	}
+	get skipBtn(){
+		return this.btns.skip;
+	}
 	initiPages(pages){
 		this.pages = [...pages];
 		this.maxIndex = this.pages.length-1;
@@ -198,11 +201,16 @@ export class FlowPages extends BaseElement {
 	showNext(){
 		this.setActive(this.index+1)
 	}
+	closePages(){
+		this.fire("close-pages");
+	}
 	setActive(index){
 		if(index<0)
 			index = 0
-		else if(index > this.maxIndex)
-			index = this.maxIndex;
+		else if(index > this.maxIndex){
+			this.closePages();
+			return
+		}
 		
 		let newPage = this.getPage(index)
 		if(!newPage)
@@ -223,15 +231,22 @@ export class FlowPages extends BaseElement {
 		//console.log("index", index, this.maxIndex)
 		let prevBtn = this.prevBtn;
 		let nextBtn = this.nextBtn;
+		let skipBtn = this.skipBtn;
+		let nextBtnSpan = nextBtn.querySelector("span");
 		if(prevBtn){
 			if(index<=0)
 				prevBtn.setAttribute("disabled", true);
 			else
 				prevBtn.removeAttribute("disabled");
+
+			nextBtnSpan.innerText = 'NEXT';				
+			skipBtn.style.display = "block";
 		}
 		if(nextBtn){
-			if(index>=this.maxIndex)
-				nextBtn.setAttribute("disabled", true);
+			if(index>=this.maxIndex) {
+				skipBtn.style.display = "none";
+				nextBtnSpan.innerText = 'FINISH';
+			}
 			else
 				nextBtn.removeAttribute("disabled");
 		}
