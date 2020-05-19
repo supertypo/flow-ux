@@ -127,13 +127,16 @@ export class FlowCaptionBar extends BaseElement {
 				margin-left: -4px;
 				padding: 4px 8px 4px 4px;
 			}
-			.caption{display:flex;flex-direction:row;}
+			.caption{display:flex;flex-direction:column;}
 			.version {
 				font-size: 12px;
 				/*border: 1px solid red;*/
-				margin: 10px 8px 0px 4px;
+				/*margin: 10px 8px 4px 4px;*/
+				padding: 4px 8px 2px 4px;
 				opacity: 0.75;
 				font-family: "Consolas";
+				display: flex;
+				flex-direction: column;
 			}
 			.language-icon{position:relative;margin-right:10px;}
 			.language-icon svg{cursor:pointer}
@@ -148,6 +151,10 @@ export class FlowCaptionBar extends BaseElement {
 				border-top:5px solid var(--flow-primary-color);
 			}
 			.logo-icon,.logo,.caption{-webkit-app-region:drag;cursor:move;}
+
+			.caption-content { height: min-content;display:flex;flex-direction:row;  }
+			*[flex] { flex: 1; }
+			
 		`];
 	}
 
@@ -168,11 +175,18 @@ export class FlowCaptionBar extends BaseElement {
 						style="background-image:url(${this.logo});"></div>`
 				}
 				<div class="caption">
-					<div class="title">
-						${this.caption||html`<slot></slot>`}
+					<div class="caption-content">
+						<div class="title">
+							${this.caption||html`<slot></slot>`}
+						</div>
+						<div class="version">
+							<div flex></div>
+							<div>
+								${this.version?`v${this.version}`:html`<slot name='version'></slot>`}
+							</div>
+						</div>
 					</div>
-					<div class="version">
-						${this.version?`v${this.version}`:html`<slot name='version'></slot>`}
+					<div flex>
 					</div>
 				</div>
 				<div class="tabs">

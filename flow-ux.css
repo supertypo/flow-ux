@@ -8,11 +8,10 @@ body{
 	--flow-folder-input-vmr:-2px;
     --flow-caption-logo-bg-color:transparent;
     --flow-font-weight:bold;
-    --flow-primary-color:rgba(0,151,115,1.0);
-    --flow-border-color:rgba(0,151,115,1.0);
-    --flow-border-hover-color:rgba(2, 97, 74, 1);
+    --flow-primary-color: #0382a8;
+    --flow-border-color: #0382a8;
+    --flow-border-hover-color:rgb(1, 62, 119);
     --flow-tab-font-size:1.5rem;
-
     --flow-font-family:sans-serif;
     --flow-background-color: #fff;
     --flow-background-inverse: #000,
@@ -42,11 +41,11 @@ body{
     --flow-list-item-active-bg:var(--flow-primary-color);
     --flow-list-item-active-color:#FFF;
 
-    --flow-link-color:rgba(0,151,115,1.0);
-    --flow-link-hover-color:rgba(0,121,85,1.0);
+    --flow-link-color:#0382a8;
+    --flow-link-hover-color:#015b77;
 
     --flow-data-field-caption: #000;
-    --flow-data-field-caption-shawod: rgba(0,151,115,1.0);
+    --flow-data-field-caption-shawod: #0382a8;
 }
 
 body.flow-theme-dark{
@@ -59,11 +58,11 @@ body.flow-theme-dark{
     color: #b1b1b1;
     --flow-color: #b1b1b1;
     /*--flow-primary-color: #b1b1b1;*/
-    --flow-primary-color: #017b68;
-    --flow-border-color: #017b68;
+    --flow-primary-color:  #0382a8;
+    --flow-border-color: #0382a8;
     --flow-tab-bg-top: #363537;
     --flow-tab-bg-bottom: #363537;
-    --flow-tab-active-bg-top: #333;
+    --flow-tab-active-bg-top: #232323; /* can not have this different color as tab can be as high as multiple rows... */
     --flow-tab-active-bg-bottom: #232323;
     --flow-input-bg: #2f2f2f;
     --flow-checkbox-checked-bg:#b1b1b1;
@@ -74,7 +73,7 @@ body.flow-theme-dark{
     --flow-list-item-active-color:#FFF;
 
     --flow-data-field-caption: #fff;
-    --flow-data-field-caption-shawod: rgba(0,151,115,1.0);
+    --flow-data-field-caption-shawod: #0382a8;
 }
 
 .hide{display:none;}
