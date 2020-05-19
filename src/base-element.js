@@ -21,7 +21,7 @@ let IconMap = Object.assign({
 
 iconFile = iconFile||'icons';
 let NativeIcons = baseUrl+'resources/icons/sprites/';
-let FlowIconPath = iconPath || NativeIcons;
+let FlowIconPath = iconPath || '/resources/fonts/sprites/';//NativeIcons;
 let FlowIcons = icons || {};
 
 if(!resolveIcon){
