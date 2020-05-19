@@ -7,7 +7,8 @@ import {BaseElement, html, css} from './base-element.js';
  * @extends {BaseElement}
  * @property {String} [style] inner svg tag style text
  * @example
- * <fa-icon class="fal fa-chart-network"></fa-icon>
+ * <fa-icon icon="fal:chart-network"></fa-icon>
+ * <fa-icon icon="icons:chart-network"></fa-icon>
  */
 export class FaIcon extends BaseElement {
 	static get properties() {
