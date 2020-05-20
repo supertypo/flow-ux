@@ -1,5 +1,5 @@
 
-import {BaseElement, html, css} from './base-element.js';
+import {BaseElement, BaseCanvasElement, html, css} from './base-element.js';
 
 /**
 * @class FlowColorSlider
@@ -7,50 +7,6 @@ import {BaseElement, html, css} from './base-element.js';
 * @example
 *   <flow-color-slider></flow-color-slider>
 */
-
-export class BaseCanvasElement extends BaseElement {
-	constructor() {
-		super();
-
-		this.scale = 0.75;
-	}
-
-	getPixelRatio(){
-    	const ctx = this.canvas.getContext("2d"),
-        dpr = window.devicePixelRatio || 1,
-        bsr = ctx.webkitBackingStorePixelRatio ||
-              ctx.mozBackingStorePixelRatio ||
-              ctx.msBackingStorePixelRatio ||
-              ctx.oBackingStorePixelRatio ||
-              ctx.backingStorePixelRatio || 1;
-
-    	return dpr / bsr * 2;
-	}
-
-	setHiDPICanvas(w, h, ratio) {
-		const can = this.canvas;
-		let w_ = w;
-		let h_ = h;
-		can.width = w_ * ratio;
-		can.height = h_ * ratio;
-		// can.style.width = w_ + "px";
-		// can.style.height = h_ + "px";
-		can.getContext("2d").setTransform(ratio, 0, 0, ratio, 0, 0);
-	}
-
-	updateCanvas() {
-		if(!this.canvas)
-			return;
-
-		let parentBox = this.getBoundingClientRect();
-		let canvasBox = this.canvas.getBoundingClientRect();
-		let { width, height } = canvasBox;
-		this.PIXEL_RATIO = this.getPixelRatio();
-		this.setHiDPICanvas(width*this.scale,height*this.scale,this.PIXEL_RATIO);
-		this.redraw();
-	}	
-
-}
 
 export class FlowColorSlider extends BaseCanvasElement {
 	static get properties() {

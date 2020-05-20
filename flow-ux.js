@@ -22,5 +22,7 @@ export * from './src/flow-pages.js';
 export * from './src/flow-i18n.js';
 export * from './src/flow-code.js';
 export * from './src/flow-color-selector.js';
+export * from './src/flow-canvas.js';
+export * from './src/flow-d3.js';
 export * from './src/base-element.js';
 
