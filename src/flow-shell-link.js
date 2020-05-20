@@ -7,7 +7,7 @@ import {BaseElement, html, css} from './base-element.js';
 * @class FlowShellLink
 * @extends BaseElement
 * @example
-*   <flow-shell-link href="url">text</flow-btn>
+*   <flow-shell-link url="url">text</flow-btn>
 *
 * @cssvar {font-family} [--flow-font-family="Julius Sans One"]
 * @cssvar {font-weight} [--flow-font-weight=bold]

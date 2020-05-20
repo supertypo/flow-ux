@@ -15,6 +15,7 @@ export * from './src/flow-folder-input.js';
 export * from './src/flow-expandable.js';
 export * from './src/flow-btn.js';
 export * from './src/flow-shell-link.js';
+export * from './src/flow-window-link.js';
 export * from './src/fa-icon.js';
 export * from './src/flow-data-field.js';
 export * from './src/flow-dialog.js';
