@@ -98,19 +98,20 @@ export class FlowWindowLink extends BaseElement {
 		console.log("opening url:",this.url);
 		//require('nw.gui').Shell.openExternal( this.href );
 
-		const { id, title, width, height, resizable, frame, transparent, show }
+		const { id, title, width, height, resizable, frame, transparent, show } = this;
 
         if(url && typeof nw != 'undefined') {
             nw.Window.open(url, {
+				id, title, width, height, resizable, frame, transparent, show
                 //new_instance: true,
-                id: this.id,
-                title: this.title,
-                width: 1027,
-                height: 768,
-                resizable: true,
-                frame: true,
-                transparent: false,
-                show: true,
+                // id: this.id,
+                // title: this.title,
+                // width: 1027,
+                // height: 768,
+                // resizable: true,
+                // frame: true,
+                // transparent: false,
+                // show: true,
                 // http://docs.nwjs.io/en/latest/References/Manifest%20Format/#window-subfields
             }, (win, b) => {
 
