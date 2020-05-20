@@ -373,7 +373,9 @@ export class FlowTerminal extends BaseElement {
 
     	//this.log("termtermterm:theme", this.termTheme)
     	this.addons = {
-	    	weblinks : new WebLinksAddon.WebLinksAddon(),
+	    	weblinks : new WebLinksAddon.WebLinksAddon((event,uri) => {
+				this.handleLink(event,uri);
+			}),
 	    	fit : new FitAddon.FitAddon()
 	    };
 
@@ -700,6 +702,12 @@ export class FlowTerminal extends BaseElement {
 	}
 	clear() {
 		this.term.write(`\x1B[2J\x1B[H`);
+	}
+	handleLink(event, link) {
+		this.linkHandler?.(event,link);
+	}
+	registerLinkHandler(fn) {
+		this.linkHandler = fn;
 	}
 }
 
