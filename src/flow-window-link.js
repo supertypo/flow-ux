@@ -6,9 +6,19 @@ import {BaseElement, html, css} from './base-element.js';
 /**
 * @class FlowWindowLink
 * @extends BaseElement
+* @property {String} [url]
+* @property {String} [id]
+* @property {String} [title]
+* @property {Boolean} [disabled]
+* @property {Boolean} [icon]
 * @example
 *   <flow-window-link href="url">text</flow-window-link>
-*
+
+* @cssvar {font-family} [--font-family=var(--flow-font-family, "Open Sans")]
+* @cssvar {font-weight} [--font-weight=var(--flow-font-weight, normal)]
+* @cssvar {color} [--flow-link-color=var(--flow-link-color, #017b68)]
+* @cssvar {color} [--flow-link-hover-color=var(--flow-link-hover-color, #017b68)]
+* @cssvar {fill} [--flow-primary-color=rgba(0,151,115,1)]
 */
 export class FlowWindowLink extends BaseElement {
 	static get properties() {

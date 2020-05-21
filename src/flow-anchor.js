@@ -1,5 +1,16 @@
 import {BaseElement, html, css} from './base-element.js';
 const flowAnchors = [];
+
+/**
+* @class FlowAnchor
+* @extends BaseElement
+* @property {String} [for]
+* @property {String} [type]
+* @example
+*   <flow-anchor>Button 1</flow-anchor>
+*
+*
+*/
 export {flowAnchors}
 export class FlowAnchor extends BaseElement {
 	static get properties() {

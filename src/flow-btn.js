@@ -6,11 +6,31 @@ import {BaseElement, html, css} from './base-element.js';
 * @extends BaseElement
 * @example
 *   <flow-btn>Button 1</flow-btn>
-*
+* @property {Boolean} [disabled] 
 * @cssvar {font-family} [--flow-font-family="Julius Sans One"]
 * @cssvar {font-weight} [--flow-font-weight=bold]
 * @cssvar {color} [--flow-border-color=var(--flow-primary-color, rgba(0,151,115,1))]
 * @cssvar {color} [--flow-border-hover-color=var(--flow-primary-color, rgba(0,151,115,1))]
+* @cssvar {background-color} [--flow-btn-primary-bg-color=var(--flow-primary-color, rgba(0,151,115,1))]
+* @cssvar {color} [--flow-btn-primary-invert-color=var(--flow-primary-invert-color, #FFF)]
+* @cssvar {background-color} [--flow-btn-success-bg-color=var(--flow-primary-color, rgba(0,151,115,1))]
+* @cssvar {border-color} [--flow-btn-success-bg-color=var(--flow-primary-color, rgba(0,151,115,1)))]
+* @cssvar {color} [--flow-btn-success-color=var(--flow-btn-success-color, #FFF)]
+* @cssvar {background-color|border-color} [--flow-btn-hover-success-bg-color=var(--flow-primary-color, rgba(0,151,115,1)))]
+* @cssvar {border-color} [--flow-btn-hover-success-bg-color=var(--flow-primary-color, rgba(0,151,115,1)))]
+* @cssvar {color} [--flow-btn-hover-success-color=var(--flow-btn-success-color, #FFF))]
+* @cssvar {background-color|border-color} [--flow-btn-warning-bg-color=var(--flow-primary-color, rgba(0,151,115,1)))]
+* @cssvar {color} [--flow-btn-warning-color=var(--flow-btn-warning-color, #FFF))]
+* @cssvar {background-color|border-color} [--flow-btn-hover-warning-bg-color=var(--flow-primary-color, rgba(0,151,115,1)))]
+* @cssvar {color} [--flow-btn-hover-warning-color=var(--flow-btn-warning-color, #FFF))]
+* @cssvar {background-color|border-color} [--flow-btn-danger-bg-color=var(--flow-primary-color, rgba(0,151,115,1)))]
+* @cssvar {color} [--flow-btn-danger-color=var(--flow-btn-danger-color, #FFF))]
+* @cssvar {background-color|border-color} [--flow-btn-hover-danger-bg-color=var(--flow-primary-color, rgba(0,151,115,1)))]
+* @cssvar {color} [--flow-btn-hover-danger-color=var(--flow-btn-danger-color, #FFF))]
+* @cssvar {background-color|border-color} [--flow-btn-info-bg-color=var(--flow-primary-color, rgba(0,151,115,1)))]
+* @cssvar {color} [--flow-btn-info-color=var(--flow-btn-info-color, #FFF))]
+* @cssvar {background-color|border-color} [--flow-btn-hover-info-bg-color=var(--flow-primary-color, rgba(0,151,115,1)))]
+* @cssvar {color} [--flow-btn-hover-info-color=var(--flow-btn-info-color, #FFF))]
 */
 export class FlowBtn extends BaseElement {
 	static get properties() {
@@ -91,18 +111,6 @@ export class FlowBtn extends BaseElement {
 				background-color:var(--flow-btn-hover-danger-bg-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-color:var(--flow-btn-hover-danger-bg-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				color:var(--flow-btn-hover-danger-color, var(--flow-btn-danger-color, #FFF));
-			}
-
-			:host(.info){
-				background-color:var(--flow-btn-info-bg-color, var(--flow-primary-color, rgba(0,151,115,1)));
-				border-color:var(--flow-btn-info-bg-color, var(--flow-primary-color, rgba(0,151,115,1)));
-				color:var(--flow-btn-info-color, var(--flow-btn-info-color, #FFF));
-			}
-
-			:host(.info:not([disabled]):hover){
-				background-color:var(--flow-btn-hover-info-bg-color, var(--flow-primary-color, rgba(0,151,115,1)));
-				border-color:var(--flow-btn-hover-info-bg-color, var(--flow-primary-color, rgba(0,151,115,1)));
-				color:var(--flow-btn-hover-info-color, var(--flow-btn-info-color, #FFF));
 			}
 
 			:host(.info){
