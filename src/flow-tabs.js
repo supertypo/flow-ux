@@ -11,7 +11,9 @@ import {i18n, T} from './flow-i18n.js';
 * @prop {String} active Active tab id
 * @prop {Array.<FlowTabConfig>} tabs alternative to slotted tabs for defining tabs
 * @prop {ActiveDisplay} target-display *blocked/active* display type for target elements (default: block)
+*
 * @cssvar {margin} [--flow-tabs-margin=8px 28px 0px 28px]
+*
 * @example
 * <flow-tabs active="tab1">
 *   <flow-tab id="tab1">TAB 1</flow-tab>

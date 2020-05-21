@@ -1,6 +1,11 @@
 import {BaseElement, html, css} from './base-element.js';
 import {FlowI18nDialog} from './flow-i18n.js';
 
+
+
+
+
+
 /**
  *
  * @export
@@ -9,11 +14,37 @@ import {FlowI18nDialog} from './flow-i18n.js';
  * @property {String} [icon] [FaIcon]{@link FaIcon} css classes i.e `fal fa-chart-network`
  * @property {Array.<FlowTabConfig>} [tabs] [FlowTabs.tabs]{@link FlowTabs#tabs}
  * @property {String} [active-tab] [FlowTabs.active]{@link FlowTabs#active}
+ * @property {String} [logo] url to the logo image
+ * @property {String} [version] text containig version information
+ * @property {String} [caption] window caption text
  * @prop {ActiveDisplay} target-display *blocked/active* display type for target elements (default: block)
  *
  * @example
  * <flow-caption-bar icon="fal fa-chart-network">FLOW</flow-caption-bar>
- *
+ * <flow-caption-bar logo="/resources/images/logo.png"></flow-caption-bar>
+ * 
+ * JavaScript
+ * initCaption(){
+ *		let caption = document.querySelector('flow-caption-bar');
+		caption.close = ()=>{ ... };
+		caption.logo = `/resources/images/logo-${this.theme}-bg.png`;
+		caption.version = '1.0.0';
+		caption.tabs = [{
+			title : "Tab1",
+			id : "tab1",
+			cls: "tab1"
+		},{
+			title : "Tab2",
+			id : "tab2"
+		},{
+			title : "Tab3",
+			id : "tab3",
+			disable: true,
+			section: 'filter'
+		}];
+
+		caption["active"] = "tab1";
+	}
  * @cssvar {font-family} [--flow-caption-bar-font-family=var(--flow-font-family, "Julius Sans One")]
  * @cssvar {font-weight} [--flow-caption-bar-font-weight=var(--flow-font-weight, bold)]
  * @cssvar {font-size} [--flow-caption-bar-font-size=var(--flow-font-size, 1.5rem)]

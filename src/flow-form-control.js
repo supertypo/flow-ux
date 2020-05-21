@@ -4,8 +4,9 @@ import {BaseElement, html, css} from './base-element.js';
  * @export
  * @class FlowFormControl
  * @extends {BaseElement}
- * @property {String} [icon=light-info] icon to show in left
  * 
+ * @property {String} [icon=light-info] icon to show in left
+ * @cssvar {fill} [--flow-primary-color=rgba(0,151,115,1)]
  * @example
  * <flow-form-control>
  *   Is Active: 

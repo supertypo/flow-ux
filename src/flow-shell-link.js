@@ -6,13 +6,20 @@ import {BaseElement, html, css} from './base-element.js';
 /**
 * @class FlowShellLink
 * @extends BaseElement
-* @example
-*   <flow-shell-link url="url">text</flow-shell-link>
+*
+* @property {Boolean} [disabled] 
+* @property {Boolean} [icon]
+* @property {String} [href]
 *
 * @cssvar {font-family} [--flow-font-family="Julius Sans One"]
 * @cssvar {font-weight} [--flow-font-weight=bold]
-* @cssvar {color} [--flow-border-color=var(--flow-primary-color, rgba(0,151,115,1))]
-* @cssvar {color} [--flow-border-hover-color=var(--flow-primary-color, rgba(0,151,115,1))]
+* @cssvar {color} [--flow-link-color=#017b68]
+* @cssvar {color} [--flow-link-hover-color=#017b68]
+* @cssvar {fill} [--flow-primary-color=017b68]
+*
+* @example
+*   <flow-shell-link url="url">text</flow-shell-link>
+*
 */
 export class FlowShellLink extends BaseElement {
 	static get properties() {

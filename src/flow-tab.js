@@ -9,16 +9,20 @@ import {BaseElement, html, css} from './base-element.js';
 * @class FlowTab
 * @extends BaseElement
 * @export FlowTab
+*
 * @prop {Boolean} active is tab active?
-* @example
-*   <flow-tab id="tab1">TAB 1</flow-tab>
 *
 * @cssvar {font-family} [--flow-tab-font-family=var(--flow-font-family, "Julius Sans One")]
 * @cssvar {font-family} [--flow-tab-font-weight=var(--flow-font-weight, bold)]
 * @cssvar {font-family} [--flow-tab-font-size=var(--flow-font-size, 1.5rem)]
 * @cssvar {color} [--flow-primary-color=rgba(0,151,115,1)]
-* @cssvar {color} [--flow-tab-border-color=var(--flow-border-color, --flow-primary-color)]
+* @cssvar {stroke} [--flow-tab-border-color=var(--flow-border-color, --flow-primary-color)]
 * @cssvar {css-unit} [--flow-tab-wrapper-max-width=150px]
+* @cssvar {max-width} [--flow-tab-wrapper-max-width=150px]
+*
+* @example
+*   <flow-tab id="tab1">TAB 1</flow-tab>
+*
 */
 
 export class FlowTab extends BaseElement {

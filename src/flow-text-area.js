@@ -5,9 +5,11 @@ import {ifDefined} from 'lit-html/directives/if-defined.js';
  * @export
  * @class FlowTextArea
  * @extends {BaseElement}
+ * 
  * @property {Number} [height] height in number
  * @property {Boolean} [autocomplete=false] textarea attribute autocomplete
  * @property {Boolean} [autofocus=false] set true to autofocus textarea
+ * @property {Boolean} [autosize=false] set true to autosize textarea
  * @property {Boolean} [disabled=false] set true to disable textarea
  * @property {String} [placeholder=''] textarea placeholder text
  * @property {Boolean} [readonly=false] set true to make textarea as readonly
@@ -16,8 +18,8 @@ import {ifDefined} from 'lit-html/directives/if-defined.js';
  * @example
  * <flow-textarea></flow-textarea>
  *
- * @cssvar {color} [--flow-border-color=var(--flow-primary-color, #3f51b5)]
- * @cssvar {color} [--flow-textarea-bg=var(--flow-input-bg, #fafafa)]
+ * @cssvar {border} [--flow-border-color=var(--flow-primary-color, #3f51b5)]
+ * @cssvar {background} [--flow-textarea-bg=var(--flow-input-bg, #fafafa)]
  * @cssvar {color} [--flow-textarea-color=var(--flow-input-color, inherit)]
  */
 export class FlowTextArea extends BaseElement {
