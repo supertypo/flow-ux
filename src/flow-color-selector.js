@@ -1,5 +1,6 @@
 
-import {BaseElement, BaseCanvasElement, html, css} from './base-element.js';
+import {BaseElement, html, css} from './base-element.js';
+import {FlowCanvasElement} from './flow-canvas.js';
 
 /**
 * @class FlowColorSlider
@@ -8,7 +9,7 @@ import {BaseElement, BaseCanvasElement, html, css} from './base-element.js';
 *   <flow-color-slider></flow-color-slider>
 */
 
-export class FlowColorSlider extends BaseCanvasElement {
+export class FlowColorSlider extends FlowCanvasElement {
 	static get properties() {
 		return {
 			min : { type:Number },

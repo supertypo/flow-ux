@@ -286,14 +286,12 @@ export class FlowTerminal extends BaseElement {
 	*/
 	initClipboard(eventEl, holder){
 		this.term.attachCustomKeyEventHandler((e)=>{
-			console.log("CustomKeyEventHandler:",e);
 			if(e.type != 'keydown')
 				return;
 			this.onClipboardKeyDown(e);
 		});
 	}
 	onClipboardKeyDown(e){
-		console.log("onClipboardKeyDown", e);
 		if(e.key == "v" && (e.metaKey || e.ctrlKey)){
 			//e.preventDefault();
 			navigator.clipboard.readText().then((text) => {
