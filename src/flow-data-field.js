@@ -232,16 +232,16 @@ export class FlowDataFieldGraph extends Flowd3Element {
 			.y0(y(0))
 			.y1(d => y(d.value));
 
-		const { svg } = this;
-		svg.append('path')
+		const { el } = this;
+		el.append('path')
 			.datum(data)
 			.attr('fill','var(--flow-data-field-graph-fill, steelblue)')
 			.attr('d',area);
 
-		svg.append("g")
+		el.append("g")
 			.call(xAxis);
   
-		svg.append("g")
+		el.append("g")
 			.call(yAxis);
 
 	}
