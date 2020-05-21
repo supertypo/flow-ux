@@ -5,7 +5,10 @@ import {BaseElement, html, css} from './base-element.js';
 * @extends BaseElement
 * @example
 *   <flow-dialog heading="Title">value</flow-dialog>
-*
+* @property {Boolean} [disabled] 
+* @property {String} [heading] 
+* @property {Array} [btns] 
+* @property {Object} [body] 
 */
 export class FlowDialog extends BaseElement {
 	static get properties() {

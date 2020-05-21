@@ -33,7 +33,15 @@ export {flowPagesStyle};
  * @export
  * @class FlowPages
  * @extends {BaseElement}
- * @@prop {Boolean} checked is ckecbox checked?
+ * 
+ * @property {Array} pages
+ * @property {Number} index 
+ * 
+ * @cssvar {fill|background-color} [--flow-primary-color=rgba(0,151,115,1)]
+ * @cssvar {background-color} [--flow-background-color=#FFF]
+ * @cssvar {box-shadow} [--flow-pages-dots-box-shadow=var(--flow-box-shadow)]
+ * @cssvar {border} [--flow-border-color=var(--flow-primary-color, rgba(0,151,115,1))]
+ * @cssvar {border-color} [--flow-active-border-color=var(--flow-primary-color, rgba(0,151,115,1))]
  * 
  * @example
  * <flow-pages>
@@ -41,9 +49,6 @@ export {flowPagesStyle};
  *  <flow-page>Page 2</flow-page>
  * </flow-pages>
  *
- * @cssvar {color} [--flow-checkbox-color=var(--flow-border-color, rgba(0,0,0,.54))]
- * @cssvar {color} [--flow-checkbox-checked-color=var(--flow-border-color, var(--flow-primary-color, #3f51b5))]
- * @cssvar {color} [--flow-checkbox-bg=var(--flow-input-bg, inherit)]
  */
 
 export class FlowPages extends BaseElement {

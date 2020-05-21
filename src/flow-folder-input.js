@@ -4,13 +4,26 @@ import {BaseElement, html, css} from './base-element.js';
 /**
 * @class FlowFolderInput
 * @extends BaseElement
-* @example
-*   <flow-folder-input></flow-folder-input>
+
+* @property {Boolean} [disabled]
+* @property {String} [btnText]
+* @property {String} [value]
 *
 * @cssvar {font-family} [--flow-font-family="Julius Sans One"]
 * @cssvar {font-weight} [--flow-font-weight=bold]
-* @cssvar {color} [--flow-border-color=var(--flow-primary-color, rgba(0,151,115,1))]
-* @cssvar {color} [--flow-border-hover-color=var(--flow-primary-color, rgba(0,151,115,1))]
+* @cssvar {background-color|border} [--flow-border-color=var(--flow-primary-color, rgba(0,151,115,1))]
+* @cssvar {background|border} [--flow-border-hover-color=var(--flow-primary-color, rgba(0,151,115,1))]
+* @cssvar {border-top-left-radius} [--flow-folder-input-tlbr=4px]
+* @cssvar {border-bottom-left-radius} [--flow-folder-input-blbr, 4p]
+* @cssvar {border-top-right-radius} [--flow-folder-input-trbr=4px]
+* @cssvar {border-bottom-right-radius} [--flow-folder-input-brbr=4px]
+* @cssvar {color} [--flow-border-invert-color=var(--flow-primary-invert-color, #FFF))]
+* @cssvar {margin-right} [--flow-folder-input-vmr=2px]
+* @cssvar {background-color} [--flow-input-bg=inherit]
+
+* @example
+*   <flow-folder-input></flow-folder-input>
+*
 */
 export class FlowFolderInput extends BaseElement {
 	static get properties() {

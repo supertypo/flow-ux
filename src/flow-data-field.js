@@ -6,7 +6,14 @@ import {Flowd3Element} from './flow-d3.js';
 * @extends BaseElement
 * @example
 *   <flow-data-field title="text">value</flow-data-field>
-*
+* @property {Boolean} [disabled] 
+* @property {String} [title] 
+* @property {String} [prefix] 
+* @property {String} [suffix] 
+* @property {String} [align] 
+* @cssvar {font-family} [--flow-data-field-font-family="Julius Sans One"]
+* @cssvar {font-weight} [--flow-data-field-font-weight=bold]
+* @cssvar {border} [--flow-primary-color=#333]
 */
 export class FlowDataField extends BaseElement {
 	static get properties() {
