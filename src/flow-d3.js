@@ -58,4 +58,15 @@ export class Flowd3Element extends BaseElement {
 		window.addEventListener("resize", this.updateSVGSize.bind(this))
 		this.fire("ready", {})
     }
+
+	updateSVGSize(){
+		const { width, height } = this.el_d3.getBoundingClientRect();
+		this.svg.attr("viewBox", [
+			-width / 2,
+			-height / 2, 
+			width,
+			height
+		]);
+	}
+
 }
