@@ -80,7 +80,12 @@ export class FlowWindowLink extends BaseElement {
 		this.frame = true;
 		this.transparent = false;
 		this.show = true;
+		this.url = '';
 
+		if(!window.flow)
+			window.flow = { };
+		if(!window.flow['flow-window-link'])
+			window.flow['flow-window-link'] = { windows : [ ] };
 	}
 
 	render() {
@@ -100,8 +105,8 @@ export class FlowWindowLink extends BaseElement {
 
 		const { id, title, width, height, resizable, frame, transparent, show } = this;
 
-        if(url && typeof nw != 'undefined') {
-            nw.Window.open(url, {
+        if(this.url && typeof nw != 'undefined') {
+            nw.Window.open(this.url, {
 				id, title, width, height, resizable, frame, transparent, show
                 //new_instance: true,
                 // id: this.id,
@@ -115,11 +120,15 @@ export class FlowWindowLink extends BaseElement {
                 // http://docs.nwjs.io/en/latest/References/Manifest%20Format/#window-subfields
             }, (win, b) => {
 
-                this.window = win;
+				window.flow['flow-window-link'].windows.push(win);
+
+				//this.window = win;
+				
+
                 // console.log("win", win)
                 // win.app = this;
                 // global.abcapp = "123";
-                resolve();
+                // resolve();
             });
         }
 
