@@ -160,7 +160,7 @@ export class FlowDataFieldGraph extends Flowd3Element {
 		super.firstUpdated();
 
 		// TODO - 'date' should be 'ts' as unix timestamp; 'v' should be 'value'
-		const data = [
+/*		const data = [
 			{"date":"2012-02-08T00:00:00.000Z","value":476.68},{"date":"2012-02-09T00:00:00.000Z","value":493.17},{"date":"2012-02-09T00:00:00.000Z","value":493.42},{"date":"2012-02-12T00:00:00.000Z","value":502.6},{"date":"2012-02-13T00:00:00.000Z","value":509.46},{"date":"2012-02-14T00:00:00.000Z","value":497.67},{"date":"2012-02-15T00:00:00.000Z","value":502.21},{"date":"2012-02-16T00:00:00.000Z","value":502.12},{"date":"2012-02-20T00:00:00.000Z","value":514.85},{"date":"2012-02-21T00:00:00.000Z","value":513.04},{"date":"2012-02-22T00:00:00.000Z","value":516.39},{"date":"2012-02-23T00:00:00.000Z","value":522.41}			
 		];
 
@@ -200,7 +200,7 @@ export class FlowDataFieldGraph extends Flowd3Element {
   
 		svg.append("g")
 		.call(yAxis);
-
+*/
 	}
 }
 
