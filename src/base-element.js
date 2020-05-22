@@ -3,6 +3,14 @@ import {LitElement, html, css} from 'lit-element';
 export * from 'lit-element';
 export * from 'lit-html/lit-html.js';
 
+export const storage = () => { 
+	return typeof global != 'undefined' ? global : globalThis;
+}
+
+const universe = storage();
+const default_flow_global = { }
+export const flow = universe.flow = (universe.flow || default_flow_global);
+
 let {debug, baseUrl, theme} = window.flowConfig || {}
 let {iconPath, icons, resolveIcon, iconMap, iconFile} = theme || {};
 
@@ -44,7 +52,8 @@ if(!resolveIcon){
 		return `${FlowIconPath}${IconMap[file]||file}.svg#${hash}`;
 	}
 }
-console.log("FlowIcons", FlowIcons)
+
+// console.log("FlowIcons", FlowIcons)
 
 export {baseUrl, debug, FlowIconPath, FlowIcons};
 
