@@ -126,16 +126,8 @@ export class FlowDataFieldGraph extends Flowd3Element {
 
 			.container{
 				white-space: nowrap;
-				border: 2px solid var(--flow-primary-color,#333);
-				xdisplay:flex;xflex-firection:column;xalign-items:center;
-				padding:2px 6px;
-				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
-				border-radius: 10px;
-
-				xdisplay:flex; flex:1;
+				display:flex;xflex-firection:column;xalign-items:center;padding:2px 6px;
 				min-height: inherit;
-
-
 			}
 			.container>div{padding:2px;}
 			.title{flex:1; text-align:left; opacity:1;xmargin-top:7px; font-size: 10px; color: var(--flow-data-field-caption); xtext-shadow: 0px 0px 0px var(--flow-data-field-caption-shadow, #fff); }
@@ -147,12 +139,15 @@ export class FlowDataFieldGraph extends Flowd3Element {
 
 
 			.wrapper {
-				width:100%;height:100%;
-				position:relative;left:0px;top:0px;bottom:0px;right:0px;
-				margin:6px;
-/*				min-width: var(--flow-data-field-graph-with,240px);
-				min-height: var(--flow-data-field-graph-height,80px);
-				*/
+				/*width:100%;height:100%;*/
+				position:relative;
+				margin:6px;overflow:hidden;
+				border: 2px solid var(--flow-primary-color,#333);
+				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
+				border-radius: 10px;
+
+				min-width: var(--flow-data-field-graph-with,240px);
+				min-height: var(--flow-data-field-graph-height,80px);				
 			}
 			.wrapper > div {
 				width:100%;height:100%;
@@ -172,11 +167,7 @@ export class FlowDataFieldGraph extends Flowd3Element {
 				z-index: 100;*/
 			}
 
-			.wrapper>div.d3-holder{
-				overflow: hidden;
-				position:absolute;
-				/*border: 2px solid transparent;*/
-			}
+			.wrapper>div.d3-holder{position:absolute;}
 
 		`];
 	}
