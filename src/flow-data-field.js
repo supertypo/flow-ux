@@ -126,8 +126,8 @@ export class FlowDataFieldGraph extends Flowd3Element {
 
 			.container{
 				white-space: nowrap;
-				display:flex;xflex-firection:column;xalign-items:center;padding:2px 6px;
-				min-height: inherit;
+				xdisplay:flex;xflex-firection:column;xalign-items:center;padding:2px 6px;
+				/*min-height: inherit;*/
 			}
 			.container>div{padding:2px;}
 			.title{flex:1; text-align:left; opacity:1;xmargin-top:7px; font-size: 10px; color: var(--flow-data-field-caption); xtext-shadow: 0px 0px 0px var(--flow-data-field-caption-shadow, #fff); }
@@ -156,7 +156,7 @@ export class FlowDataFieldGraph extends Flowd3Element {
 				position:relative;left:0px;top:0px;bottom:0px;right:0px;
 				/*display: flex;
 				flex-direction: column;*/
-				min-height: inherit;
+				/*min-height: inherit;*/
 			}
 
 			.d3-holder{
@@ -287,14 +287,23 @@ console.log('rendering:',this.sampler,'data:',rawData);
 		//d3.select(el)
 		//el.selectAll("*").remove();
 		//el.empty();
+		if(!this.path)
+			this.path = el.append('path')
+//				.datum(data)
+				.attr('fill','var(--flow-data-field-graph-fill, steelblue)')
+				.attr('stroke','var(--flow-data-field-graph-fill, "#000)')
+				
+		this.path.datum(data)
+			.attr('d',area);
 
-		el.append('path')
+
+/*		el.append('path')
 			//.attr('class','')
 			.datum(data)
 			.attr('fill','var(--flow-data-field-graph-fill, steelblue)')
 			.attr('stroke','var(--flow-data-field-graph-fill, "#000)')
 			.attr('d',area);
-
+*/
 		el.append("g")
 			.call(xAxis);
   
