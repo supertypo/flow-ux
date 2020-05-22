@@ -51,13 +51,15 @@ export class Flowd3Element extends BaseElement {
     
     init_d3() {
 		this.svg = d3.select(this.el_d3).append("svg");
-		this.svg.attr("viewBox", [0,0,1,1]);
+		//this.svg.attr("viewBox", this.svgViewBox || [0,0,1,1]);
+		this.svg.attr("width", this.svgWidth || '100%');
+		this.svg.attr("height", this.svgHeight || '100%');
+		this.svg.attr('preserveAspectRatio', this.svgPreserveAspectRatio || 'xMidYMid meet');
     	this.el = this.svg.append("g")
     	this.el.transform = d3.zoomIdentity.translate(0, 0).scale(1);
 		this.updateSVGSize();
 		setTimeout(()=>{
 			this.updateSVGSize();
-			this.draw();
 		}, 10)
 		window.addEventListener("resize", this.updateSVGSize.bind(this))
 		this.fire("ready", {})
@@ -65,7 +67,8 @@ export class Flowd3Element extends BaseElement {
 
     updateSVGSize(){
     	let {width, height} = this.el_d3.getBoundingClientRect();
-    	this.svg.attr("viewBox", [0,0, width, height]);
+    	this.svg.attr("viewBox", this.svgViewBox || [0,0, width, height]);
+    	this.draw();
     }
 
     draw(){

@@ -1,4 +1,4 @@
-import {BaseElement, html, css} from './base-element.js';
+import {BaseElement, html, css, dpc} from './base-element.js';
 import {Flowd3Element} from './flow-d3.js';
 import {FlowSampler} from './flow-graph.js';
 
@@ -115,7 +115,7 @@ export class FlowDataFieldGraph extends Flowd3Element {
 				border-radius: 10px;
 				overflow: hidden;
 
-
+				/*width:300px;height:300px;*/
 			}
 			:host([disabled]){opacity:0.5;cursor:default;pointer-events:none;}
 			.colon{display:none}
@@ -141,15 +141,15 @@ export class FlowDataFieldGraph extends Flowd3Element {
 			.wrapper {
 				/*width:100%;height:100%;*/
 				position:relative;
+				flex:1;
 				margin:6px;overflow:hidden;
 				border: 2px solid var(--flow-primary-color,#333);
 				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
 				border-radius: 10px;
-
-/*
+				/*
 				min-width: var(--flow-data-field-graph-with,240px);
 				min-height: var(--flow-data-field-graph-height,80px);				
-*/				
+				*/				
 			}
 			.wrapper > div {
 				width:100%;height:100%;
@@ -176,6 +176,13 @@ export class FlowDataFieldGraph extends Flowd3Element {
 
 	constructor() {
 		super();
+		//this.svgViewBox = [-1, 0, 100, 50]
+		this.svgPreserveAspectRatio = 'xMaxYMax meet';
+		window.addEventListener('resize', ()=>{
+			dpc(()=>{
+				this.draw();
+			})
+		})
 	}
 
 	render() {
@@ -238,32 +245,25 @@ export class FlowDataFieldGraph extends Flowd3Element {
 			return;
 
 		const rawData = FlowSampler.get(this.sampler || 'test-sampler').data;
-console.log('rendering:',this.sampler,'data:',rawData);
+		console.log('rendering:',this.sampler,'data:',rawData);
 
-		let pad = (str, l)=>{
-
-		}
 		let data = rawData.map(d=>{
-			let date = new Date(d.ts);
-			//date = date.getUTCFullYear()+"-"+(date.getUTCMonth()+"").padStart(2, 0)+"-"+(date.getUTCDate()+"").padStart(2, 0)
-			return {date, value:d.value}
+			return {date:new Date(d.ts), value:d.value}
 		})
 
 		//console.log(JSON.stringify(data, null))
 
 		const x = d3.scaleUtc()
-		.domain(d3.extent(data, d => d.date)).nice()
-		//.range([height - margin.bottom, margin.top])
-		//.domain(d3.extent(data, d => d.date))
+		.domain(d3.extent(data, d => d.date))//.nice()
 		.range([margin.left, width - margin.right])
-
+		
 		const y = d3.scaleLinear()
-		.domain(d3.extent(data, d => d.value)).nice()
+		.domain([0, d3.max(data, d => d.value)]).nice()
 		.range([height - margin.bottom, margin.top]);
-
+		/*
 		const xAxis = g => g
 		.attr("transform", `translate(0,${height - margin.bottom})`)
-//		.call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
+		//.call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
 
 		const yAxis = g => g
 		.attr("transform", `translate(${margin.left},0)`)
@@ -274,6 +274,7 @@ console.log('rendering:',this.sampler,'data:',rawData);
 		// 	.attr("text-anchor", "start")
 		// 	.attr("font-weight", "bold")
 		// 	.text(this.title));
+		*/
 
 		const area = d3.area()
 			.curve(d3.curveLinear)
@@ -283,32 +284,26 @@ console.log('rendering:',this.sampler,'data:',rawData);
 
 		const { el } = this;
 
-		// @surinder
-		//d3.select(el)
-		//el.selectAll("*").remove();
-		//el.empty();
 		if(!this.path)
-			this.path = el.append('path')
-//				.datum(data)
+			this.path = this.svg.append('path')
+				.attr("transform", `translate(${margin.left},0)`)
+				.attr('stroke-opacity', '0.4')
+				.attr("stroke-linejoin", "round")
+				.attr("stroke-linecap", "round")
+				.attr("stroke-width", 'var(--flow-data-field-graph-stroke-width, 0)')
 				.attr('fill','var(--flow-data-field-graph-fill, steelblue)')
 				.attr('stroke','var(--flow-data-field-graph-fill, "#000)')
 				
 		this.path.datum(data)
 			.attr('d',area);
 
-
-/*		el.append('path')
-			//.attr('class','')
-			.datum(data)
-			.attr('fill','var(--flow-data-field-graph-fill, steelblue)')
-			.attr('stroke','var(--flow-data-field-graph-fill, "#000)')
-			.attr('d',area);
-*/
+		/*
 		el.append("g")
 			.call(xAxis);
   
 		el.append("g")
 			.call(yAxis);
+		*/
 
 	}
 }

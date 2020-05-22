@@ -55,7 +55,13 @@ if(!resolveIcon){
 
 // console.log("FlowIcons", FlowIcons)
 
-export {baseUrl, debug, FlowIconPath, FlowIcons};
+let dpc = (delay, fn)=>{
+	if(typeof delay == 'function')
+		return setTimeout(delay, fn||0);
+	return setTimeout(fn, delay||0);
+}
+
+export {baseUrl, debug, FlowIconPath, FlowIcons, dpc};
 
 /**
 * @class BaseElement
