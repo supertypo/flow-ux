@@ -247,6 +247,17 @@ export class FlowSampler {
 		let max = this.options.maxSamples || 60;
 		while(this.data.length > max)
 			this.data.shift();
+		this.fire('data', {ident:this.ident, data: this.data})
+	}
 
+	fire(name, data={}){
+		let ce = new CustomEvent(`flow-sampler-${name}-${this.ident}`, {detail:data})
+		document.body.dispatchEvent(ce);
+	}
+	on(name, fn){
+		document.body.addEventListener(`flow-sampler-${name}-${this.ident}`, fn);
+	}
+	off(name, fn){
+		document.body.removeEventListener(`flow-sampler-${name}-${this.ident}`, fn);
 	}
 }

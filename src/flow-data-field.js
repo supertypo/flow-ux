@@ -243,8 +243,12 @@ export class FlowDataFieldGraph extends Flowd3Element {
 
 		if(!this.sampler)
 			return;
-
-		const rawData = FlowSampler.get(this.sampler || 'test-sampler').data;
+		let sampler = FlowSampler.get(this.sampler || 'test-sampler');
+		if(!this._draw){
+			this._draw = this.draw.bind(this);
+			sampler.on('data', this._draw);
+		}
+		const rawData = sampler.data;
 		console.log('rendering:',this.sampler,'data:',rawData);
 
 		let data = rawData.map(d=>{
