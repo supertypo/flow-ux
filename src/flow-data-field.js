@@ -262,7 +262,8 @@ export class FlowDataFieldGraph extends Flowd3Element {
 		.range([margin.left, width - margin.right])
 		
 		const y = d3.scaleLinear()
-		.domain([0, d3.max(data, d => d.value)]).nice()
+		.domain(d3.extent(data, d => d.value))//.nice()
+//		.domain([0, d3.max(data, d => d.value)]).nice()
 		.range([height - margin.bottom, margin.top]);
 		/*
 		const xAxis = g => g
