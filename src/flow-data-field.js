@@ -103,7 +103,7 @@ export class FlowDataFieldGraph extends Flowd3Element {
 	static get styles(){
 		return [Flowd3Element.styles, css`
 			:host{
-				display:inline-block;
+				display:inline-flex;
 				font-weight:bold;
 				font-size:13px;
 				text-transform:uppercase;
@@ -120,7 +120,6 @@ export class FlowDataFieldGraph extends Flowd3Element {
 				white-space: nowrap;
 				border: 2px solid var(--flow-primary-color,#333);
 				xdisplay:flex;xflex-firection:column;xalign-items:center;padding:2px 6px;
-				margin: 6px;
 				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
 				border-radius: 10px;
 
@@ -135,8 +134,9 @@ export class FlowDataFieldGraph extends Flowd3Element {
 
 
 			.wrapper {
-				width:100%;height:100%;
+				/*width:100%;height:100%;*/
 				position:relative;
+				margin:6px;
 			}
 			.wrapper > div {
 				width:100%;height:100%;
@@ -147,9 +147,13 @@ export class FlowDataFieldGraph extends Flowd3Element {
 				min-height:10px;
 				min-width:10px;
 				opacity:0.5;
+				border-radius:10px;
 			}
 
-			.wrapper>div.d3-holder{position:absolute;}
+			.wrapper>div.d3-holder{
+				overflow: hidden;
+				position:absolute;border: 2px solid transparent;
+			}
 
 		`];
 	}
