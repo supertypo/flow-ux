@@ -146,8 +146,10 @@ export class FlowDataFieldGraph extends Flowd3Element {
 				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
 				border-radius: 10px;
 
+/*
 				min-width: var(--flow-data-field-graph-with,240px);
 				min-height: var(--flow-data-field-graph-height,80px);				
+*/				
 			}
 			.wrapper > div {
 				width:100%;height:100%;
