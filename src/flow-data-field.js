@@ -110,6 +110,8 @@ export class FlowDataFieldGraph extends Flowd3Element {
 				cursor:pointer;
 				font-family:var(--flow-data-field-font-family, "Julius Sans One");
 				font-weight:var(--flow-data-field-font-weight, bold);
+				border-radius: 10px;
+				overflow: hidden;
 			}
 			:host([disabled]){opacity:0.5;cursor:default;pointer-events:none;}
 			.colon{display:none}
@@ -210,13 +212,13 @@ export class FlowDataFieldGraph extends Flowd3Element {
 		//console.log(JSON.stringify(data, null))
 
 		const x = d3.scaleUtc()
-		.domain([0, d3.max(data, d => d.date)]).nice()
+		.domain(d3.extent(data, d => d.date)).nice()
 		//.range([height - margin.bottom, margin.top])
 		//.domain(d3.extent(data, d => d.date))
 		.range([margin.left, width - margin.right])
 
 		const y = d3.scaleLinear()
-		.domain([0, d3.max(data, d => d.value)]).nice()
+		.domain(d3.extent(data, d => d.value)).nice()
 		.range([height - margin.bottom, margin.top]);
 
 		const xAxis = g => g
