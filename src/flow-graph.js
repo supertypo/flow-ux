@@ -244,7 +244,7 @@ export class FlowSampler {
 	put(value) {
 		const ts = Date.now();
 		this.data.push({ts,value});
-		let max = this.options.maxSamples || 60;
+		let max = this.options.maxSamples || (60*5);
 		while(this.data.length > max)
 			this.data.shift();
 		this.fire('data', {ident:this.ident, data: this.data})
