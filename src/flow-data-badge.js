@@ -3,20 +3,20 @@ import {Flowd3Element} from './flow-d3.js';
 import {FlowSampler} from './flow-graph.js';
 
 /**
-* @class FlowDataField
+* @class FlowDataBadge
 * @extends BaseElement
 * @example
-*   <flow-data-field title="text">value</flow-data-field>
+*   <flow-data-badge title="text">value</flow-data-badge>
 * @property {Boolean} [disabled] 
 * @property {String} [title] 
 * @property {String} [prefix] 
 * @property {String} [suffix] 
 * @property {String} [align] 
-* @cssvar {font-family} [--flow-data-field-font-family="Julius Sans One"]
-* @cssvar {font-weight} [--flow-data-field-font-weight=bold]
+* @cssvar {font-family} [--flow-data-badge-font-family="Julius Sans One"]
+* @cssvar {font-weight} [--flow-data-badge-font-weight=bold]
 * @cssvar {border} [--flow-primary-color=#333]
 */
-export class FlowDataField extends BaseElement {
+export class FlowDataBadge extends BaseElement {
 	static get properties() {
 		return {
 			disabled:{type:Boolean, reflect:true},
@@ -35,8 +35,8 @@ export class FlowDataField extends BaseElement {
 				font-size:13px;
 				text-transform:uppercase;
 				cursor:pointer;
-				font-family:var(--flow-data-field-font-family, "Julius Sans One");
-				font-weight:var(--flow-data-field-font-weight, bold);
+				font-family:var(--flow-data-badge-font-family, "Julius Sans One");
+				font-weight:var(--flow-data-badge-font-weight, bold);
 			}
 			:host([disabled]){opacity:0.5;cursor:default;pointer-events:none;}
 			.colon{display:none}
@@ -51,7 +51,7 @@ export class FlowDataField extends BaseElement {
 
 			}
 			.container>div{padding:2px;}
-			.title{text-align:left; opacity:1;xmargin-top:7px; font-size: 10px; color: var(--flow-data-field-caption); xtext-shadow: 0px 0px 0px var(--flow-data-field-caption-shadow, #fff); }
+			.title{text-align:left; opacity:1;xmargin-top:7px; font-size: 10px; color: var(--flow-data-badge-caption); xtext-shadow: 0px 0px 0px var(--flow-data-badge-caption-shadow, #fff); }
 			.value{text-align:right; opacity:1;font-size:14px;font-family:"Exo 2";font-weight:normal;}
 			.prefix{opacity:0.9;margin-right:3px;margin-top:3px; font-size: 10px; }
 			.suffix{opacity:0.9;margin-left:3px;margin-top:3px; font-size: 10px; }
@@ -75,18 +75,18 @@ export class FlowDataField extends BaseElement {
 	}
 }
 
-//FlowDataField.define('flow-data-field');
-FlowDataField.define('flow-data-badge');
+//FlowDataBadge.define('flow-data-badge');
+FlowDataBadge.define('flow-data-badge');
 
 
 /**
-* @class FlowDataFieldGraph
+* @class FlowDataBadgeGraph
 * @extends Flowd3Element
 * @example
-*   <flow-data-field-canvas title="text">value</flow-data-field-canvas>
+*   <flow-data-badge-canvas title="text">value</flow-data-badge-canvas>
 *
 */
-export class FlowDataFieldGraph extends Flowd3Element {
+export class FlowDataBadgeGraph extends Flowd3Element {
 	static get properties() {
 		return {
 			disabled:{type:Boolean, reflect:true},
@@ -113,8 +113,8 @@ export class FlowDataFieldGraph extends Flowd3Element {
 				font-size:13px;
 				text-transform:uppercase;
 				cursor:pointer;
-				font-family:var(--flow-data-field-font-family, "Julius Sans One");
-				font-weight:var(--flow-data-field-font-weight, bold);
+				font-family:var(--flow-data-badge-font-family, "Julius Sans One");
+				font-weight:var(--flow-data-badge-font-weight, bold);
 				border-radius: 10px;
 				overflow: hidden;
 
@@ -133,7 +133,7 @@ export class FlowDataFieldGraph extends Flowd3Element {
 				/*min-height: inherit;*/
 			}
 			.container>div{padding:2px;}
-			.title{flex:1; text-align:left; opacity:1;xmargin-top:7px; font-size: 10px; color: var(--flow-data-field-caption); xtext-shadow: 0px 0px 0px var(--flow-data-field-caption-shadow, #fff); }
+			.title{flex:1; text-align:left; opacity:1;xmargin-top:7px; font-size: 10px; color: var(--flow-data-badge-caption); xtext-shadow: 0px 0px 0px var(--flow-data-badge-caption-shadow, #fff); }
 			.value{text-align:right; opacity:1;font-size:14px;font-family:"Exo 2";font-weight:normal;}
 			.prefix{opacity:0.9;margin-right:3px;margin-top:3px; font-size: 10px; }
 			.suffix{opacity:0.9;margin-left:3px;margin-top:3px; font-size: 10px; }
@@ -339,5 +339,5 @@ export class FlowDataFieldGraph extends Flowd3Element {
 	}
 }
 
-//FlowDataFieldGraph.define('flow-data-badge-graph');
-FlowDataFieldGraph.define('flow-data-badge-graph');
+//FlowDataBadgeGraph.define('flow-data-badge-graph');
+FlowDataBadgeGraph.define('flow-data-badge-graph');
