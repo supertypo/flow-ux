@@ -168,7 +168,7 @@ export class FlowTabs extends BaseElement {
 			})
 			this.lastTabHash = JSON.stringify(tabs)
 			if(lastHash != this.lastTabHash){
-				this.log("updated:\n", lastHash+"\n-----------\n", this.lastTabHash)
+				//this.log("updated:\n", lastHash+"\n-----------\n", this.lastTabHash)
 				this._tabs = null;
 				this._lastHash = null;
 				return this.requestUpdate("tabs");
@@ -298,7 +298,7 @@ export class FlowTabs extends BaseElement {
 
 		
 		if(/*hash1 != hash2 ||*/this._lastHash != hash1){
-			this.log("updateRows\n", this._lastHash+"\n----\n", hash1+"\n")
+			//this.log("updateRows\n", this._lastHash+"\n----\n", hash1+"\n")
 			this._lastHash = hash1;
 			this._tabs = _tabs;
 			this.requestUpdate("_tabs")
@@ -362,10 +362,10 @@ export class FlowTabs extends BaseElement {
 				fillerTabW = fillerTab.getBoundingClientRect().width;
 				fillerTab.style.minWidth = Math.max(fillerTabW, minTabWidth)+"px";
 				//console.log("fillerTab.offsetTop != lastTop", fillerTab.offsetTop , lastTop)
-				console.log("fillerTab.width:", fillerTabW, fillerTab.getBoundingClientRect().width, Math.max(fillerTabW, minTabWidth))
+				//console.log("fillerTab.width:", fillerTabW, fillerTab.getBoundingClientRect().width, Math.max(fillerTabW, minTabWidth))
 				if(isEndJustified){
 					if(fillerTab.offsetTop != e.offsetTop){
-						console.log("fillerTab.remove", fillerTab.offsetTop, e.offsetTop)
+						//console.log("fillerTab.remove", fillerTab.offsetTop, e.offsetTop)
 						fillerTab.remove();
 					}
 				}else if(fillerTab.offsetTop != lastTop)
