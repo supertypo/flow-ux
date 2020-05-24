@@ -4,7 +4,7 @@ import {BaseElement, html, css} from './base-element.js';
  * @export
  * @class FlowExpandable
  * @extends {BaseElement}
- * @property {String} [icon=light-info] icon to show in left
+ * @property {String} [icon=light-info] icon to show on the left of the expandable element
  * @property {Boolean} [opened] 
  * @prop {Boolean} no-info
  * @cssvar {fill} [--flow-primary-color=rgba(0,151,115,1)]
