@@ -75,7 +75,8 @@ export class FlowDataField extends BaseElement {
 	}
 }
 
-FlowDataField.define('flow-data-field');
+//FlowDataField.define('flow-data-field');
+FlowDataField.define('flow-data-badge');
 
 
 /**
@@ -97,8 +98,10 @@ export class FlowDataFieldGraph extends Flowd3Element {
 			//fillColor:{type:String},	
 			value:{type:Number},
 			sampler:{type:String},  // sampler: 'kaspad.kd0.info.
+			
 			//strokeColor:{type:String},
 			//fill:{type:String},
+			range:{type:Number},
 		}
 	}
 
@@ -147,8 +150,8 @@ export class FlowDataFieldGraph extends Flowd3Element {
 				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
 				border-radius: 10px;
 				/*
-				min-width: var(--flow-data-field-graph-with,240px);
-				min-height: var(--flow-data-field-graph-height,80px);				
+				min-width: var(--flow-data-badge-graph-with,240px);
+				min-height: var(--flow-data-badge-graph-height,80px);				
 				*/				
 			}
 			.wrapper > div {
@@ -176,6 +179,7 @@ export class FlowDataFieldGraph extends Flowd3Element {
 
 	constructor() {
 		super();
+		this.range = 60 * 5;
 		//this.svgViewBox = [-1, 0, 100, 50]
 		this.svgPreserveAspectRatio = 'xMaxYMax meet';
 		window.addEventListener('resize', ()=>{
@@ -183,6 +187,19 @@ export class FlowDataFieldGraph extends Flowd3Element {
 				this.draw();
 			})
 		})
+	}
+
+	connectedCallback() {
+		super.connectedCallback();
+		if(this.sampler)
+			this.interval = setInterval(this.draw.bind(this), 1250);
+	}
+
+	disconnectedCallback() {
+		super.disconnectedCallback();
+
+		if(this.interval)
+			clearInterval(this.interval);
 	}
 
 	render() {
@@ -249,7 +266,7 @@ export class FlowDataFieldGraph extends Flowd3Element {
 			sampler.on('data', this._draw);
 		}
 		const rawData = sampler.data;
-		console.log('rendering:',this.sampler,'data:',rawData);
+		// console.log('rendering:',this.sampler,'data:',rawData);
 
 		let data = rawData.map(d=>{
 			return {date:new Date(d.ts), value:d.value}
@@ -257,11 +274,20 @@ export class FlowDataFieldGraph extends Flowd3Element {
 
 		//console.log(JSON.stringify(data, null))
 
+		let [min,max] = d3.extent(data, d => d.date);
+		//console.log("processing min-max[1]",min,max);
+		min = max - 1000*this.range;
+
+
 		const x = d3.scaleUtc()
-		.domain(d3.extent(data, d => d.date))//.nice()
+		.domain([min,max])
+		//.domain(d3.extent(data, d => d.date))//.nice()
 		.range([margin.left, width - margin.right])
 		
+
+
 		const y = d3.scaleLinear()
+//		.domain([min,max])//.nice()
 		.domain(d3.extent(data, d => d.value))//.nice()
 //		.domain([0, d3.max(data, d => d.value)]).nice()
 		.range([height - margin.bottom, margin.top]);
@@ -292,12 +318,12 @@ export class FlowDataFieldGraph extends Flowd3Element {
 		if(!this.path)
 			this.path = this.svg.append('path')
 				.attr("transform", `translate(${margin.left},0)`)
-				.attr('stroke-opacity', '0.4')
+				.attr('stroke-opacity', 'var(--flow-data-badge-graph-stroke-opacity, 1.0)')
 				.attr("stroke-linejoin", "round")
 				.attr("stroke-linecap", "round")
-				.attr("stroke-width", 'var(--flow-data-field-graph-stroke-width, 0)')
-				.attr('fill','var(--flow-data-field-graph-fill, steelblue)')
-				.attr('stroke','var(--flow-data-field-graph-fill, "#000)')
+				.attr("stroke-width", 'var(--flow-data-badge-graph-stroke-width, 0)')
+				.attr('fill','var(--flow-data-badge-graph-fill, steelblue)')
+				.attr('stroke','var(--flow-data-badge-graph-stroke, "#000)')
 				
 		this.path.datum(data)
 			.attr('d',area);
@@ -313,4 +339,5 @@ export class FlowDataFieldGraph extends Flowd3Element {
 	}
 }
 
-FlowDataFieldGraph.define('flow-data-field-graph');
+//FlowDataFieldGraph.define('flow-data-badge-graph');
+FlowDataFieldGraph.define('flow-data-badge-graph');
