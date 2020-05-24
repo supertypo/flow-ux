@@ -22,9 +22,9 @@ import {BaseElement, html, css} from './base-element.js';
 * @property {Number} [max_width]
 * @property {Number} [max_height]
 * @property {Boolean} [as_desktop]
-* @property {Boolean} [always_on_top]
+* @property {Boolean} [always_on_top] 
 * @property {Boolean} [visible_on_all_workspaces] (OS X Only)
-* @property {Boolean} [frame]
+* @property {Boolean} [new_instance] Open the window in a separate process
 *
 *
 * @cssvar {font-family} [--font-family=var(--flow-font-family, "Open Sans")]
@@ -60,8 +60,7 @@ export class FlowWindowLink extends BaseElement {
 			as_desktop : { type : Boolean },
 			always_on_top : { type : Boolean },
 			visible_on_all_workspaces : { type : Boolean },
-			frame : { type : Boolean },
-
+			new_instance : { type : Boolean },
 		}
 	}
 
@@ -127,7 +126,7 @@ export class FlowWindowLink extends BaseElement {
 		this.as_desktop = false;
 		this.always_on_top = false;
 		this.visible_on_all_workspaces = false;
-		this.frame = true; 
+		this.new_instance = undefined;
 		this.show = true;
 		this.url = '';
 
@@ -152,11 +151,47 @@ export class FlowWindowLink extends BaseElement {
 		console.log("opening url:",this.url);
 		//require('nw.gui').Shell.openExternal( this.href );
 
-		const { id, title, width, height, resizable, frame, transparent, show, fullscreen, icon, min_width, min_height, max_width, max_height, as_desktop, always_on_top, visible_on_all_workspaces, frame } = this;
+		const { 
+			id, 
+			title, 
+			width, 
+			height, 
+			resizable, 
+			frame, 
+			transparent, 
+			show, 
+			fullscreen, 
+			icon, 
+			min_width, 
+			min_height, 
+			max_width, 
+			max_height, 
+			as_desktop, 
+			always_on_top, 
+			visible_on_all_workspaces, 
+			new_instance 
+		} = this;
 
         if(this.url && typeof nw != 'undefined') {
             nw.Window.open(this.url, {
-				id, title, width, height, resizable, frame, transparent, show, fullscreen, icon, min_width, min_height, max_width, max_height, as_desktop, always_on_top, visible_on_all_workspaces, frame, 
+				id, 
+				title, 
+				width, 
+				height, 
+				resizable, 
+				frame, 
+				transparent, 
+				show, 
+				fullscreen, 
+				icon, 
+				min_width, 
+				min_height, 
+				max_width, 
+				max_height, 
+				as_desktop, 
+				always_on_top, 
+				visible_on_all_workspaces, 
+				new_instance,
                 //new_instance: true,
                 // id: this.id,
                 // title: this.title,
