@@ -11,12 +11,21 @@ import {BaseElement, html, css} from './base-element.js';
 * @property {String} [id]
 * @property {String} [title]
 * @property {Boolean} [disabled]
-* @property {Boolean} [icon]
+* @property {String} [icon] window icon
 * @property {Number} [width]
 * @property {Number} [height]
 * @property {Boolean} [resizable]
 * @property {Boolean} [frame]
 * @property {Boolean} [transparent]
+* @property {Number} [min_width]
+* @property {Number} [min_height]
+* @property {Number} [max_width]
+* @property {Number} [max_height]
+* @property {Boolean} [as_desktop]
+* @property {Boolean} [always_on_top]
+* @property {Boolean} [visible_on_all_workspaces] (OS X Only)
+* @property {Boolean} [frame]
+*
 *
 * @cssvar {font-family} [--font-family=var(--flow-font-family, "Open Sans")]
 * @cssvar {font-weight} [--font-weight=var(--flow-font-weight, normal)]
@@ -27,12 +36,14 @@ import {BaseElement, html, css} from './base-element.js';
 * @example
 *   <flow-window-link href="url">text</flow-window-link>
 *
+* http://docs.nwjs.io/en/latest/References/Manifest%20Format/#window-subfields
+*
 */
 export class FlowWindowLink extends BaseElement {
 	static get properties() {
 		return {
 			disabled:{type:Boolean, reflect: true},
-			icon:{type:Boolean, reflect: true},
+			icon:{type:String},
 			url : { type : String },
 			id : { type : String },
 			title : { type : String },
@@ -40,7 +51,17 @@ export class FlowWindowLink extends BaseElement {
 			height : { type : Number },
 			resizable : { type : Boolean },
 			frame : { type : Boolean },
-			transparent : { type : Boolean }
+			transparent : { type : Boolean },
+			fullscreen : { type : Boolean },
+			min_width : { type : Number },
+			min_height : { type : Number },
+			max_width : { type : Number },
+			max_height : { type : Number },
+			as_desktop : { type : Boolean },
+			always_on_top : { type : Boolean },
+			visible_on_all_workspaces : { type : Boolean },
+			frame : { type : Boolean },
+
 		}
 	}
 
@@ -68,7 +89,7 @@ export class FlowWindowLink extends BaseElement {
 			.link-wrapper:hover {
 				color: var(--flow-link-hover-color, #017b68);
 			}
-
+/*
 			.icon-box {
 				display: block;
 				width: 16px;
@@ -82,7 +103,7 @@ export class FlowWindowLink extends BaseElement {
 				width: 100%;
 				height: 100%;
 			}
-
+*/
 			.content {
 				display: block;
 			}
@@ -97,6 +118,16 @@ export class FlowWindowLink extends BaseElement {
 		this.resizable = true;
 		this.frame = true;
 		this.transparent = false;
+		this.fullscreen = false;
+		this.icon = undefined;
+		this.min_width = undefined;
+		this.min_height = undefined;
+		this.max_width = undefined;
+		this.max_height = undefined;
+		this.as_desktop = false;
+		this.always_on_top = false;
+		this.visible_on_all_workspaces = false;
+		this.frame = true; 
 		this.show = true;
 		this.url = '';
 
@@ -107,13 +138,13 @@ export class FlowWindowLink extends BaseElement {
 	}
 
 	render() {
-		let iconSrc = this.iconPath(`external-link-square-alt`);
+		//let iconSrc = this.iconPath(this.linkicon || `external-link-square-alt`);
 		return html`
 		<div class="link-wrapper" @click=${this.click}>
 			<div class="content"><slot></slot></div>
-			${ this.icon ? html`<div class="icon-box"><svg><use href="${iconSrc}"></use></svg></div>` : '' }
 		</div>
-		`;
+			`;
+			//${ this.icon ? html`<div class="icon-box"><svg><use href="${iconSrc}"></use></svg></div>` : '' }
 	}
 
 	click() {
@@ -121,11 +152,11 @@ export class FlowWindowLink extends BaseElement {
 		console.log("opening url:",this.url);
 		//require('nw.gui').Shell.openExternal( this.href );
 
-		const { id, title, width, height, resizable, frame, transparent, show } = this;
+		const { id, title, width, height, resizable, frame, transparent, show, fullscreen, icon, min_width, min_height, max_width, max_height, as_desktop, always_on_top, visible_on_all_workspaces, frame } = this;
 
         if(this.url && typeof nw != 'undefined') {
             nw.Window.open(this.url, {
-				id, title, width, height, resizable, frame, transparent, show
+				id, title, width, height, resizable, frame, transparent, show, fullscreen, icon, min_width, min_height, max_width, max_height, as_desktop, always_on_top, visible_on_all_workspaces, frame, 
                 //new_instance: true,
                 // id: this.id,
                 // title: this.title,
