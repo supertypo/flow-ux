@@ -278,7 +278,10 @@ const T = directive((text) => (part) => {
 	let state = stateMap.get(part);
 	if (state === undefined) {
 		state = {};
-		state.node = part?.startNode?.nextSibling || part.element || part?.committer?.element;
+		if(part.startNode && part.startNode.nextSibling)
+			state.node = part.startNode.nextSibling
+		else
+			state.node = part.element||part.committer&&part.committer.element;
 		stateMap.set(part, state);
 		parts.push(part);
 	}
@@ -299,7 +302,7 @@ let onLocaleChange = ()=>{
 			removed.push(i);
 			return
 		}
-		console.log("i18n:T", i18n.t(state.text), i18n.locale, state.node?.isConnected)
+		//console.log("i18n:T", i18n.t(state.text), i18n.locale, state.node && state.node.isConnected)
 		p.setValue(i18n.t(state.text));
 		p.commit();
 	})
@@ -332,7 +335,8 @@ export class FlowI18nDialog{
 			this.removeEventListener();
 			return
 		}
-		let menu = e.target?.closest?.("flow-dialog.flow-menu");
+		let t = e.target;
+		let menu = t && t.closest && t.closest("flow-dialog.flow-menu");
 		if(menu != this.dialog){
 			this.removeEventListener();
 			this.close();
