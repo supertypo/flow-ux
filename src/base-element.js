@@ -3,8 +3,12 @@ import {LitElement, html, css} from 'lit-element';
 export * from 'lit-element';
 export * from 'lit-html/lit-html.js';
 
-export const storage = () => { 
-	return typeof global != 'undefined' ? global : globalThis;
+export const storage = () => {
+	if(typeof global != 'undefined')
+		return global
+	if(typeof globalThis != 'undefined')
+		return globalThis
+	return  window;
 }
 
 const universe = storage();
