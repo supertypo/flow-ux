@@ -172,37 +172,41 @@ export class FlowWindowLink extends BaseElement {
 			new_instance 
 		} = this;
 
+		let args = {
+			id, 
+			title, 
+			width, 
+			height, 
+			resizable, 
+			frame, 
+			transparent, 
+			show, 
+			fullscreen, 
+			icon, 
+			min_width, 
+			min_height, 
+			max_width, 
+			max_height, 
+//			as_desktop, 
+			always_on_top, 
+//			visible_on_all_workspaces, 
+			new_instance,
+			//new_instance: true,
+			// id: this.id,
+			// title: this.title,
+			// width: 1027,
+			// height: 768,
+			// resizable: true,
+			// frame: true,
+			// transparent: false,
+			// show: true,
+			// http://docs.nwjs.io/en/latest/References/Manifest%20Format/#window-subfields
+		};
+
+
+
         if(this.url && typeof nw != 'undefined') {
-            nw.Window.open(this.url, {
-				id, 
-				title, 
-				width, 
-				height, 
-				resizable, 
-				frame, 
-				transparent, 
-				show, 
-				fullscreen, 
-				icon, 
-				min_width, 
-				min_height, 
-				max_width, 
-				max_height, 
-				as_desktop, 
-				always_on_top, 
-				visible_on_all_workspaces, 
-				new_instance,
-                //new_instance: true,
-                // id: this.id,
-                // title: this.title,
-                // width: 1027,
-                // height: 768,
-                // resizable: true,
-                // frame: true,
-                // transparent: false,
-                // show: true,
-                // http://docs.nwjs.io/en/latest/References/Manifest%20Format/#window-subfields
-            }, (win, b) => {
+            nw.Window.open(this.url, args, (win, b) => {
 
 				window.flow['flow-window-link'].windows.push(win);
 
