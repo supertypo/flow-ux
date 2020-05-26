@@ -1,7 +1,32 @@
 
 
 import {BaseElement, html, css} from './base-element.js';
-
+//if(typeof nw != 'undefined'){
+	/*chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    	console.log("onBeforeRequest", details)
+		return {cancel: false};
+    },
+    {urls: ["<all_urls>"]},
+    ["blocking"]);*/
+	//onHeadersReceived
+	/*
+	chrome.webRequest.onResponseStarted.addListener(function(details){
+		let {responseHeaders, url, type} = details;
+		
+		if(type == "script"){
+			console.log("onHeadersReceived", responseHeaders, details)
+			let found = responseHeaders.find(a=>{
+				return a.name && a.name.toLowerCase() == 'content-type';
+			})
+			if(!found)
+				responseHeaders.push({name: "Content-Type", value: "text/javascript"})
+		}
+		return responseHeaders;
+	},
+	{urls: ["<all_urls>"]},
+	['responseHeaders', 'extraHeaders']);
+	*/
+//}
 
 /**
 * @class FlowWindowLink
@@ -207,7 +232,7 @@ export class FlowWindowLink extends BaseElement {
 
         if(this.url && typeof nw != 'undefined') {
             nw.Window.open(this.url, args, (win, b) => {
-
+            	win.window.appOrigin = location.origin;
 				window.flow['flow-window-link'].windows.push(win);
 
 				//this.window = win;
