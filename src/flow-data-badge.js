@@ -272,7 +272,7 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 			return {date:new Date(d.ts), value:d.value}
 		})
 
-		//console.log(JSON.stringify(data, null))
+		// console.log(JSON.stringify(data, null))
 
 		let [min,max] = d3.extent(data, d => d.date);
 		//console.log("processing min-max[1]",min,max);
