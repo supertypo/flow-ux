@@ -180,6 +180,7 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 	constructor() {
 		super();
 		this.range = 60 * 5;
+		this.refresh = 1e3;
 		//this.svgViewBox = [-1, 0, 100, 50]
 		this.svgPreserveAspectRatio = 'xMaxYMax meet';
 		window.addEventListener('resize', ()=>{
@@ -192,7 +193,7 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 	connectedCallback() {
 		super.connectedCallback();
 		if(this.sampler)
-			this.interval = setInterval(this.draw.bind(this), 1250);
+			this.interval = setInterval(this.draw.bind(this), this.refresh);
 	}
 
 	disconnectedCallback() {
