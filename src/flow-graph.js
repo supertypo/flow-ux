@@ -1,4 +1,4 @@
-import {BaseElement, html, css, flow} from './base-element.js';
+import {BaseElement, html, css, flow, dpc} from './base-element.js';
 import {Flowd3Element} from './flow-d3.js';
 
 /**
@@ -23,6 +23,7 @@ export class FlowGraph extends Flowd3Element {
 			sampler:{type:String},
 			//strokeColor:{type:String},
 			//fill:{type:String},
+			range:{type:Number},
 		}
 	}
 
@@ -49,11 +50,26 @@ export class FlowGraph extends Flowd3Element {
 			}
 			.container>div{padding:0px;}
 
-			.wrapper {
-				/*width:100%;height:100%;*/
+/*			.wrapper {
 				position:relative;
 				margin:6px;
 			}
+*/
+
+			.wrapper {
+				/*width:100%;height:100%;*/
+				position:relative;
+				flex:1;
+				margin:6px;overflow:hidden;
+				border: 2px solid var(--flow-primary-color,#333);
+				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
+				border-radius: 10px;
+				/*
+				min-width: var(--flow-data-badge-graph-with,240px);
+				min-height: var(--flow-data-badge-graph-height,80px);				
+				*/				
+			}
+
 			.wrapper > div {
 				width:100%;height:100%;
 				position:relative;left:0px;top:0px;bottom:0px;right:0px;
@@ -62,17 +78,21 @@ export class FlowGraph extends Flowd3Element {
 			.d3-holder{
 				min-height:10px;
 				min-width:10px;
-				opacity:0.25;
+				opacity:1;
 				border-radius:10px;
 				border: 1px solid red;
 				/*margin: 0px -5px 0px -1px;
 				z-index: 100;*/
 			}
 
-			.wrapper>div.d3-holder{
+/*			.wrapper>div.d3-holder{
 				overflow: hidden;
 				position:absolute;border: 2px solid transparent;
 			}
+*/
+
+
+			.wrapper>div.d3-holder{position:absolute;}
 
 		`];
 	}
@@ -80,9 +100,40 @@ export class FlowGraph extends Flowd3Element {
 	constructor() {
 		super();
 		this.sampler = '';
+		this.range = 60 * 5;
+		this.refresh = 1e3;
+
+		this.svgPreserveAspectRatio = 'xMaxYMax meet';
+
+		// TODO install this handler during connected
+		// event and remove it on disconnected event.
+		window.addEventListener('resize', ()=>{
+			dpc(()=>{
+				this.draw();
+			})
+		})
+
+	}
+
+	connectedCallback() {
+		super.connectedCallback();
+		if(this.sampler)
+			this.interval = setInterval(this.draw.bind(this), this.refresh);
+	}
+
+	disconnectedCallback() {
+		super.disconnectedCallback();
+
+		if(this.interval)
+			clearInterval(this.interval);
 	}
 
 	render() {
+
+		dpc(()=>{
+			this.draw();
+		})
+
 		return html
 		`
 		<div class='wrapper'>
@@ -137,7 +188,7 @@ export class FlowGraph extends Flowd3Element {
 		//let sampler = FlowSampler.get(samplers.shift() || 'test-sampler');
 		// TODO - support multiple sampler sources and multi-line graphs
 		const rawData = samplers[0].data;
-console.log('rawData',rawData);
+//console.log('rawData',rawData);
 		let pad = (str, l)=>{
 
 		}
