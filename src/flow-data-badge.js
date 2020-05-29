@@ -98,6 +98,7 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 			//fillColor:{type:String},	
 			value:{type:Number},
 			sampler:{type:String},  // sampler: 'kaspad.kd0.info.
+			type:{type:String},
 			
 			//strokeColor:{type:String},
 			//fill:{type:String},
@@ -182,6 +183,7 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 		this.range = 60 * 5;
 		this.refresh = 1e3;
 		//this.svgViewBox = [-1, 0, 100, 50]
+		//this.svgPreserveAspectRatio = 'xMidYMid meet';
 		this.svgPreserveAspectRatio = 'xMaxYMax meet';
 		window.addEventListener('resize', ()=>{
 			dpc(()=>{
