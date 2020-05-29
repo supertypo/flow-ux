@@ -24,6 +24,8 @@ export class FlowGraph extends Flowd3Element {
 			//strokeColor:{type:String},
 			//fill:{type:String},
 			range:{type:Number},
+			overlay:{type:Boolean},
+			precision:{type:Number},
 		}
 	}
 
@@ -40,15 +42,27 @@ export class FlowGraph extends Flowd3Element {
 				border-radius: 10px;
 				overflow: hidden;
 
-				border:1px solid blue;
 			}
 			:host([disabled]){opacity:0.5;cursor:default;pointer-events:none;}
 			.colon{display:none}
 			:host(.has-colon) .colon{display:inline;}
 			.container{
-				border-radius: 10px;
+				white-space: nowrap;
+		/*		border-radius: 10px;*/
+				padding:2px 6px 6px 6px;
+				height: 100%;
 			}
-			.container>div{padding:0px;}
+			
+			.container>div{padding:2px;}
+			/* --- */
+			.title{flex:1; text-align:left; opacity:1;xmargin-top:7px; font-size: 10px; color: var(--flow-data-badge-caption); xtext-shadow: 0px 0px 0px var(--flow-data-badge-caption-shadow, #fff); }
+			.value{text-align:right; opacity:1;font-size:14px;font-family:"Exo 2";font-weight:normal;}
+			.prefix{opacity:0.9;margin-right:3px;margin-top:3px; font-size: 10px; }
+			.suffix{opacity:0.9;margin-left:3px;margin-top:3px; font-size: 10px; }
+			.col { display: flex; flex-direction: column; align-items: left;  }
+			.row { display: flex; flex-direction: row; flex:0; }
+
+			/* --- */
 
 /*			.wrapper {
 				position:relative;
@@ -80,7 +94,7 @@ export class FlowGraph extends Flowd3Element {
 				min-width:10px;
 				opacity:1;
 				border-radius:10px;
-				border: 1px solid red;
+				/*border: 1px solid red;*/
 				/*margin: 0px -5px 0px -1px;
 				z-index: 100;*/
 			}
@@ -94,6 +108,10 @@ export class FlowGraph extends Flowd3Element {
 
 			.wrapper>div.d3-holder{position:absolute;}
 
+			[flex] {
+				flex: 1;
+			}
+
 		`];
 	}
 
@@ -102,6 +120,7 @@ export class FlowGraph extends Flowd3Element {
 		this.sampler = '';
 		this.range = 60 * 5;
 		this.refresh = 1e3;
+		this.precision = 0;
 
 		this.svgPreserveAspectRatio = 'xMaxYMax meet';
 
@@ -109,7 +128,7 @@ export class FlowGraph extends Flowd3Element {
 		// event and remove it on disconnected event.
 		window.addEventListener('resize', ()=>{
 			dpc(()=>{
-				this.draw();
+				this.requestUpdate();
 			})
 		})
 
@@ -118,7 +137,7 @@ export class FlowGraph extends Flowd3Element {
 	connectedCallback() {
 		super.connectedCallback();
 		if(this.sampler)
-			this.interval = setInterval(this.draw.bind(this), this.refresh);
+			this.interval = setInterval(this.requestUpdate.bind(this), this.refresh);
 	}
 
 	disconnectedCallback() {
@@ -134,17 +153,58 @@ export class FlowGraph extends Flowd3Element {
 			this.draw();
 		})
 
-		return html
-		`
-		<div class='wrapper'>
-			<div class="d3-holder">${super.render()}</div>
-			<div>
-				<div class="container col">
-					<slot></slot>
+		let value = '';
+		//this.log("render flow-graph");
+		if(this.sampler) {
+			let idents = this.sampler.split(':');
+			let ident = idents.shift(); 
+			let sampler =  FlowSampler.get(ident);
+			let data = sampler?.data;
+			if(data && data.length) {
+				value = data[data.length-1].value;
+				value = value.toFixed(this.precision||0);
+				//this.log("processing sampler",ident,value,sampler);
+			}
+		}
+		else {
+			console.log("no sampler", this);
+		}
+
+
+		if(this.overlay) {
+			return html
+			`
+			<div class='wrapper'>
+				<div class="d3-holder">${super.render()}</div>
+				<div>
+					<div class="container col">
+						<div class="title">${this.title}<span class="colon">:</span></div>
+						<div flex></div>
+						<div class="row">
+							${ (!this.align || this.align == 'right') ? html`<div style="flex:1;"></div>` : '' }
+							<div class="prefix">${this.prefix}</div>
+							<div class="value">${value}</div>
+							<div class="suffix">${this.suffix}</div>
+							${ (this.align == 'left') ? html`<div style="flex:1;"></div>` : '' }
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
-		`;	
+			`;	
+		} else {
+
+			return html
+			`
+			<div class='wrapper'>
+				<div class="d3-holder">${super.render()}</div>
+				<div>
+					<div class="container col">
+						<slot></slot>
+					</div>
+				</div>
+			</div>
+			`;	
+		}
 	}
 
 	getMargin(){

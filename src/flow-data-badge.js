@@ -130,7 +130,8 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 
 			.container{
 				white-space: nowrap;
-				xdisplay:flex;xflex-firection:column;xalign-items:center;padding:2px 6px;
+				xdisplay:flex;xflex-firection:column;xalign-items:center;
+				padding:2px 6px;
 				/*min-height: inherit;*/
 			}
 			.container>div{padding:2px;}
