@@ -154,7 +154,7 @@ export class FlowGraph extends Flowd3Element {
 		})
 
 		let value = '';
-this.log("render flow-graph");
+		//this.log("render flow-graph");
 		if(this.sampler) {
 			let idents = this.sampler.split(':');
 			let ident = idents.shift(); 
@@ -163,7 +163,7 @@ this.log("render flow-graph");
 			if(data && data.length) {
 				value = data[data.length-1].value;
 				value = value.toFixed(this.precision||0);
-				this.log("processing sampler",ident,value,sampler);
+				//this.log("processing sampler",ident,value,sampler);
 			}
 		}
 		else {
