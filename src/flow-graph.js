@@ -254,8 +254,15 @@ export class FlowGraph extends Flowd3Element {
 				.attr('fill','var(--flow-data-badge-graph-fill, steelblue)')
 				.attr('stroke','var(--flow-data-badge-graph-stroke, "#000)')
 				
-		this.path.datum(data)
-			.attr('d',area);
+		try {				
+			this.path.datum(data)
+				.attr('d',area);
+		} catch(ex) {
+			if(this.sampler)
+				console.log('error while processing sampler:',this.sampler);
+			console.log(ex);
+
+		}
 
 
 
