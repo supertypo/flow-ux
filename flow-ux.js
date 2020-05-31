@@ -27,5 +27,6 @@ export * from './src/flow-color-selector.js';
 export * from './src/flow-canvas.js';
 export * from './src/flow-d3.js';
 export * from './src/flow-graph.js';
+export * from './src/flow-sampler.js';
 export * from './src/base-element.js';
 
