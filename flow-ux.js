@@ -19,6 +19,7 @@ export * from './src/flow-shell-link.js';
 export * from './src/flow-window-link.js';
 export * from './src/fa-icon.js';
 export * from './src/flow-data-badge.js';
+export * from './src/flow-data-badge-graph.js';
 export * from './src/flow-dialog.js';
 export * from './src/flow-pages.js';
 export * from './src/flow-i18n.js';
