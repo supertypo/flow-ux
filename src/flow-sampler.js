@@ -70,13 +70,19 @@ export class FlowSampler {
 	}
 
 	put(value) {
-		const ts = Date.now();
-		this.data.push({ts,value});
+		const date = new Date();
+		this.data.push({date,value});
 		let max = this.options.maxSamples || (60*5);
 		while(this.data.length > max)
 			this.data.shift();
 		this.fire('data', {ident:this.ident, data: this.data})
-	}
+    }
+    
+    last(_default) {
+        if(!this.data.length)
+            return undefined;
+        return this.data[this.data.length-1].value;
+    }
 
 	fire(name, data={}){
 		let ce = new CustomEvent(`flow-sampler-${name}-${this.ident}`, {detail:data})

@@ -248,16 +248,17 @@ export class FlowGraph extends Flowd3Element {
 		
 		//let sampler = FlowSampler.get(samplers.shift() || 'test-sampler');
 		// TODO - support multiple sampler sources and multi-line graphs
-		const rawData = samplers[0].data;
-//console.log('rawData',rawData);
-		let pad = (str, l)=>{
+// 		const rawData = samplers[0].data;
+// //console.log('rawData',rawData);
+// 		let pad = (str, l)=>{
 
-		}
-		let data = rawData.map(d=>{
-			let date = new Date(d.ts);
-			//date = date.getUTCFullYear()+"-"+(date.getUTCMonth()+"").padStart(2, 0)+"-"+(date.getUTCDate()+"").padStart(2, 0)
-			return {date, value:d.value}
-		})
+// 		}
+// 		let data = rawData.map(d=>{
+// 			let date = new Date(d.ts);
+// 			//date = date.getUTCFullYear()+"-"+(date.getUTCMonth()+"").padStart(2, 0)+"-"+(date.getUTCDate()+"").padStart(2, 0)
+// 			return {date, value:d.value}
+// 		})
+		let data = samplers[0].data;
 
 		//console.log(JSON.stringify(data, null))
 		let [min,max] = d3.extent(data, d => d.date);

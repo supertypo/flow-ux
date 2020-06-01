@@ -192,12 +192,14 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 			this._draw = this.draw.bind(this);
 			sampler.on('data', this._draw);
 		}
-		const rawData = sampler.data;
+		// const rawData = sampler.data;
 		// console.log('rendering:',this.sampler,'data:',rawData);
 
-		let data = rawData.map(d=>{
-			return {date:new Date(d.ts), value:d.value}
-		})
+        let data = sampler.data;
+        
+        // rawData.map(d=>{
+		// 	return {date:new Date(d.ts), value:d.value}
+		// })
 
 		// console.log(JSON.stringify(data, null))
 
