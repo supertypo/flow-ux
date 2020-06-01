@@ -33,17 +33,13 @@ export class Flowd3Element extends BaseElement {
 
     firstUpdated() {
 		this.el_d3 = this.renderRoot.getElementById('d3');
-		let getBoundingClientRect = this.el_d3.getBoundingClientRect;
-		let el_d3Rect = getBoundingClientRect.call(this.el_d3);
+		this.el_d3Rect = this.getBoundingClientRect.call(this.el_d3);
 		this.el_d3.getBoundingClientRect = ()=>{
-			if(el_d3Rect.width==0 && el_d3Rect.height==0)
-				el_d3Rect = getBoundingClientRect.call(this.el_d3);
-			return el_d3Rect;
+			if(this.el_d3Rect.width==0 && this.el_d3Rect.height==0)
+				this.el_d3Rect = this.getBoundingClientRect.call(this.el_d3);
+			return this.el_d3Rect;
 		}
 	
-		window.addEventListener("resize", ()=>{
-			el_d3Rect = getBoundingClientRect.call(this.el_d3);
-		})
     
         this.init_d3();
     }
@@ -61,9 +57,25 @@ export class Flowd3Element extends BaseElement {
 		setTimeout(()=>{
 			this.updateSVGSize();
 		}, 10)
-		window.addEventListener("resize", this.updateSVGSize.bind(this))
+
 		this.fire("ready", {})
     }
+
+    onWindowResize(){
+    	this.updateSVGSize();
+    	this.el_d3Rect = this.getBoundingClientRect.call(this.el_d3);
+    }
+
+    connectedCallback(){
+    	super.connectedCallback();
+    	this._onWindowResize = this.onWindowResize.bind(this);
+		window.addEventListener("resize", this._onWindowResize)
+    }
+
+    disconnectedCallback() {
+		super.disconnectedCallback();
+		window.removeEventListener("resize", this._onWindowResize)
+	}
 
     updateSVGSize(){
     	let {width, height} = this.el_d3.getBoundingClientRect();

@@ -1,4 +1,6 @@
 import {BaseElement, html, css, dpc} from './base-element.js';
+import {Flowd3Element} from './flow-d3.js';
+import {FlowSampler} from './flow-sampler.js';
 
 /**
 * @class FlowDataBadge
