@@ -1,6 +1,6 @@
 import {BaseElement, html, css, dpc} from './base-element.js';
 import {Flowd3Element} from './flow-d3.js';
-import {FlowSampler} from './flow-graph.js';
+import {FlowSampler} from './flow-sampler.js';
 
 /**
 * @class FlowDataBadge
@@ -204,6 +204,15 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 
 		if(this.interval)
 			clearInterval(this.interval);
+		this.removeEventListeners();
+	}
+
+	removeEventListeners(){
+		if(this._draw && this.sampler){
+			let sampler = FlowSampler.get(this.sampler || 'test-sampler');
+			sampler.off("data", this._draw);
+			this._draw = null;
+		}
 	}
 
 	render() {
