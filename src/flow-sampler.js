@@ -65,6 +65,7 @@ export class FlowSampler {
 			return;
 		}
 
+        
 		this.generator(ts, lastTS);
 		
 	}
@@ -77,11 +78,24 @@ export class FlowSampler {
 			this.data.shift();
 		this.fire('data', {ident:this.ident, data: this.data})
     }
-    
-    last(_default) {
+
+    lastEntry() {
         if(!this.data.length)
             return undefined;
+        return this.data[this.data.length-1];
+    }
+
+
+    last(_default) {
+        if(!this.data.length)
+            return _default;
         return this.data[this.data.length-1].value;
+    }
+
+    first(_default = undefined) {
+        if(!this.data.length)
+            return _default;
+        return this.data[0].value;
     }
 
 	fire(name, data={}){
