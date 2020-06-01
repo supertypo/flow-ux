@@ -109,11 +109,6 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 		//this.svgViewBox = [-1, 0, 100, 50]
 		//this.svgPreserveAspectRatio = 'xMidYMid meet';
 		this.svgPreserveAspectRatio = 'xMaxYMax meet';
-		window.addEventListener('resize', ()=>{
-			dpc(()=>{
-				this.draw();
-			})
-		})
 	}
 
 	connectedCallback() {
@@ -127,6 +122,18 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 
 		if(this.interval)
 			clearInterval(this.interval);
+		if(this._draw){
+			let sampler = FlowSampler.get(this.sampler || 'test-sampler');
+			sampler.off('data', this._draw);
+			this._draw = null;
+		}
+	}
+
+	onWindowResize(){
+		super.onWindowResize();
+		dpc(()=>{
+			this.draw();
+		})
 	}
 
 	render() {

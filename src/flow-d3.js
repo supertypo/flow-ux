@@ -68,13 +68,14 @@ export class Flowd3Element extends BaseElement {
 
     connectedCallback(){
     	super.connectedCallback();
-    	this._onWindowResize = this.onWindowResize.bind(this);
+    	this._onWindowResize = this._onWindowResize || this.onWindowResize.bind(this);
 		window.addEventListener("resize", this._onWindowResize)
     }
 
     disconnectedCallback() {
 		super.disconnectedCallback();
-		window.removeEventListener("resize", this._onWindowResize)
+		if(this._onWindowResize)
+			window.removeEventListener("resize", this._onWindowResize)
 	}
 
     updateSVGSize(){
