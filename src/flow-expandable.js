@@ -5,7 +5,7 @@ import {BaseElement, html, css} from './base-element.js';
  * @class FlowExpandable
  * @extends {BaseElement}
  * @property {String} [icon=light-info] icon to show on the left of the expandable element
- * @property {Boolean} [opened] 
+ * @property {Boolean} [expand] 
  * @prop {Boolean} no-info
  * @cssvar {fill} [--flow-primary-color=rgba(0,151,115,1)]
 
@@ -21,7 +21,7 @@ export class FlowExpandable extends BaseElement {
 	static get properties() {
 		return {
 			icon:{type: String},
-			opened:{type:Boolean, reflect:true},
+			expand:{type:Boolean, reflect:true},
 			'no-info':{type:Boolean, reflect:true}
 		}
 	}
@@ -90,8 +90,8 @@ export class FlowExpandable extends BaseElement {
 		.info-box ::slotted(p){
 			font-size:0.8em;
 		}
-		:host(:not([opened])) .content{display:none}
-		:host([opened]) svg{
+		:host(:not([expand])) .content{display:none}
+		:host([expand]) svg{
 			transform:rotate(90deg)
 		}
 		`;
@@ -124,13 +124,13 @@ export class FlowExpandable extends BaseElement {
 	}
 
 	open(){
-		this.opened = true;
+		this.expand = true;
 	}
 	close(){
-		this.opened = false;
+		this.expand = false;
 	}
 	toggle(){
-		this.opened = !this.opened;
+		this.expand = !this.expand;
 	}
 }
 
