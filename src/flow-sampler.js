@@ -26,6 +26,8 @@ export class FlowSampler {
 		this.options = options;
 		this.generator = this.options.generator;
 		this.data = [ ];
+		this.eventHandlers = new Map();
+		this.eventHandlers.set("data", new Map())
 
 		if(this.options.interval)
 			this.start();
@@ -101,11 +103,25 @@ export class FlowSampler {
 	fire(name, data={}){
 		let ce = new CustomEvent(`flow-sampler-${name}-${this.ident}`, {detail:data})
 		document.body.dispatchEvent(ce);
+		let handlers = this.eventHandlers.get(name);
+		if(handlers){
+			handlers.forEach((v, fn)=>{
+				fn({data});
+			})
+		}
 	}
 	on(name, fn){
-		document.body.addEventListener(`flow-sampler-${name}-${this.ident}`, fn);
+		let handlers = this.eventHandlers.get(name);
+		if(!handlers)
+			return
+		handlers.set(fn, 1);
+		//document.body.addEventListener(`flow-sampler-${name}-${this.ident}`, fn);
 	}
 	off(name, fn){
-		document.body.removeEventListener(`flow-sampler-${name}-${this.ident}`, fn);
+		let handlers = this.eventHandlers.get(name);
+		if(!handlers)
+			return
+		handlers.delete(fn);
+		//document.body.removeEventListener(`flow-sampler-${name}-${this.ident}`, fn);
 	}
 }
