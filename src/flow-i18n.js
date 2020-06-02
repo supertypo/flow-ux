@@ -1,4 +1,4 @@
-import {BaseElement, html, css, directive, LitElement} from './base-element.js';
+import {BaseElement, html, css, directive, LitElement, parts as _parts} from './base-element.js';
 const stateMap = new WeakMap();
 
 class i18n extends BaseElement{
@@ -139,6 +139,7 @@ class i18n extends BaseElement{
 	disconnectedCallback(){
 		super.disconnectedCallback();
 		this._cb && window.removeEventListener("flow-i18n-locale", this._cb)
+		_parts.delete(this.renderRoot)
 	}
 
 	onLocaleChange(){
@@ -298,14 +299,17 @@ let onLocaleChange = ()=>{
 	let removed = [];
 	parts.forEach((p, i)=>{
 		state = stateMap.get(p);
-		if(!state){
-			removed.push(i);
+		if(!state || !state.node || !state.node.isConnected){
+			removed.push(p);
 			return
 		}
 		//console.log("i18n:T", i18n.t(state.text), i18n.locale, state.node && state.node.isConnected)
 		p.setValue(i18n.t(state.text));
 		p.commit();
 	})
+
+	if(removed.length)
+		parts = parts.filter(p=>!removed.includes(p));
 }
 
 i18n.setLocale(i18n.locale);
@@ -390,7 +394,7 @@ export class FlowI18nDialog{
 }
 
 
-window.xxxxx_setLocale = i18n.setLocale;
+//window.xxxxx_setLocale = i18n.setLocale.bind(i18n)
 
 
 export class I18nTest extends LitElement{

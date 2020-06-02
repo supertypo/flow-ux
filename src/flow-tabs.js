@@ -118,16 +118,16 @@ export class FlowTabs extends BaseElement {
 		this.shadowRoot.addEventListener('flow-tab-select', (e) => {
 			this.active = e.detail.id;
 		})
+	}
 
-		window.addEventListener("resize", ()=>{
-			if(this._timeoutId)
-				clearTimeout(this._timeoutId);
-			this._timeoutId = setTimeout(()=>{
-				this._timeoutId = null
-				if(this.active)
-					this.updateRows();
-			}, 100);
-		})
+	onWindowResize(){
+		if(this._timeoutId)
+			clearTimeout(this._timeoutId);
+		this._timeoutId = setTimeout(()=>{
+			this._timeoutId = null
+			if(this.active)
+				this.updateRows();
+		}, 100);
 	}
 
 	render() {
@@ -399,6 +399,21 @@ export class FlowTabs extends BaseElement {
 			return html`<flow-i18n .text="${text}" text2="${text}"></flow-i18n>`;
 		}
 		return text;
+	}
+
+	connectedCallback(){
+    	super.connectedCallback();
+    	this._onWindowResize = this._onWindowResize || this.onWindowResize.bind(this);
+		window.addEventListener("resize", this._onWindowResize)
+    }
+
+    disconnectedCallback() {
+		super.disconnectedCallback();
+		if(this._onWindowResize)
+			window.removeEventListener("resize", this._onWindowResize)
+		if(this._timeoutId){
+			clearTimeout(this._timeoutId);
+		}
 	}
 }
 

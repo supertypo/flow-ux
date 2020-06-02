@@ -1,4 +1,4 @@
-import {BaseElement, html, css} from './base-element.js';
+import {BaseElement, html, css, svg, parts} from './base-element.js';
 /**
 * @typedef {Object} FlowTabConfig Plain Object with following properties
 * @prop {String} title text to display inside of tab
@@ -95,26 +95,24 @@ export class FlowTab extends BaseElement {
 		super();
 		this.caption = this.firstChild ? this.firstChild.cloneNode(true) : '';
 		this.ident = Math.round((Math.random()*1e16)).toString(16);
-		this.template = document.createElement('template');
-
-		new ResizeObserver(()=>{
-			this.requestUpdate();
-		}).observe(this);
+		//this.template = document.createElement('template');
 	}
 
 	generate() {
-		this.rect = this.getBoundingClientRect();
-		if(!this.rect.width)
-			return;
+		let rect = this.getBoundingClientRect();
+		if(!rect.width)
+			return '';
 
-		let width = this.rect.width;
-		let height = this.rect.height;
+		let width = rect.width;
+		let height = rect.height;
 
 		let margin = 50;
 
-		let path = `<path id="path-${this.ident}"
+		/*let path = `<path id="path-${this.ident}"
    			style="fill:url(#gradient-${this.ident});stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-   			d="`; //"// 0,${height} `;
+   			d="`; //"// 0,${height} `;*/
+
+   		let path = '';
 
    		if(window.flowConfig && window.flowConfig.flowTab){
 			let atanRange = 20;
@@ -157,7 +155,7 @@ export class FlowTab extends BaseElement {
 		}
 
 		//path += `z`;
-		path += `" />`;//"
+		//path += `" />`;//"
 
 		let color = {
 			top : 'var(--flow-tab-bg-top, #fefefe)',
@@ -170,17 +168,21 @@ export class FlowTab extends BaseElement {
 		}
 
 		//html = html.trim(); // Never return a text node of whitespace as the result
-		let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">
+		return svg`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}">
 		<linearGradient id="gradient-${this.ident}"  x1="0" x2="0" y1="0" y2="1">
 			<stop class="stop1-${this.ident}" offset="0%" style="stop-color: ${color.top}"/>
 			<stop class="stop3-${this.ident}" offset="100%" style="stop-color: ${color.bottom}"/>
 		</linearGradient>
-		${path}
+		<path id="path-${this.ident}"
+   			style="fill:url(#gradient-${this.ident});stroke-width:2px;
+   			stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+   			d="${path}" />
 		</svg>`;
 
-		this.template.innerHTML = svg;
+		//let template = document.createElement('template');
+		//template.innerHTML = svg;
 
-		this.svg = this.template.content.firstChild.cloneNode(true);
+		//this.svg = template.content.firstChild.cloneNode(true);
 
 		//this.svgViewBox = this.svg.getAttribute("viewBox");
 		//this.svgPath = this.svg.querySelector("path");
@@ -188,10 +190,10 @@ export class FlowTab extends BaseElement {
 	}
 
 	render() {
-		this.generate();
+		let svg = this.generate();
 
 		return html`
-		<div class='background' @click=${this.click}>${this.svg}</div>
+		<div class='background' @click=${this.click}>${svg}</div>
 		<div class="wrapper"><div class="text"><slot></slot></div></div>
 		`;
 	}
@@ -202,6 +204,42 @@ export class FlowTab extends BaseElement {
 			bubbles : true
 		});
 		this.dispatchEvent(event);
+	}
+
+	onWindowResize(){
+		if(this.isConnected){
+    		this.requestUpdate();
+		}
+    }
+
+	connectedCallback(){
+    	super.connectedCallback();
+    	//this._onWindowResize = this._onWindowResize || this.onWindowResize.bind(this);
+		//window.addEventListener("resize", this._onWindowResize)
+
+    	if(!this.__resizeObserver){
+    		//this._onWindowResize = this._onWindowResize || this.onWindowResize.bind(this);
+    		//window.__resizeObservers = window.__resizeObservers || {}; 
+    		//window.__resizeObservers[this.ident] = this._onWindowResize;
+	    	this.__resizeObserver = new ResizeObserver(()=>{
+	    		this.onWindowResize();
+			});
+			this.__resizeObserver.observe(this);
+	    }
+    }
+
+    disconnectedCallback() {
+    	super.disconnectedCallback();
+		if(this.__resizeObserver){
+			this.__resizeObserver.unobserve(this);
+			this.__resizeObserver.disconnect();
+			delete this.__resizeObserver;
+			//observer.observe(document.createElement("div"));
+		}
+		parts.delete(this.renderRoot)
+		
+		//if(this._onWindowResize)
+		//	window.removeEventListener("resize", this._onWindowResize)
 	}
 }
 

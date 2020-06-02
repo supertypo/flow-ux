@@ -253,6 +253,6 @@ export class BaseElement extends LitElement{
 	}
 }
 
-let getLocalSetting = BaseElement.getLocalSetting.bind(BaseElement);
-let setLocalSetting = BaseElement.setLocalSetting.bind(BaseElement);
+let getLocalSetting = BaseElement.getLocalSetting;
+let setLocalSetting = BaseElement.setLocalSetting;
 export {getLocalSetting, setLocalSetting}
