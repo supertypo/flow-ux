@@ -125,12 +125,8 @@ export class FlowInput extends BaseElement {
 		return html`
 		<div class="wrapper" @click=${this.onClick} ?has-value=${!!this.value}>
 			<slot name="prefix"></slot>
-			<div class="value">
-				${this.value}
-				<i class="clear-btn" title="Clear" @click=${this.setClear}>&times;</i>
-			</div>
 			<label class="btn">
-				<input type="${this.type}" ?disabled=${this.disabled} nwdirectory @change=${this.onChange} />
+				<input type="${this.type}" ?disabled=${this.disabled} @change=${this.onChange} />
 				<div class="text"><flow-i18n text="${this.btnText || 'Apply'}"></flow-i18n></div>
 			</label>
 			<slot name="sufix"></slot>

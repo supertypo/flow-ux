@@ -67,6 +67,15 @@ export class FlowTextArea extends BaseElement {
 		return this.shadowRoot && this.shadowRoot.getElementById(`textarea-${this.ident}`);
 	}
 
+	get() {
+		return this.textarea.value;
+	}
+
+	set(value) {
+		this.textarea.value = value;
+		this.change();
+	}
+
 	render() {
 		//this.log("RENDERING TEXTAREA");
 		return html`
@@ -89,7 +98,6 @@ export class FlowTextArea extends BaseElement {
 					color: var(--flow-textarea-color, var(--flow-input-color, inherit));
 				}
 			</style>
-			TEXTAREA:<br/>
 			<textarea id="textarea-${this.ident}"
 				@input="${this.change}" 
 				autocomplete="${this.autocomplete}"

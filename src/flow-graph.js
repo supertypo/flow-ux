@@ -278,7 +278,7 @@ export class FlowGraph extends Flowd3Element {
 		const y = d3.scaleLinear()
 		.domain(d3.extent(data, d => d.value)).nice()
 		.range([height - margin.bottom, margin.top]);
-
+/*
 		const xAxis = g => g
 		.attr("transform", `translate(0,${height - margin.bottom})`)
 		.call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
@@ -287,6 +287,7 @@ export class FlowGraph extends Flowd3Element {
 		.attr("transform", `translate(${margin.left},0)`)
 		.call(d3.axisLeft(y))
 		.call(g => g.select(".domain").remove())
+*/		
 		// .call(g => g.select(".tick:last-of-type text").clone()
 		// 	.attr("x", 3)
 		// 	.attr("text-anchor", "start")
@@ -328,11 +329,11 @@ export class FlowGraph extends Flowd3Element {
 
 
 
-		el.append("g")
-			.call(xAxis);
+		// el.append("g")
+		// 	.call(xAxis);
   
-		el.append("g")
-			.call(yAxis);
+		// el.append("g")
+		// 	.call(yAxis);
 
 	}
 }

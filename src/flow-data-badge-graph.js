@@ -235,7 +235,8 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 				.attr("stroke-linecap", "round")
 				.attr("stroke-width", 'var(--flow-data-badge-graph-stroke-width, 0)')
 				.attr('fill','var(--flow-data-badge-graph-fill, steelblue)')
-				.attr('stroke','var(--flow-data-badge-graph-stroke, "#000)')
+                .attr('stroke','var(--flow-data-badge-graph-stroke, #000)')
+                
 				
 		this.path.datum(data)
 			.attr('d',area);
