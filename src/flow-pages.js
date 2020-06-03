@@ -55,7 +55,8 @@ export class FlowPages extends BaseElement {
 	static get properties() {
 		return {
 			pages:{type:Array},
-			index:{type:Number}
+			index:{type:Number},
+			dotoffset:{type:Number}
 		}
 	}
 	static get styles() {
@@ -88,6 +89,7 @@ export class FlowPages extends BaseElement {
 			}
 
 			.dots{
+				pointer-events: none;
 				z-index:5;
 				position:absolute;bottom:10px;
 				display:none;
@@ -121,11 +123,15 @@ export class FlowPages extends BaseElement {
 		if(dots.length)
 			dots[this.index||0] = 1;
 
+		let css = '';
+		if(this.dotoffset)
+			css = `bottom: -${this.dotoffset}px`;
+
 		return html`
 		<slot name="title"></slot>
 		<div class="wrapper">
 			<slot></slot>
-			<div class="dots" @click="${this.onDotsClick}">${dots.map((active,i)=>{
+			<div class="dots" style="${css}" @click="${this.onDotsClick}">${dots.map((active,i)=>{
 				return html`<i data-index="${i}" class="${active?'active':''}"></i>`
 			})}</div>
 		</div>
@@ -157,7 +163,6 @@ export class FlowPages extends BaseElement {
 					this.btns[name] = btn;
 			})
 		})
-		
 	}
 	get nextBtn(){
 		return this.btns.next;
