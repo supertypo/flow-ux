@@ -27,7 +27,8 @@ export class FlowGraph extends Flowd3Element {
 			range:{type:Number},
 			overlay:{type:Boolean},
 			precision:{type:Number},
-			axes:{type:Boolean}
+			axes:{type:Boolean},
+			info:{type:Boolean}
 		}
 	}
 
@@ -43,7 +44,7 @@ export class FlowGraph extends Flowd3Element {
 				font-weight:var(--flow-data-field-font-weight, bold);
 				border-radius: 10px;
 				overflow: hidden;
-
+				position:relative;
 			}
 			:host([disabled]){opacity:0.5;cursor:default;pointer-events:none;}
 			.colon{display:none}
@@ -63,14 +64,6 @@ export class FlowGraph extends Flowd3Element {
 			.suffix{opacity:0.9;margin-left:3px;margin-top:3px; font-size: 10px; }
 			.col { display: flex; flex-direction: column; align-items: left;  }
 			.row { display: flex; flex-direction: row; flex:0; }
-
-			/* --- */
-
-/*			.wrapper {
-				position:relative;
-				margin:6px;
-			}
-*/
 
 			.wrapper {
 				/*width:100%;height:100%;*/
@@ -99,7 +92,14 @@ export class FlowGraph extends Flowd3Element {
 			}
 			.wrapper>div.d3-holder{position:absolute;}
 			.overlay{pointer-events:none}
-
+			.info{
+				position:absolute;pointer-events:none;
+				background:var(--flow-graph-info-bg, #FFF);
+				border:var(--flow-graph-info-border, 1px solid #DDD);
+				padding:3px;font-size:0.7rem;left:10px;top:10px;
+				opacity:0;max-width:48%;
+			}
+			.info-dot{opacity:0}
 			[flex] {
 				flex: 1;
 			}
@@ -114,6 +114,7 @@ export class FlowGraph extends Flowd3Element {
 		this.refresh = 1e3;
 		this.precision = 0;
 		this.axes = false;
+		this.info = false;
 
 		this.svgPreserveAspectRatio = 'xMaxYMax meet';
 	}
@@ -185,6 +186,7 @@ export class FlowGraph extends Flowd3Element {
 					</div>
 				</div>
 			</div>
+			<div class="info"></div>
 			`;	
 		} else {
 
@@ -198,6 +200,7 @@ export class FlowGraph extends Flowd3Element {
 					</div>
 				</div>
 			</div>
+			<div class="info"></div>
 			`;	
 		}
 	}
@@ -276,12 +279,14 @@ export class FlowGraph extends Flowd3Element {
 		})
 
 		if(this.axes && margin.left < maxTextLength * 10){
+			let oldLeft = margin.left
 			margin.left = maxTextLength * 10;
+			width += oldLeft - margin.left;
 		}
 
 
 		const x = d3.scaleUtc()
-		.domain([min,max])
+		.domain([min, max])
 		.range([0, width])
 
 		const y = d3.scaleLinear()
@@ -337,20 +342,114 @@ export class FlowGraph extends Flowd3Element {
 
 		if(!this.path)
 			this.path = el.append('path')
-				.attr('stroke-opacity', 'var(--flow-data-badge-graph-stroke-opacity, 1.0)')
+				.attr('stroke-opacity', 'var(--flow-graph-stroke-opacity, 1.0)')
 				.attr("stroke-linejoin", "round")
 				.attr("stroke-linecap", "round")
-				.attr("stroke-width", 'var(--flow-data-badge-graph-stroke-width, 0)')
-				.attr('fill','var(--flow-data-badge-graph-fill, steelblue)')
-				.attr('stroke','var(--flow-data-badge-graph-stroke, "#000)')	
+				.attr("stroke-width", 'var(--flow-graph-stroke-width, 0)')
+				.attr('fill','var(--flow-graph-fill, steelblue)')
+				.attr('stroke','var(--flow-graph-stroke, "#000)')
+
 		try {				
-			this.path.data([data])
+			this.path.datum(data)
 				.attr('d', area);
 		} catch(ex) {
 			if(this.sampler)
 				console.log('error while processing sampler:',this.sampler);
 			console.log(ex);
 
+		}
+
+		if(this.info){
+			let me = this;
+			let bisect = d3.bisector(d=>d.date).left;
+			let _data = data.map(d=>d.date.getTime());
+			let timeFormat = d3.timeFormat("%x %X");
+			this.getDataByPoint = (p)=>{
+				let x0 = x.invert(p-margin.left);
+				let t = x0.getTime();
+				let dif = -1, _dif, index=-1;
+				_data.forEach((ts, i)=>{
+					_dif = Math.abs(ts-t)
+					if(dif<0 || dif>_dif){
+						index = i;
+						dif = _dif
+					}
+				})
+				//console.log("index", index, x0, p)
+				let d = data[index];
+				if(!d)
+					return
+				let cx = x(d.date);
+				let cy = y(d.value);
+				let l = null;
+				let r = null;
+				if(cx>width*0.5){
+					r = width-cx+margin.right+12;
+				}else{
+					l = cx+12+margin.left
+				}
+				return {cx, cy, d, l, r, t:cy+12+margin.top};
+
+				//return d3.least(data, d=>Math.abs(d.date.getTime()-t))
+				//let i = bisect(data, x0);
+				//return data[i];
+				/*let index = -1;
+				console.log("#############")
+				let i = data.findIndex((d, i)=>{
+					console.log(d.date+"\n"+x0+"\n---------")
+					if(index<0 && d.date.getTime() > x0.getTime())
+						index = i;
+					return d.date == x0
+				})//bisect(data, x0, 1)
+				if(i>-1)
+					return i
+				if(index>0)
+					return index-1;
+				return index;
+				*/
+			}
+			if(!this.infoEl){
+				this._infoEl = this._infoEl||this.renderRoot.querySelector('.info')
+				this.infoEl = d3.select(this._infoEl);
+				this.infoDot = el.append("circle")
+					.attr("class", "info-dot")
+			        .attr("fill", "var(--flow-graph-info-dot-fill, red)")
+			        .attr("stroke", "var(--flow-graph-info-dot-stroke, none)")
+			        .attr("r", 3)
+				this.svg 
+					.on('mousemove', function(_d){
+						let p = d3.mouse(this)[0];
+					    let data = me.getDataByPoint(p);
+						//console.log("ddd", d.value, x0)
+						if(!data)
+							return
+						let {cx, cy, l, r, t, d} = data;
+						let infoEl = me.infoEl;
+						infoEl
+							.html(d.value.toFixed(3)+" , "+timeFormat(d.date))
+		     				.style("top", t+"px")
+		     			if(l){
+		     				infoEl.style("right", 'initial')
+		     				infoEl.style("left", l+"px")
+		     			}else{
+		     				infoEl.style("right", r+"px")
+		     				infoEl.style("left", 'initial')
+		     			}
+						infoEl.transition()
+							.duration(50)
+							.style("opacity", 1)
+						me.infoDot
+							.style("opacity", 1)
+							.attr("cx", cx)
+			        		.attr("cy", cy)
+					})
+					.on('mouseout', ()=>{
+						this.infoDot.style("opacity", 0);
+						this.infoEl.transition()
+							.duration(50)
+							.style("opacity", 0);
+					});
+			}
 		}
 
 
