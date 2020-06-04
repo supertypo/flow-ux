@@ -27,6 +27,7 @@ export class FlowGraph extends Flowd3Element {
 			range:{type:Number},
 			overlay:{type:Boolean},
 			precision:{type:Number},
+			axes:{type:Boolean}
 		}
 	}
 
@@ -95,19 +96,9 @@ export class FlowGraph extends Flowd3Element {
 				min-width:10px;
 				opacity:1;
 				border-radius:10px;
-				/*border: 1px solid red;*/
-				/*margin: 0px -5px 0px -1px;
-				z-index: 100;*/
 			}
-
-/*			.wrapper>div.d3-holder{
-				overflow: hidden;
-				position:absolute;border: 2px solid transparent;
-			}
-*/
-
-
 			.wrapper>div.d3-holder{position:absolute;}
+			.overlay{pointer-events:none}
 
 			[flex] {
 				flex: 1;
@@ -122,23 +113,24 @@ export class FlowGraph extends Flowd3Element {
 		this.range = 60 * 5;
 		this.refresh = 1e3;
 		this.precision = 0;
+		this.axes = false;
 
 		this.svgPreserveAspectRatio = 'xMaxYMax meet';
+	}
 
-		// TODO install this handler during connected
-		// event and remove it on disconnected event.
-		window.addEventListener('resize', ()=>{
-			dpc(()=>{
-				this.requestUpdate();
-			})
+	onWindowResize(){
+		dpc(()=>{
+			this.requestUpdate();
 		})
-
 	}
 
 	connectedCallback() {
 		super.connectedCallback();
 		if(this.sampler)
 			this.interval = setInterval(this.requestUpdate.bind(this), this.refresh);
+
+		this._onWindoResize = this._onWindoResize || this.onWindowResize.bind(this);
+		window.addEventListener('resize', this._onWindoResize);
 	}
 
 	disconnectedCallback() {
@@ -146,6 +138,8 @@ export class FlowGraph extends Flowd3Element {
 
 		if(this.interval)
 			clearInterval(this.interval);
+
+		window.removeEventListener('resize', this._onWindoResize);
 	}
 
 	render() {
@@ -177,7 +171,7 @@ export class FlowGraph extends Flowd3Element {
 			`
 			<div class='wrapper'>
 				<div class="d3-holder">${super.render()}</div>
-				<div>
+				<div class="overlay">
 					<div class="container col">
 						<div class="title">${this.title}<span class="colon">:</span></div>
 						<div flex></div>
@@ -209,6 +203,14 @@ export class FlowGraph extends Flowd3Element {
 	}
 
 	getMargin(){
+		if(this.axes){
+			return {
+				bottom:20,
+				top:20,
+				left:20,
+				right:20
+			}
+		}
 		return {
 			bottom:0,
 			top:0,
@@ -219,7 +221,9 @@ export class FlowGraph extends Flowd3Element {
 
 	draw(){
 		let margin = this.getMargin();
-		let {height, width} = this.el_d3.getBoundingClientRect();
+		let {height:fullHeight, width:fullWidth} = this.el_d3.getBoundingClientRect();
+		let width = fullWidth - margin.left - margin.right;
+    	let height = fullHeight - margin.top - margin.bottom;
 
 		// // TODO - 'date' should be 'ts' as unix timestamp; 'v' should be 'value'
 		// const rawData1 = [
@@ -263,31 +267,39 @@ export class FlowGraph extends Flowd3Element {
 		//console.log(JSON.stringify(data, null))
 		let [min,max] = d3.extent(data, d => d.date);
 		//console.log("processing min-max[1]",min,max);
-		min = max - 1000*this.range;
+		if(!this.axes)
+			min = max - 1000*this.range;
+		let maxTextLength = 0;
+		data.forEach(d=>{
+			if(d.value.toFixed(2).length>maxTextLength)
+				maxTextLength = d.value.toFixed(2).length;
+		})
+
+		if(this.axes && margin.left < maxTextLength * 10){
+			margin.left = maxTextLength * 10;
+		}
 
 
 		const x = d3.scaleUtc()
 		.domain([min,max])
-
-		// const x = d3.scaleUtc()
-		// .domain(d3.extent(data, d => d.date)).nice()
-		//.range([height - margin.bottom, margin.top])
-		//.domain(d3.extent(data, d => d.date))
-		.range([margin.left, width - margin.right])
+		.range([0, width])
 
 		const y = d3.scaleLinear()
 		.domain(d3.extent(data, d => d.value)).nice()
-		.range([height - margin.bottom, margin.top]);
-/*
-		const xAxis = g => g
-		.attr("transform", `translate(0,${height - margin.bottom})`)
-		.call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
+		.range([height, 0]);
 
-		const yAxis = g => g
-		.attr("transform", `translate(${margin.left},0)`)
-		.call(d3.axisLeft(y))
-		.call(g => g.select(".domain").remove())
-*/		
+		let xAxis, yAxis;
+		if(this.axes){
+			xAxis = g => g
+			.attr("transform", `translate(0,${height})`)
+			.call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
+
+			yAxis = g => g
+			//.attr("transform", `translate(${margin.left},0)`)
+			.call(d3.axisLeft(y).ticks(height / 20).tickSizeOuter(0))
+			//.call(g => g.select(".domain").remove())
+		}
+		
 		// .call(g => g.select(".tick:last-of-type text").clone()
 		// 	.attr("x", 3)
 		// 	.attr("text-anchor", "start")
@@ -297,7 +309,7 @@ export class FlowGraph extends Flowd3Element {
 		const area = d3.area()
 			.curve(d3.curveLinear)
 			.x(d => x(d.date))
-			.y0(y(0))
+			.y0(height)
 			.y1(d => y(d.value));
 
 		const { el } = this;
@@ -306,20 +318,34 @@ export class FlowGraph extends Flowd3Element {
 		// 	.attr('fill','var(--flow-graph-fill, steelblue)')
 		// 	.attr('stroke','var(--flow-graph-stroke, steelblue)')
 		// 	.attr('d',area);
+		let t = `translate(${margin.left},${margin.top})`;
+		if(el.__t != t){
+			el.__t = t
+			el.attr("transform", t)
+		}
+		if(this.svg.__w != fullWidth){
+			this.svg.__w = fullWidth;
+			this.svg
+				.attr("width", fullWidth)
+		}
+		if(this.svg.__h != fullHeight){
+			this.svg.__h = fullHeight;
+			this.svg
+				.attr("height", fullHeight)
+		}
+			
 
 		if(!this.path)
-			this.path = this.svg.append('path')
-				.attr("transform", `translate(${margin.left},0)`)
+			this.path = el.append('path')
 				.attr('stroke-opacity', 'var(--flow-data-badge-graph-stroke-opacity, 1.0)')
 				.attr("stroke-linejoin", "round")
 				.attr("stroke-linecap", "round")
 				.attr("stroke-width", 'var(--flow-data-badge-graph-stroke-width, 0)')
 				.attr('fill','var(--flow-data-badge-graph-fill, steelblue)')
-				.attr('stroke','var(--flow-data-badge-graph-stroke, "#000)')
-				
+				.attr('stroke','var(--flow-data-badge-graph-stroke, "#000)')	
 		try {				
-			this.path.datum(data)
-				.attr('d',area);
+			this.path.data([data])
+				.attr('d', area);
 		} catch(ex) {
 			if(this.sampler)
 				console.log('error while processing sampler:',this.sampler);
@@ -328,12 +354,12 @@ export class FlowGraph extends Flowd3Element {
 		}
 
 
-
-		// el.append("g")
-		// 	.call(xAxis);
-  
-		// el.append("g")
-		// 	.call(yAxis);
+		if(this.axes){
+			this.xAxis = this.xAxis || el.append("g")
+			this.xAxis.call(xAxis);
+			this.yAxis = this.yAxis || el.append("g")
+			this.yAxis.call(yAxis);
+		}
 
 	}
 }
