@@ -1,6 +1,7 @@
 import {BaseElement, html, css, flow, dpc} from './base-element.js';
 import {Flowd3Element} from './flow-d3.js';
 import {FlowSampler} from './flow-sampler.js';
+import {FlowFormat} from './flow-format.js';
 
 /**
 * @class FlowGraph
@@ -26,9 +27,10 @@ export class FlowGraph extends Flowd3Element {
 			//fill:{type:String},
 			range:{type:Number},
 			overlay:{type:Boolean},
+			format:{type:String},
 			precision:{type:Number},
 			axes:{type:Boolean},
-			info:{type:Boolean}
+			info:{type:Boolean},
 		}
 	}
 
@@ -59,7 +61,9 @@ export class FlowGraph extends Flowd3Element {
 			.container>div{padding:2px;}
 			/* --- */
 			.title{flex:1; text-align:left; opacity:1;xmargin-top:7px; font-size: 10px; color: var(--flow-data-badge-caption); xtext-shadow: 0px 0px 0px var(--flow-data-badge-caption-shadow, #fff); }
-			.value{text-align:right; opacity:1;font-size:14px;font-family:"Exo 2";font-weight:normal;}
+			.value{text-align:right; opacity:1;font-size:14px;font-family:"Exo 2";font-weight:normal;
+		background-color: var(--flow-background-color:);
+			}
 			.prefix{opacity:0.9;margin-right:3px;margin-top:3px; font-size: 10px; }
 			.suffix{opacity:0.9;margin-left:3px;margin-top:3px; font-size: 10px; }
 			.col { display: flex; flex-direction: column; align-items: left;  }
@@ -70,13 +74,17 @@ export class FlowGraph extends Flowd3Element {
 				position:relative;
 				flex:1;
 				margin:6px;overflow:hidden;
-				border: 2px solid var(--flow-primary-color,#333);
-				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
-				border-radius: 10px;
 				/*
 				min-width: var(--flow-data-badge-graph-with,240px);
 				min-height: var(--flow-data-badge-graph-height,80px);				
 				*/				
+			}
+			
+			:host([border]) .wrapper {
+				border: 2px solid var(--flow-primary-color,#333);
+				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
+				border-radius: 10px;
+
 			}
 
 			.wrapper > div {
@@ -104,6 +112,35 @@ export class FlowGraph extends Flowd3Element {
 				flex: 1;
 			}
 
+
+			.axis {
+				font-size:12px;
+				font-family: "Consolas", "Source Sans Pro";
+				font-weight: 300;
+				strokeColor: #333;
+			}
+
+			.axis text {
+				fill:var(--flow-background-inverse-soft, #aaa);
+			}
+			.axis path {
+				stroke:var(--flow-background-inverse-soft, #aaa);
+			}
+			.axis line {
+				stroke:var(--flow-background-inverse-soft, #aaa);
+			}
+
+			.value-container {
+				/*background-color: var(--flow-background-color, rgba(0,0,0,0));*/
+				display:flex;
+				flex-direction:row;
+			}
+
+			.title-bottom { display: none; }
+			.host([bottom])	.title-bottom { display: block; }
+			.host([bottom])	.title-top { display: none; }
+			.host([top])	.title-bottom { display: none; }
+			.host([top])	.title-top { display: block; }
 		`];
 	}
 
@@ -155,12 +192,17 @@ export class FlowGraph extends Flowd3Element {
 			let idents = this.sampler.split(':');
 			let ident = idents.shift(); 
 			let sampler =  FlowSampler.get(ident);
-			let data = sampler?.data;
-			if(data && data.length) {
-				value = data[data.length-1].value;
-				value = value.toFixed(this.precision||0);
+			//let data = sampler?.data;
+			value = sampler.last() || '';
+			if(value !== undefined) { //data && data.length) {
+				// value = data[data.length-1].value;
+
+				value = FlowFormat[this.format || 'default'](value, this);
+				//value = this.format ? format(value,this.format,this.precision||0) : value; // value.toFixed(this.precision||0);
 				//this.log("processing sampler",ident,value,sampler);
 			}
+
+
 		}
 		else {
 			console.log("no sampler", this);
@@ -174,15 +216,28 @@ export class FlowGraph extends Flowd3Element {
 				<div class="d3-holder">${super.render()}</div>
 				<div class="overlay">
 					<div class="container col">
-						<div class="title">${this.title}<span class="colon">:</span></div>
-						<div flex></div>
+						<!-- div class="title title-top">${this.title}<span class="colon">:</span></div -->
 						<div class="row">
+							<div class="title title-top">${this.title}<span class="colon">:</span></div>
 							${ (!this.align || this.align == 'right') ? html`<div style="flex:1;"></div>` : '' }
-							<div class="prefix">${this.prefix}</div>
-							<div class="value">${value}</div>
-							<div class="suffix">${this.suffix}</div>
+							<div class="value-container">
+								<div class="prefix">${this.prefix}</div>
+								<div class="value">${value}</div>
+								<div class="suffix">${this.suffix}</div>
+							</div>
 							${ (this.align == 'left') ? html`<div style="flex:1;"></div>` : '' }
 						</div>
+						<div flex></div>
+						<!-- div class="row">
+							<div class="title title-bottom">${this.title}<span class="colon">:</span></div>
+							${ (!this.align || this.align == 'right') ? html`<div style="flex:1;"></div>` : '' }
+							<div class="value-container">
+								<div class="prefix">${this.prefix}</div>
+								<div class="value">${value}</div>
+								<div class="suffix">${this.suffix}</div>
+							</div>
+							${ (this.align == 'left') ? html`<div style="flex:1;"></div>` : '' }
+						</div -->
 					</div>
 				</div>
 			</div>
@@ -208,15 +263,15 @@ export class FlowGraph extends Flowd3Element {
 	getMargin(){
 		if(this.axes){
 			return {
-				bottom:20,
-				top:20,
+				bottom:40,
+				top:30,
 				left:20,
 				right:20
 			}
 		}
 		return {
 			bottom:0,
-			top:0,
+			top:10,
 			left:0,
 			right:0
 		}
@@ -274,8 +329,8 @@ export class FlowGraph extends Flowd3Element {
 			min = max - 1000*this.range;
 		let maxTextLength = 0;
 		data.forEach(d=>{
-			if(d.value.toFixed(2).length>maxTextLength)
-				maxTextLength = d.value.toFixed(2).length;
+			if(d.value.toFixed(this.precision).length>maxTextLength)
+				maxTextLength = d.value.toFixed(this.precision).length;
 		})
 
 		if(this.axes && margin.left < maxTextLength * 10){
@@ -458,6 +513,18 @@ export class FlowGraph extends Flowd3Element {
 			this.xAxis.call(xAxis);
 			this.yAxis = this.yAxis || el.append("g")
 			this.yAxis.call(yAxis);
+
+			this.xAxis.classed('axis', true);
+			this.yAxis.classed('axis', true);
+			// d3.selectAll('.tick>text')
+			// 	.style('font-family','Consolas')
+			// 	.style('font-size','8px');
+			// yAxis = g => g
+			// //.attr("transform", `translate(${margin.left},0)`)
+			// .call(d3.axisLeft(y).ticks(height / 20).tickSizeOuter(0))
+
+			// this.xAxis.style({'font-family','Consolas').style('font-size','8px');
+			// this.yAxis.style('font-family','Consolas').style('font-size','8px');
 		}
 
 	}
