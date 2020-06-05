@@ -33,7 +33,8 @@ export class FlowInput extends BaseElement {
             type:{type:String},
 			disabled:{type:Boolean},
 			pattern:{type:String},
-			validator:{type:Function}
+			validator:{type:Function},
+			placeholder:{type:String}
 		}
 	}
 
@@ -43,7 +44,9 @@ export class FlowInput extends BaseElement {
 				display:inline-block;
 				font-family:var(--flow-font-family, "Julius Sans One");
 				font-weight:var(--flow-font-weight, bold);
-				min-width:var(--flow-input-min-width, 200px);
+				width:var(--flow-folder-input-width, 100%);
+				min-width:var(--flow-folder-input-min-width, 100px);
+				max-width:var(--flow-folder-input-max-width, 500px);
 			}
 			:host(:not([disabled])) label,
 			:host(:not([disabled])) label input{
@@ -125,7 +128,9 @@ export class FlowInput extends BaseElement {
 		return html`
 		<div class="wrapper" @click=${this.onClick} ?has-value=${!!this.value}>
 			<slot name="prefix"></slot>
-			<input class="input" type="${this.type}" pattern="${this.pattern}"
+			<input class="input" type="${this.type}" 
+				placeholder="${this.placeholder || ''}"
+				pattern="${this.pattern}"
 				?disabled=${this.disabled} @change=${this.onChange} />
 			<label class="btn">
 				<div class="text"><flow-i18n text="${this.btnText || 'Apply'}"></flow-i18n></div>
@@ -173,13 +178,13 @@ export class FlowInput extends BaseElement {
 		//this.log("value", value)
 
 		this.value = value;
-		this.fire("change", {el:this, value})
+		this.fire("changed", {el:this, value})
 	}
 
 	setValue(value){
 		this.value = value;
 		this.shadowRoot.querySelector("input").value = "";
-		this.fire("change", {el:this, value:this.value})
+		this.fire("changed", {el:this, value:this.value})
 	}
 }
 

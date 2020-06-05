@@ -64,6 +64,13 @@ export class FlowFormControl extends BaseElement {
 		.info-box ::slotted(p){
 			font-size:0.8em;
 		}
+		/*
+		.input-box ::slotted(flow-folder-input){
+			--flow-folder-input-width:100%;
+			--flow-folder-input-min-width:100px;
+			--flow-folder-input-max-width:500px;
+		}
+		*/
 		`;
 	}
 	render() {

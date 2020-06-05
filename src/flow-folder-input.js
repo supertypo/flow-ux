@@ -40,7 +40,9 @@ export class FlowFolderInput extends BaseElement {
 				display:inline-block;
 				font-family:var(--flow-font-family, "Julius Sans One");
 				font-weight:var(--flow-font-weight, bold);
-				min-width:400px;
+				width:var(--flow-folder-input-width, 100%);
+				min-width:var(--flow-folder-input-min-width, 100px);
+				max-width:var(--flow-folder-input-max-width, 500px);
 			}
 			:host(:not([disabled])) label,
 			:host(:not([disabled])) label input{
@@ -91,13 +93,17 @@ export class FlowFolderInput extends BaseElement {
 			    padding: 0px 30px 0px 5px;
 				box-sizing: border-box;
 				margin-right:var(--flow-folder-input-vmr, 2px);
-				flex:1;
+				width:150px;flex:1;
 				min-height:32px;
 				border: 2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:8px;
 				border-top-right-radius: var(--flow-folder-input-trbr, 4px);
     			border-bottom-right-radius: var(--flow-folder-input-brbr, 4px);
     			background-color:var(--flow-input-bg, inherit);
+			}
+			.value>span{
+				overflow:hidden;text-overflow:ellipsis;flex:1;white-space:nowrap;
+				text-align:left;
 			}
 			:host([disabled]) .value{
 				padding-right:10px;
@@ -120,7 +126,7 @@ export class FlowFolderInput extends BaseElement {
 		<div class="wrapper" @click=${this.onClick} ?has-value=${!!this.value}>
 			<slot name="prefix"></slot>
 			<div class="value">
-				${this.value}
+				<span>${this.value}</span>
 				<i class="clear-btn" title="Clear" @click=${this.setClear}>&times;</i>
 			</div>
 			<label class="btn">
@@ -145,13 +151,13 @@ export class FlowFolderInput extends BaseElement {
 		if(!value)
 			return
 		this.value = value;
-		this.fire("change", {el:this, value})
+		this.fire("changed", {el:this, value})
 	}
 
 	setValue(value){
 		this.value = value;
 		this.shadowRoot.querySelector("input").value = "";
-		this.fire("change", {el:this, value:this.value})
+		this.fire("changed", {el:this, value:this.value})
 	}
 }
 
