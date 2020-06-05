@@ -25,9 +25,10 @@ export class FlowSampler {
 		
 		this.options = options;
 		this.generator = this.options.generator;
-		this.data = [ ];
+        this.data = [ ];
+        this.sinks = [ ];
 		this.eventHandlers = new Map();
-		this.eventHandlers.set("data", new Map())
+		this.eventHandlers.set("data", new Map());
 
 		if(this.options.interval)
 			this.start();
@@ -73,12 +74,16 @@ export class FlowSampler {
 	}
 
 	put(value) {
+        const { ident, data, options, sinks } = this;
 		const date = new Date();
-		this.data.push({date,value});
-		let max = this.options.maxSamples || (60*5);
-		while(this.data.length > max)
-			this.data.shift();
-		this.fire('data', {ident:this.ident, data: this.data})
+		data.push({date,value});
+		let max = options.maxSamples || (60*5);
+		while(data.length > max)
+			data.shift();
+        this.fire('data', {ident,data});
+        sinks.forEach((sink) => {
+            sink(ident, value, date);
+        })
     }
 
     lastEntry() {
@@ -123,5 +128,15 @@ export class FlowSampler {
 			return
 		handlers.delete(fn);
 		//document.body.removeEventListener(`flow-sampler-${name}-${this.ident}`, fn);
-	}
+    }
+    
+    registerSink(fn) {
+        this.sinks.push(fn);
+    }
+
+    unregisterSink(fn) {
+        let idx = this.sinks.indexOf(fn);
+        if(idx >= 0)
+            this.sinks.splice(idx, 1);
+    }
 }
