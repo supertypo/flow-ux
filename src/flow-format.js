@@ -18,6 +18,11 @@ export class FlowFormat {
 	    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	    return parts.join('.');
 	}
+		
+	static 'cs'(v, ctx) {
+		const { precision } = ctx;
+		return FlowFormat.commas(v, precision || 0);
+	}
 	static 'fiat'(v) { return this.commas(v,2); }
 	static 'crypto'(v) { return this.commas(v,8); }
 	static 'int'(v) { return this.commas(parseInt(v)); }
@@ -25,10 +30,11 @@ export class FlowFormat {
 	static 'file-size'(v) { return parseFloat(v).toFileSize(); }
 	static 'hash-rate'(v, ctx) { return parseFloat(v).toHashMetric(ctx.precision, ctx.unit, ctx.commas) + "H/s"; }
 	static 'default'(v, ctx) {
-		const { precision } = ctx;
-		if(precision)
-			return parseFloat(v).toFixed(parseInt(precision));
-		return parseInt(v);
+		return FlowFormat.cs(v, ctx);
+		// const { precision } = ctx;
+		// if(precision)
+		// 	return parseFloat(v).toFixed(parseInt(precision));
+		// return parseInt(v);
 	}
 }
 
