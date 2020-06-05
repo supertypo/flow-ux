@@ -114,6 +114,13 @@ export class FlowPages extends BaseElement {
 
 			.dots i:not(.active){cursor:pointer;}
 
+
+			.buttons flow-btn {
+				align-items:center;
+				display:flex;
+			}
+
+
 		`;
 	}
 	render(){
@@ -271,3 +278,5 @@ export class FlowPages extends BaseElement {
 }
 
 FlowPages.define('flow-pages');
+
+
