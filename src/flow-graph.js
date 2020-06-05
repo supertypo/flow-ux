@@ -269,7 +269,12 @@ export class FlowGraph extends Flowd3Element {
 			right:0
 		}
 	}
-
+	onWindowResize(){
+		super.onWindowResize();
+		dpc(()=>{
+			this.draw();
+		})
+	}
 	draw(){
 		let margin = this.getMargin();
 		let {height:fullHeight, width:fullWidth} = this.el_d3.getBoundingClientRect();
@@ -352,6 +357,7 @@ export class FlowGraph extends Flowd3Element {
 			el.__t = t
 			el.attr("transform", t)
 		}
+
 		if(this.svg.__w != fullWidth){
 			this.svg.__w = fullWidth;
 			this.svg
@@ -386,11 +392,11 @@ export class FlowGraph extends Flowd3Element {
 		if(this.info){
 			let me = this;
 			let bisect = d3.bisector(d=>d.date).left;
-			let _data = data.map(d=>d.date.getTime());
+			//let _data = data.map(d=>d.date.getTime());
 			let timeFormat = d3.timeFormat("%x %X");
 			this.getDataByPoint = (p)=>{
 				let x0 = x.invert(p-margin.left);
-				let t = x0.getTime();
+				/*let t = x0.getTime();
 				let dif = -1, _dif, index=-1;
 				_data.forEach((ts, i)=>{
 					_dif = Math.abs(ts-t)
@@ -399,7 +405,8 @@ export class FlowGraph extends Flowd3Element {
 						dif = _dif
 					}
 				})
-				//console.log("index", index, x0, p)
+				//console.log("index", index, x0, p)*/
+				let index = bisect(data, x0);
 				let d = data[index];
 				if(!d)
 					return
@@ -413,24 +420,6 @@ export class FlowGraph extends Flowd3Element {
 					l = cx+12+margin.left
 				}
 				return {cx, cy, d, l, r, t:cy+12+margin.top};
-
-				//return d3.least(data, d=>Math.abs(d.date.getTime()-t))
-				//let i = bisect(data, x0);
-				//return data[i];
-				/*let index = -1;
-				console.log("#############")
-				let i = data.findIndex((d, i)=>{
-					console.log(d.date+"\n"+x0+"\n---------")
-					if(index<0 && d.date.getTime() > x0.getTime())
-						index = i;
-					return d.date == x0
-				})//bisect(data, x0, 1)
-				if(i>-1)
-					return i
-				if(index>0)
-					return index-1;
-				return index;
-				*/
 			}
 			if(!this.infoEl){
 				this._infoEl = this._infoEl||this.renderRoot.querySelector('.info')
@@ -450,7 +439,7 @@ export class FlowGraph extends Flowd3Element {
 						let {cx, cy, l, r, t, d} = data;
 						let infoEl = me.infoEl;
 						infoEl
-							.html(FlowFormat[this.format||'default'](d.value,this)+", "+timeFormat(d.date))
+							.html(FlowFormat[me.format||'default'](d.value, me)+", "+timeFormat(d.date))
 		     				.style("top", t+"px")
 		     			if(l){
 		     				infoEl.style("right", 'initial')
