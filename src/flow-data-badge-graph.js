@@ -129,8 +129,8 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 		}
 	}
 
-	onWindowResize(){
-		super.onWindowResize();
+	onElementResize(){
+		super.onElementResize();
 		dpc(()=>{
 			this.draw();
 		})
@@ -188,7 +188,7 @@ export class FlowDataBadgeGraph extends Flowd3Element {
         const { data } = sampler;
 		let [min,max] = d3.extent(data, d => d.date);
 		//console.log("processing min-max[1]",min,max);
-		min = max - 1000*this.range;
+		min = max - 1000*this.range;//@anton why we are extending this min?
 
 
 		const x = d3.scaleUtc()
@@ -228,7 +228,7 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 		const { el } = this;
 
 		if(!this.path)
-			this.path = this.svg.append('path')
+			this.path = el.append('path')
 				.attr("transform", `translate(${margin.left},0)`)
 				.attr('stroke-opacity', 'var(--flow-data-badge-graph-stroke-opacity, 1.0)')
 				.attr("stroke-linejoin", "round")

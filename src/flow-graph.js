@@ -156,7 +156,8 @@ export class FlowGraph extends Flowd3Element {
 		this.svgPreserveAspectRatio = 'xMaxYMax meet';
 	}
 
-	onWindowResize(){
+	onElementResize(){
+		super.onElementResize();
 		dpc(()=>{
 			this.requestUpdate();
 		})
@@ -166,9 +167,6 @@ export class FlowGraph extends Flowd3Element {
 		super.connectedCallback();
 		if(this.sampler)
 			this.interval = setInterval(this.requestUpdate.bind(this), this.refresh);
-
-		this._onWindoResize = this._onWindoResize || this.onWindowResize.bind(this);
-		window.addEventListener('resize', this._onWindoResize);
 	}
 
 	disconnectedCallback() {
@@ -176,8 +174,6 @@ export class FlowGraph extends Flowd3Element {
 
 		if(this.interval)
 			clearInterval(this.interval);
-
-		window.removeEventListener('resize', this._onWindoResize);
 	}
 
 	render() {
@@ -268,12 +264,6 @@ export class FlowGraph extends Flowd3Element {
 			left:0,
 			right:0
 		}
-	}
-	onWindowResize(){
-		super.onWindowResize();
-		dpc(()=>{
-			this.draw();
-		})
 	}
 	draw(){
 		let margin = this.getMargin();
