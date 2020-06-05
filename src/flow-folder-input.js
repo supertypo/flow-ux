@@ -49,7 +49,7 @@ export class FlowFolderInput extends BaseElement {
 			
 			.wrapper{
 				display:flex;
-				align-items:center;
+				align-items:stretch;
 				min-width:50px;
 				text-align:center;
 				justify-content:center;
@@ -92,7 +92,7 @@ export class FlowFolderInput extends BaseElement {
 				box-sizing: border-box;
 				margin-right:var(--flow-folder-input-vmr, 2px);
 				flex:1;
-				height:32px;
+				min-height:32px;
 				border: 2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:8px;
 				border-top-right-radius: var(--flow-folder-input-trbr, 4px);

@@ -31,7 +31,9 @@ export class FlowInput extends BaseElement {
 			btnText:{type: String},
             value:{type:String},
             type:{type:String},
-			disabled:{type:Boolean}
+			disabled:{type:Boolean},
+			pattern:{type:String},
+			validator:{type:Function}
 		}
 	}
 
@@ -41,7 +43,7 @@ export class FlowInput extends BaseElement {
 				display:inline-block;
 				font-family:var(--flow-font-family, "Julius Sans One");
 				font-weight:var(--flow-font-weight, bold);
-				min-width:400px;
+				min-width:var(--flow-input-min-width, 200px);
 			}
 			:host(:not([disabled])) label,
 			:host(:not([disabled])) label input{
@@ -50,7 +52,7 @@ export class FlowInput extends BaseElement {
 			
 			.wrapper{
 				display:flex;
-				align-items:center;
+				align-items:stretch;
 				min-width:50px;
 				text-align:center;
 				justify-content:center;
@@ -62,26 +64,23 @@ export class FlowInput extends BaseElement {
 				border: 2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				overflow:hidden;
 				border-radius:8px;
-				border-top-left-radius: var(--flow-input-tlbr, 4px);
-    			border-bottom-left-radius: var(--flow-input-blbr, 4px);
+				border-top-left-radius: var(--flow-input-label-tlbr, 0px);
+    			border-bottom-left-radius: var(--flow-input-label-blbr, 0px);
     			color:var(--flow-border-invert-color, var(--flow-primary-invert-color, #FFF));
 			}
 			:host(:not([disabled])) label:hover{
 				background-color:var(--flow-border-hover-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-color:var(--flow-border-hover-color, var(--flow-primary-color, rgba(0,151,115,1)))
 			}
-			label input{
-			    position: absolute;
-			    left: 0px;
-			    top: 0px;
-			    right: 0px;
-			    bottom: 0px;
-			    font-size: 200px;
-			    height: 63px;
-			    background: #F00;
-			    opacity:0;
-			    z-index:-1;
+			.input{
+				border:0px;flex:1;
+			    padding:0px 5px;box-sizing:border-box;
+			    border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+			    border-right-width:0px;
+			    border-top-left-radius: 8px;
+    			border-bottom-left-radius: 8px;
 			}
+			.input:focus{outline:none}
 			label .text{
 				z-index:1;
 			}
@@ -114,6 +113,7 @@ export class FlowInput extends BaseElement {
 			    z-index: 1;
 			}
 			:host(:not([disabled])) [has-value] .clear-btn{display:block;}
+			:host(.invalid) .input{color:var(--flow-input-invalid-color, red)}
 		`;
     }
     constructor() {
@@ -125,8 +125,9 @@ export class FlowInput extends BaseElement {
 		return html`
 		<div class="wrapper" @click=${this.onClick} ?has-value=${!!this.value}>
 			<slot name="prefix"></slot>
+			<input class="input" type="${this.type}" pattern="${this.pattern}"
+				?disabled=${this.disabled} @change=${this.onChange} />
 			<label class="btn">
-				<input type="${this.type}" ?disabled=${this.disabled} @change=${this.onChange} />
 				<div class="text"><flow-i18n text="${this.btnText || 'Apply'}"></flow-i18n></div>
 			</label>
 			<slot name="sufix"></slot>
@@ -142,10 +143,35 @@ export class FlowInput extends BaseElement {
 		this.fire("flow-input-click", {el:this})
 	}
 
+	validate(value){
+		let {pattern} = this;
+		if(pattern){
+			try{
+				pattern = new RegExp(pattern)
+			}catch(e){
+				this.log("pattern error:", e)
+				return false;
+			}
+			if(!pattern.test(value))
+				return false;
+		}
+		if(typeof this.validator == 'function'){
+			return this.validator(value, this);
+		}
+		return true;
+	}
+
 	onChange(e) {
 		let value = this.shadowRoot.querySelector("input").value;
 		if(!value)
 			return
+		if(!this.validate(value)){
+			this.classList.add("invalid")
+			return
+		}
+		this.classList.remove("invalid")
+		//this.log("value", value)
+
 		this.value = value;
 		this.fire("change", {el:this, value})
 	}
