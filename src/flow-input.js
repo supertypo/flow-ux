@@ -34,7 +34,8 @@ export class FlowInput extends BaseElement {
 			disabled:{type:Boolean},
 			pattern:{type:String},
 			validator:{type:Function},
-			placeholder:{type:String}
+			placeholder:{type:String},
+			label:{type:String}
 		}
 	}
 
@@ -47,9 +48,9 @@ export class FlowInput extends BaseElement {
 				width:var(--flow-folder-input-width, 100%);
 				min-width:var(--flow-folder-input-min-width, 100px);
 				max-width:var(--flow-folder-input-max-width, 500px);
+				margin:5px 0px;
 			}
-			:host(:not([disabled])) label,
-			:host(:not([disabled])) label input{
+			:host(:not([disabled])) .btn{
 				cursor:pointer;
 			}
 			
@@ -59,53 +60,46 @@ export class FlowInput extends BaseElement {
 				min-width:50px;
 				text-align:center;
 				justify-content:center;
+			    margin-top:-0.5rem;
 			}
 			label{
+				font-size:0.7rem;padding:2px 5px;
+				border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+				border-radius:8px;
+    			margin-left:16px;z-index:1;
+    			position:relative;background-color:var(--flow-input-bg, inherit);
+			}
+			.btn{
 				position:relative;
 				padding:5px;
 				background-color:var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border: 2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				overflow:hidden;
 				border-radius:8px;
-				border-top-left-radius: var(--flow-input-label-tlbr, 0px);
-    			border-bottom-left-radius: var(--flow-input-label-blbr, 0px);
+				border-top-left-radius: var(--flow-input-btn-tlbr, 0px);
+    			border-bottom-left-radius: var(--flow-input-btn-blbr, 0px);
     			color:var(--flow-border-invert-color, var(--flow-primary-invert-color, #FFF));
+    			display: flex;
+			    justify-content: center;
+			    align-items: center;
 			}
-			:host(:not([disabled])) label:hover{
+			:host(:not([disabled])) .btn:hover{
 				background-color:var(--flow-border-hover-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-color:var(--flow-border-hover-color, var(--flow-primary-color, rgba(0,151,115,1)))
 			}
 			.input{
-				border:0px;flex:1;
-			    padding:0px 5px;box-sizing:border-box;
+				flex:1;box-sizing:border-box;
 			    border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 			    border-right-width:0px;
 			    border-top-left-radius: 8px;
     			border-bottom-left-radius: 8px;
-			}
-			.input:focus{outline:none}
-			.input::-webkit-input-placeholder { color: var(--flow-input-placeholder, #888 ); }
-			label .text{
-				z-index:1;
-			}
-			.input{
-				position:relative;
-			    display: flex;
-			    align-items: center;
-			    padding: 0px 30px 0px 5px;
-				box-sizing: border-box;
-				/*
-				margin-right:var(--flow-input-vmr, 2px);
-				flex:1;
-				height:32px;
-				border: 2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
-				border-radius:8px;
-				border-top-right-radius: var(--flow-input-trbr, 4px);
-    			border-bottom-right-radius: var(--flow-input-brbr, 4px);
-				*/
+    			margin:0px;
+    			padding:15px 30px 10px 10px;
 				background-color:var(--flow-input-bg, inherit);
 				color:var(--flow-input-color, inherit);
 			}
+			.input:focus{outline:none}
+			.input::-webkit-input-placeholder { color: var(--flow-input-placeholder, #888 ); }
 			:host([disabled]) .value{
 				padding-right:10px;
 			}
@@ -130,15 +124,16 @@ export class FlowInput extends BaseElement {
     }
 	render() {
 		return html`
+		<label ?hidden=${!this.label}>${this.label||""}</label>
 		<div class="wrapper" @click=${this.onClick} ?has-value=${!!this.value}>
 			<slot name="prefix"></slot>
 			<input class="input" type="${this.type}" 
 				placeholder="${this.placeholder || ''}"
 				pattern="${this.pattern}"
 				?disabled=${this.disabled} @change=${this.onChange} value="${this.value}" />
-			<label class="btn">
+			<div class="btn">
 				<div class="text"><flow-i18n text="${this.btnText || 'Apply'}"></flow-i18n></div>
-			</label>
+			</div>
 			<slot name="sufix"></slot>
 		</div>
 		`;
