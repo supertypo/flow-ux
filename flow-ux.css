@@ -47,6 +47,8 @@ body{
 
     --flow-data-field-caption: #000;
     --flow-data-field-caption-shawod: #0382a8;
+
+    --flow-input-placeholder: #888;
 }
 
 body.flow-theme-dark{
@@ -67,6 +69,7 @@ body.flow-theme-dark{
     --flow-tab-active-bg-top: #232323; /* can not have this different color as tab can be as high as multiple rows... */
     --flow-tab-active-bg-bottom: #232323;
     --flow-input-bg: #2f2f2f;
+    --flow-input-placeholder: #aaa;
     --flow-checkbox-checked-bg:#b1b1b1;
     --flow-list-item-border:1px solid #585858;
     --flow-list-item-active-border:1px solid var(--flow-primary-color);
@@ -76,6 +79,7 @@ body.flow-theme-dark{
 
     --flow-data-field-caption: #fff;
     --flow-data-field-caption-shawod: #0382a8;
+
 }
 
 .hide{display:none;}
