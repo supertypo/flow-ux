@@ -42,7 +42,7 @@ export class FlowFolderInput extends BaseElement {
 				font-weight:var(--flow-font-weight, bold);
 				width:var(--flow-folder-input-width, 100%);
 				min-width:var(--flow-folder-input-min-width, 100px);
-				max-width:var(--flow-folder-input-max-width, 500px);
+				max-width:var(--flow-folder-input-max-width, 100%);
 			}
 			:host(:not([disabled])) label,
 			:host(:not([disabled])) label input{
