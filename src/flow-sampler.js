@@ -2,13 +2,22 @@ import {flow, dpc} from './base-element.js';
 
 if(!flow.samplers) {
 	flow.samplers = {
-		inst : { },
+        inst : { },
+        sinks : [ ],
 		get : (ident, options) => {
 			let sampler = flow.samplers.inst[ident];
 			if(!sampler)
 				sampler = flow.samplers.inst[ident] = new FlowSampler(ident, options);
 			return sampler;
-		}
+        },
+        registerSink : (fn) => {
+            flow.samplers.sinks.push(fn);
+        },
+        unregisterSink : (fn) => {
+            let idx = flow.samplers.sinks.indexOf(fn);
+            if(idx >= 0)
+                flow.samplers.sinks.splice(idx, 1);
+        }        
 	}
 }
 
@@ -26,7 +35,6 @@ export class FlowSampler {
 		this.options = options;
 		this.generator = this.options.generator;
         this.data = [ ];
-        this.sinks = [ ];
 		this.eventHandlers = new Map();
 		this.eventHandlers.set("data", new Map());
 
@@ -81,7 +89,7 @@ export class FlowSampler {
 		while(data.length > max)
 			data.shift();
         this.fire('data', {ident,data});
-        sinks.forEach((sink) => {
+        flow.samplers.sinks.forEach((sink) => {
             sink(ident, value, date);
         })
     }
@@ -130,13 +138,5 @@ export class FlowSampler {
 		//document.body.removeEventListener(`flow-sampler-${name}-${this.ident}`, fn);
     }
     
-    registerSink(fn) {
-        this.sinks.push(fn);
-    }
 
-    unregisterSink(fn) {
-        let idx = this.sinks.indexOf(fn);
-        if(idx >= 0)
-            this.sinks.splice(idx, 1);
-    }
 }
