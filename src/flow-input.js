@@ -84,6 +84,7 @@ export class FlowInput extends BaseElement {
     			border-bottom-left-radius: 8px;
 			}
 			.input:focus{outline:none}
+			.input::-webkit-input-placeholder { color: var(--flow-input-placeholder, #888 ); }
 			label .text{
 				z-index:1;
 			}
@@ -131,7 +132,7 @@ export class FlowInput extends BaseElement {
 			<input class="input" type="${this.type}" 
 				placeholder="${this.placeholder || ''}"
 				pattern="${this.pattern}"
-				?disabled=${this.disabled} @change=${this.onChange} />
+				?disabled=${this.disabled} @change=${this.onChange} value="${this.value}" />
 			<label class="btn">
 				<div class="text"><flow-i18n text="${this.btnText || 'Apply'}"></flow-i18n></div>
 			</label>
