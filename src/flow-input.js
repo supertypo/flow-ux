@@ -88,12 +88,13 @@ export class FlowInput extends BaseElement {
 			label .text{
 				z-index:1;
 			}
-			.value{
+			.input{
 				position:relative;
 			    display: flex;
 			    align-items: center;
 			    padding: 0px 30px 0px 5px;
 				box-sizing: border-box;
+				/*
 				margin-right:var(--flow-input-vmr, 2px);
 				flex:1;
 				height:32px;
@@ -101,7 +102,9 @@ export class FlowInput extends BaseElement {
 				border-radius:8px;
 				border-top-right-radius: var(--flow-input-trbr, 4px);
     			border-bottom-right-radius: var(--flow-input-brbr, 4px);
-    			background-color:var(--flow-input-bg, inherit);
+				*/
+				background-color:var(--flow-input-bg, inherit);
+				color:var(--flow-input-color, inherit);
 			}
 			:host([disabled]) .value{
 				padding-right:10px;
