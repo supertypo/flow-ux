@@ -63,7 +63,7 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 			.prefix{opacity:0.9;margin-right:3px;margin-top:3px; font-size: 10px; }
 			.suffix{opacity:0.9;margin-left:3px;margin-top:3px; font-size: 10px; }
 			.col { display: flex; flex-direction: column; align-items: left;  }
-			.row { display: flex; flex-direction: row; flex:0; }
+			.row { display: flex; flex-direction: row; flex:0; color: var(--flow-data-field-value,#333); }
 
 
 			.wrapper {

@@ -48,6 +48,8 @@ body{
     --flow-data-field-caption: #000;
     --flow-data-field-caption-shawod: #0382a8;
 
+    --flow-input-color: black;
+    --flow-input-bg: white;
     --flow-input-placeholder: #888;
 }
 
@@ -68,8 +70,6 @@ body.flow-theme-dark{
     --flow-tab-bg-bottom: #363537;
     --flow-tab-active-bg-top: #232323; /* can not have this different color as tab can be as high as multiple rows... */
     --flow-tab-active-bg-bottom: #232323;
-    --flow-input-bg: #2f2f2f;
-    --flow-input-placeholder: #aaa;
     --flow-checkbox-checked-bg:#b1b1b1;
     --flow-list-item-border:1px solid #585858;
     --flow-list-item-active-border:1px solid var(--flow-primary-color);
@@ -77,9 +77,13 @@ body.flow-theme-dark{
     --flow-list-item-active-bg:var(--flow-primary-color);
     --flow-list-item-active-color:#FFF;
 
-    --flow-data-field-caption: #fff;
-    --flow-data-field-caption-shawod: #0382a8;
+    --flow-data-field-value: #fff;
+    --flow-data-field-caption: #ccc;
+    --flow-data-field-caption-shadow: #0382a8;
 
+    --flow-input-bg: #2f2f2f;
+    --flow-input-color: var(--flow-color, #b1b1b1);
+    --flow-input-placeholder: #555;
 }
 
 .hide{display:none;}
