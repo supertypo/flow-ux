@@ -66,7 +66,7 @@ export class FlowInput extends BaseElement {
 				font-size:0.7rem;padding:2px 5px;
 				border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:8px;
-    			margin-left:16px;z-index:1;
+    			margin-left:10px;z-index:1;
     			position:relative;background-color:var(--flow-input-bg, inherit);
 			}
 			.btn{
