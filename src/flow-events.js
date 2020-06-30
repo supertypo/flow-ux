@@ -1,14 +1,4 @@
-let dpc = (t, fn)=>{
-	if(typeof(t) == 'function')
-		return setTimeout(t, fn||0);
-	return setTimeout(fn, t||0);
-}
-
-let UID = ()=>{
-	return Date.now()+":"+Math.ceil(Math.random()*1e16);
-}
-
-export {dpc, UID};
+import {dpc, UID} from './helpers.js';
 
 export class FlowEvents{
 

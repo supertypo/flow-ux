@@ -1,4 +1,5 @@
-import {FlowEvents, UID, dpc} from './flow-events.js';
+import {FlowEvents} from './flow-events.js';
+import {dpc, UID} from './helpers.js';
 
 export * from './flow-events.js';
 export class FlowSocketIORPC {
