@@ -4,9 +4,13 @@ import {BaseElement, html, css} from './base-element.js';
 
 import '../resources/extern/colors/extend-string-prototypes.js';
 
-import '/node_modules/xterm/lib/xterm.js';
-import '/node_modules/xterm-addon-fit/lib/xterm-addon-fit.js';
-import '/node_modules/xterm-addon-web-links/lib/xterm-addon-web-links.js';
+import '../resources/extern/xterm/lib/xterm.js';
+import '../resources/extern/xterm-addon-fit/lib/xterm-addon-fit.js';
+import '../resources/extern/xterm-addon-web-links/lib/xterm-addon-web-links.js';
+
+// import '/node_modules/xterm/lib/xterm.js';
+// import '/node_modules/xterm-addon-fit/lib/xterm-addon-fit.js';
+// import '/node_modules/xterm-addon-web-links/lib/xterm-addon-web-links.js';
 
 /**
 * @class FlowTerminal
@@ -377,8 +381,9 @@ export class FlowTerminal extends BaseElement {
 	    	fit : new FitAddon.FitAddon()
 	    };
 
-	    $(this.terminalHolder).on("keydown", e=>{
-			//this.log("e.key", e.key)
+//	    $(this.terminalHolder).on("keydown", e=>{
+		this.terminalHolder.addEventListener("keydown", e=>{
+				//this.log("e.key", e.key)
 			if(e.ctrlKey || e.metaKey) {
 				if(e.key == "+" || e.key == "="){
 					this.setFontSizeDelta(1, e);
@@ -583,7 +588,8 @@ export class FlowTerminal extends BaseElement {
 	updateTerminalSize() {
 		let term = this.term;
 		//this.log("updateTerminalSize", this, this.term)
-		if(!$(this).width() || !term)
+//		if(!$(this).width() || !term)
+		if(!this.offsetWidth || !term)
 			return
 		let charSizeService = term._core._charSizeService
 		if(charSizeService && !charSizeService.hasValidSize){
