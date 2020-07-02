@@ -54,6 +54,10 @@ export class FlowInput extends BaseElement {
 				cursor:pointer;
 			}
 			
+			:host(:not([apply-btn])) .btn{
+				display: none;
+			}
+			
 			.wrapper{
 				display:flex;
 				align-items:stretch;
