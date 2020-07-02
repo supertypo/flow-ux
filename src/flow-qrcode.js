@@ -39,6 +39,12 @@ export class FlowQRCode extends BaseElement {
 				min-height: 32px;
 */				
 			}
+
+			img {
+				width: 100%;
+				height: 100%;
+				image-rendering: pixelated;
+			}
 		`;
 	}
 
@@ -67,12 +73,12 @@ export class FlowQRCode extends BaseElement {
 			
 			this.data_last_ = this.data;
 
-			let qr = this.createQRCode(this.data, this.ntype, this.ecl, this.mode, this.multibyte);
+			this.qr = this.createQRCode(this.data, this.ntype, this.ecl, this.mode, this.multibyte);
 
 
-			let template = document.createElement('template');
-			template.innerHTML = qr.trim();
-			this.qr = template.content.firstChild.cloneNode(true);
+			// let template = document.createElement('template');
+			// template.innerHTML = qr.trim();
+			// this.qr = template.content.firstChild.cloneNode(true);
 		//this.svg = template.content.firstChild.cloneNode(true);
 
 		}
@@ -90,7 +96,13 @@ export class FlowQRCode extends BaseElement {
 	
 	//  return qr.createTableTag();
 	//  return qr.createSvgTag();
-	  return qr.createImgTag(5);
+		let cellSize = 2;
+		let margin = cellSize * 4;
+
+
+		return html`<img src="${qr.createDataURL(cellSize, margin)}">`;
+
+//		return qr.createImgTag(2);
 	};
 	
 
