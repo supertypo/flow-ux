@@ -259,7 +259,7 @@ export class FlowSocketIONATS extends FlowSocketIO {
 			callback
 		})
 
-		this.socket.emit('rpc.req', { 
+		this.socket.emit('request', { 
 			rid,
 			req : {subject, data}
 		});
