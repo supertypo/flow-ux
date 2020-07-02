@@ -1,4 +1,4 @@
-import {BaseElement, html, css} from './base-element.js';
+import {BaseElement, html, css, baseUrl} from './base-element.js';
 
 if(!window.__FLOW__QRCODE__){
 	let qrcode = document.createElement("script");
