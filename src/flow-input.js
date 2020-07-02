@@ -94,14 +94,24 @@ export class FlowInput extends BaseElement {
 			.input{
 				flex:1;box-sizing:border-box;
 			    border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
-			    border-right-width:0px;
-			    border-top-left-radius: 8px;
-    			border-bottom-left-radius: 8px;
+				/*
+				border-top-left-radius: 8px;
+				border-bottom-left-radius: 8px;
+				*/
+				border-radius: 8px;
     			margin:0px;
     			padding:15px 30px 10px 10px;
 				background-color:var(--flow-input-bg, inherit);
 				color:var(--flow-input-color, inherit);
 			}
+
+			:host([apply-btn]) .input{
+			    border-right-width:0px;
+				border-top-right-radius: 0px;
+				border-bottom-right-radius: 0px;
+			}
+
+
 			.input:focus{outline:none}
 			.input::-webkit-input-placeholder { color: var(--flow-input-placeholder, #888 ); }
 			:host([disabled]) .value{
