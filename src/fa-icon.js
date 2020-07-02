@@ -41,7 +41,7 @@ export class FaIcon extends BaseElement {
 		this.src = '';
 		this.style = '';
 		this.size = 19;
-		this.color = '#000';
+		this.color = '';
 	}
 	firstUpdated() {
 		//this.src = this.getSources(this.class_);

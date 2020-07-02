@@ -14,6 +14,7 @@ export * from './src/flow-form-control.js';
 export * from './src/flow-folder-input.js';
 export * from './src/flow-input.js';
 export * from './src/flow-expandable.js';
+export * from './src/flow-qrcode.js';
 export * from './src/flow-btn.js';
 export * from './src/flow-shell-link.js';
 export * from './src/flow-window-link.js';
@@ -30,4 +31,5 @@ export * from './src/flow-d3.js';
 export * from './src/flow-graph.js';
 export * from './src/flow-sampler.js';
 export * from './src/base-element.js';
+export * from './src/flow-socketio-rpc.js';
 

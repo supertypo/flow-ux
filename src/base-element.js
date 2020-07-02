@@ -3,70 +3,9 @@ import {LitElement, html, css} from 'lit-element';
 export * from 'lit-element';
 export * from 'lit-html/lit-html.js';
 
-export const storage = () => {
-	if(typeof global != 'undefined')
-		return global
-	if(typeof globalThis != 'undefined')
-		return globalThis
-	return  window;
-}
+import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon} from './helpers.js';
 
-const universe = storage();
-const default_flow_global = { }
-export const flow = universe.flow = (universe.flow || default_flow_global);
-
-let {debug, baseUrl, theme} = window.flowConfig || {}
-let {iconPath, icons, resolveIcon, iconMap, iconFile} = theme || {};
-
-if(!baseUrl){
-	baseUrl = (new URL("../", import.meta.url)).href;
-	debug && console.log("FlowUX: baseUrl", baseUrl)
-}
-
-let IconMap = Object.assign({
-	fal:'light',
-	far:'regular',
-	fab:'brands',
-	fa: 'solid',
-	fas:'solid'
-}, iconMap || {});
-
-iconFile = iconFile||'icons';
-let NativeIcons = baseUrl+'resources/icons/sprites/';
-let FlowIconPath = iconPath || '/resources/fonts/sprites/';//NativeIcons;
-let FlowIcons = icons || {};
-
-if(!resolveIcon){
-	resolveIcon = (cname, name, i)=>{
-		if(!name)
-			return `${cname}:invalid icon`;
-		if(/\.(.{3,4}|.{3,4}#.*)$/.test(name))
-			return name
-		
-		let icon = FlowIcons[`${cname}:${name}${i?'-'+i:''}`]
-			||FlowIcons[name]
-			||(name.indexOf(":")>-1?name:iconFile+':'+name);
-
-		if(/\.(.{3,4}|.{3,4}#.*)$/.test(icon))
-			return icon
-
-		let [file, hash] = icon.split(":");
-		if(file == "icons")
-			return `${NativeIcons}icons.svg#${hash}`;
-		return `${FlowIconPath}${IconMap[file]||file}.svg#${hash}`;
-	}
-}
-
-// console.log("FlowIcons", FlowIcons)
-
-let dpc = (delay, fn)=>{
-	if(typeof delay == 'function')
-		return setTimeout(delay, fn||0);
-	return setTimeout(fn, delay||0);
-}
-
-export {baseUrl, debug, FlowIconPath, FlowIcons, dpc};
-
+export * from './helpers.js';
 /**
 * @class BaseElement
 * @extends LitElement
@@ -220,11 +159,11 @@ export class BaseElement extends LitElement{
 	* @since 0.0.1
 	*/
 	debounce(name, fn, time){
-		this._debounce = this._debounce || {};
-		if(this._debounce[name])
-			this._debounce[name].cancel();
+		this._debounce = this._debounce || new Map();
+		if(this._debounce.has(name))
+			this._debounce.get(name).cancel();
 
-		this._debounce[name] = {
+		this._debounce.set(name, {
 			id:setTimeout(fn, time),
 			cancel(){
 				if(!this.id){
@@ -233,9 +172,9 @@ export class BaseElement extends LitElement{
 				}
 
 			}
-		}
+		})
 
-		return this._debounce[name];
+		return this._debounce.get(name);
 	}
 
 	buildUrl(url){

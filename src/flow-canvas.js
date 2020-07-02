@@ -55,7 +55,10 @@ export class FlowCanvasElement extends BaseElement {
 			this.resizeObserver.observe(this);
 		}
 
-		['mousedown','mouseup','mousemove','click', 'pointerdown', 'pointerup', 'pointermove','mouseenter','mouseleave'].forEach((event) => {
+		[
+			'mousedown','mouseup','mousemove','click', 'pointerdown',
+			'pointerup', 'pointermove','mouseenter','mouseleave'
+		].forEach((event) => {
 			this.addEventListener(event, (e) => { this.onMouseEvent(event,e); });
 		})
 
