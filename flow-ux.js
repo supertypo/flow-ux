@@ -35,4 +35,6 @@ export * from './src/flow-socketio.js';
 export * from './src/flow-socketio-rpc.js';
 export * from './src/flow-socketio-nats.js';
 export * from './src/flow-app.js';
+export * from './src/flow-dropdown.js';
+export * from './src/flow-menu.js';
 
