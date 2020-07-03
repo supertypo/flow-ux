@@ -91,7 +91,7 @@ export class FlowExpandable extends BaseElement {
 			font-size:0.8em;
 		}
 		:host(:not([expand])) .content{display:none}
-		:host([expand]) svg{
+		:host([expand]:not([static-icon])) svg{
 			transform:rotate(90deg)
 		}
 		`;
@@ -114,10 +114,10 @@ export class FlowExpandable extends BaseElement {
 	}
 
 	_onClick(e){
-		let $target = $(e.target).closest("[data-flow-expandable]")
-		if(!$target.length)
+		let target = e.target.closest("[data-flow-expandable]")
+		if(!target)
 			return
-		let action = $target.attr("data-flow-expandable") || 'toggle';
+		let action = target.getAttribute("data-flow-expandable") || 'toggle';
 
 		if(["toggle", "open", "close"].includes(action))
 			this[action]();

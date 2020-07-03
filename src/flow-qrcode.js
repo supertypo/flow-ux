@@ -35,14 +35,16 @@ export class FlowQRCode extends BaseElement {
 		return css`
 			:host {
 				display : block;
-/*				min-width: 32px;
+				/*
+				min-width: 32px;
 				min-height: 32px;
-*/				
+				*/
 			}
 
 			img {
 				width: 100%;
 				height: 100%;
+				object-fit: contain;
 				image-rendering: pixelated;
 			}
 		`;
@@ -68,8 +70,8 @@ export class FlowQRCode extends BaseElement {
 		}
 
 		if(!this.qr || this.data != this.data_last_) {
-//			this.qrdata = this.qrcode.createDataURL(width,height,getPixel)
-//			this.qr = this.create_qrcode(this.data);
+			//this.qrdata = this.qrcode.createDataURL(width,height,getPixel)
+			//this.qr = this.create_qrcode(this.data);
 			
 			this.data_last_ = this.data;
 
@@ -79,31 +81,25 @@ export class FlowQRCode extends BaseElement {
 			// let template = document.createElement('template');
 			// template.innerHTML = qr.trim();
 			// this.qr = template.content.firstChild.cloneNode(true);
-		//this.svg = template.content.firstChild.cloneNode(true);
-
+			//this.svg = template.content.firstChild.cloneNode(true);
 		}
 		return this.qr; //html`${this.qr}`;
 	}
 
 	createQRCode(text, typeNumber,
 		errorCorrectionLevel, mode, mb) {
-	
-	  window.qrcode.stringToBytes = window.qrcode.stringToBytesFuncs[mb];
-	
-	  var qr = qrcode(typeNumber || 4, errorCorrectionLevel || 'M');
-	  qr.addData(text, mode);
-	  qr.make();
-	
-	//  return qr.createTableTag();
-	//  return qr.createSvgTag();
+
+		window.qrcode.stringToBytes = window.qrcode.stringToBytesFuncs[mb];
+
+		var qr = qrcode(typeNumber || 4, errorCorrectionLevel || 'M');
+		qr.addData(text, mode);
+		qr.make();
 		let cellSize = 2;
 		let margin = cellSize * 4;
 
 
 		return html`<img src="${qr.createDataURL(cellSize, margin)}">`;
-
-//		return qr.createImgTag(2);
-	};
+	}
 	
 
 /*
