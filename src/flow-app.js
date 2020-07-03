@@ -9,6 +9,16 @@ export class FlowApp {
 		this.uid = UID();
 	}
 
+	static setTheme(theme) {
+		const body = document.querySelector('body');
+
+		[...body.classList]
+		.filter(cls=>cls.startsWith('flow-theme'))
+		.forEach(cls=>body.classList.remove(cls));
+
+		body.classList.add(`flow-theme-${theme}`);
+	}
+
 	initSocketIORPC(){
 
 		this.rpc = new FlowSocketIORPC({
