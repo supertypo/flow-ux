@@ -9,7 +9,7 @@ export class FlowApp {
 		this.uid = UID();
 	}
 
-	init_SocketIO_RPC(){
+	initSocketIORPC(){
 
 		this.rpc = new FlowSocketIORPC({
 			path:"/rpc"
@@ -24,7 +24,7 @@ export class FlowApp {
 		})
 	}
 
-	init_SocketIO_NATS(){
+	initSocketIONATS(){
 
 		this.nats = new FlowSocketIONATS({
 			path:"/nats"
