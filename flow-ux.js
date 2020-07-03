@@ -31,5 +31,8 @@ export * from './src/flow-d3.js';
 export * from './src/flow-graph.js';
 export * from './src/flow-sampler.js';
 export * from './src/base-element.js';
+export * from './src/flow-socketio.js';
 export * from './src/flow-socketio-rpc.js';
+export * from './src/flow-socketio-nats.js';
+export * from './src/flow-app.js';
 
