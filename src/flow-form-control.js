@@ -81,7 +81,7 @@ export class FlowFormControl extends BaseElement {
 			<div class="icon-box"><svg><use href="${iconSrc}"></use></svg></div>
 			<div class="input-box">
 				<label class="title-box"><slot name="title"></slot></label>
-				<div class="input"><slot></slot></div>
+				<div class="input"><slot></slot><slot name="input"></slot></div>
 			</div>
 			<div class="info-box"><slot name="info"></slot></div>
 		`;
