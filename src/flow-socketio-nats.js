@@ -4,10 +4,12 @@ import {dpc, UID} from './helpers.js';
 export class FlowSocketIONATS extends FlowSocketIO {
 	constructor(options) {
 		super(options);
+		// this.trace = true;
 	}
 
-	initSocket() {
+	initSocketHandlers() {
 		this.socket.on('message', msg=>{
+			this.trace && console.log("sio/message",msg);
 			let {subject, data} = msg;
 			if(msg.op){
 				subject = msg.op;
@@ -24,6 +26,7 @@ export class FlowSocketIONATS extends FlowSocketIO {
 		})
 
 		this.socket.on('publish::response', (msg)=>{
+			this.trace && console.log("sio/publish::response",msg);
 			let {rid, error, data} = msg;
 			let info = rid && this.pending.get(rid);
 			if(info)
@@ -36,6 +39,7 @@ export class FlowSocketIONATS extends FlowSocketIO {
 
 
 		this.socket.on('request', (msg)=>{
+			this.trace && console.log("sio/request",msg);
 			let { req : { subject, data }, rid } = msg;
 			
 			// TODO - check this.events for handlers
@@ -43,6 +47,7 @@ export class FlowSocketIONATS extends FlowSocketIO {
 
 
 		this.socket.on('publish', (msg)=>{
+			this.trace && console.log("sio/publish",msg);
 			let { req : { subject, data } } = msg;
 			this.events.emit(subject, data);
 			
@@ -50,6 +55,7 @@ export class FlowSocketIONATS extends FlowSocketIO {
 		})
 
 		this.socket.on('response', (msg)=>{
+			this.trace && console.log("sio/response",msg);
 			let {rid, error, data} = msg;
 			let info = rid && this.pending.get(rid);
 			if(info)
