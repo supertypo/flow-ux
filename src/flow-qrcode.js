@@ -47,6 +47,9 @@ export class FlowQRCode extends BaseElement {
 				object-fit: contain;
 				image-rendering: pixelated;
 			}
+			:host(.left-img) img{
+				object-position:left;
+			}
 		`;
 	}
 
