@@ -6,10 +6,13 @@ const storage = () => {
 	return  window;
 }
 
-const UID = ()=>{
-	return Date.now()+":"+Math.ceil(Math.random()*1e16);
+let uid_vec = new Uint32Array(6);
+const UID = (len = 26)=>{
+	window.crypto.getRandomValues(uid_vec);
+	return [...uid_vec].map(v=>bs58e(v)).join('').substring(0,len);
 }
 
+window.UID = UID;
 const universe = storage();
 const default_flow_global = { }
 const flow = universe.flow = (universe.flow || default_flow_global);
@@ -65,3 +68,18 @@ const dpc = (delay, fn)=>{
 }
 export {IconMap, FlowIcons, NativeIcons, dpc}
 export {baseUrl, debug, FlowIconPath, flow, UID, storage, resolveIcon};
+
+
+const bs58e = (function() {
+    var alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
+        base = alphabet.length;
+    return function(enc) {
+		var encoded = '';
+		while(enc) {
+			var remainder = enc % base;
+			enc = Math.floor(enc / base);
+			encoded = alphabet[remainder].toString() + encoded;        
+		}
+		return encoded;
+	}
+})();
