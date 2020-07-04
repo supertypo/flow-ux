@@ -4,7 +4,10 @@ import {dpc, UID} from './helpers.js';
 export class FlowSocketIONATS extends FlowSocketIO {
 	constructor(options) {
 		super(options);
-		// this.trace = true;
+		this.trace = true;
+		this.subscribers = { }
+		this.subscriberIdentMap = { }
+		this.handlers = { }
 	}
 
 	initSocketHandlers() {
@@ -37,6 +40,41 @@ export class FlowSocketIONATS extends FlowSocketIO {
 			rid && this.pending.delete(rid);
 		})
 
+		this.socket.on('subscribe::response', (msg)=>{
+			this.trace && console.log("sio/subscribe::response",msg);
+			let {rid, error, ident, subject} = msg;
+			let info = rid && this.pending.get(rid);
+			if(info) {
+				info.callback.call(this, error, ident);
+				let handler = this.handlers[rid];
+				if(!error && subject?.length && handler) {
+					let subscribers = this.subscribers[subject];
+					if(!subscribers)
+						subscribers = this.subscribers[subject] = [];
+					subscribers.push({ ident, handler });
+					delete this.handlers[rid];
+
+//					this.subscriberIdentMap[ident] = 
+				}
+			}
+			else if(rid)
+				console.log("RPC received unknown subscribe::response rid");
+
+			rid && this.pending.delete(rid);
+		})
+
+		this.socket.on('unsubscribe::response', (msg)=>{
+			this.trace && console.log("sio/subscribe::response",msg);
+			let {rid, error} = msg;
+			let info = rid && this.pending.get(rid);
+			if(info)
+				info.callback.call(this, error);
+			else if(rid)
+				console.log("RPC received unknown unsubscribe::response rid");
+
+			rid && this.pending.delete(rid);
+		})
+
 
 		this.socket.on('request', (msg)=>{
 			this.trace && console.log("sio/request",msg);
@@ -48,9 +86,11 @@ export class FlowSocketIONATS extends FlowSocketIO {
 
 		this.socket.on('publish', (msg)=>{
 			this.trace && console.log("sio/publish",msg);
-			let { req : { subject, data } } = msg;
+			let { subject, data } = msg;
 			this.events.emit(subject, data);
-			
+			const subscribers = this.subscribers[subject];
+			if(subscribers?.length)
+				subscribers.forEach(subscriber=>subscriber.handler(data));
 			// TODO - check this.events for handlers
 		})
 
@@ -126,13 +166,13 @@ export class FlowSocketIONATS extends FlowSocketIO {
 	}
 
 
-	subscribe(subject, msg) {
+	subscribe(subject, handler, opt) {
 		return new Promise((resolve, reject) => {
 			let rid = UID();
 
-			let ack = !!callback;
-
-			ack && this.pending.set(rid, {
+			this.handlers[rid] = handler;
+			
+			this.pending.set(rid, {
 				ts:Date.now(),
 				callback : (err)=>{
 					return err ? reject(err) : resolve();
@@ -140,9 +180,8 @@ export class FlowSocketIONATS extends FlowSocketIO {
 			})
 
 			this.socket.emit('subscribe', {
-				req : { subject, data },
-				rid,
-				ack
+				req : { subject, opt },
+				rid
 			})
 		})	
 	}
