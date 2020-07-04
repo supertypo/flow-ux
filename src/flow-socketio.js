@@ -45,14 +45,14 @@ export class FlowSocketIO {
 		})
 		this.socket.on('connect', ()=>{
 			console.log("RPC connected");
-			this.events.emit('rpc-connect');
+			this.events.emit('connect');
 		})
 		this.socket.on('connect_error', (err)=>{
-			this.events.emit('rpc-connect-error', err);
+			this.events.emit('connect.error', err);
 		})
 		this.socket.on('error', (...args)=>{ 
 			console.log("RPC error", args);
-			this.events.emit('rpc-error', args);
+			this.events.emit('error', args);
 		})
 		this.socket.on('offline', ()=>{
 			//window.location.reload();
@@ -61,7 +61,7 @@ export class FlowSocketIO {
 		this.socket.on('disconnect', ()=>{ 
 			this.online = false;
 			console.log("RPC disconnected", arguments);
-			this.events.emit('rpc-disconnect');
+			this.events.emit('disconnect');
 
 			this.pending.forEach((info, id)=>{
 				info.callback({ error : "Connection Closed"});

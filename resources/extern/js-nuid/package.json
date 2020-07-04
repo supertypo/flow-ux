@@ -1,0 +1,48 @@
+{
+  "_from": "js-nuid@^1.1.1-4",
+  "_id": "js-nuid@1.1.1-6",
+  "_inBundle": false,
+  "_integrity": "sha512-c8hMYsdHFCItZixMMfxkdvHEC/q9GlVjJUDF9bieu4epPjGHNrTf5qXKTXX5LlrwBGbM9i0C/dS/LquzQUxrVA==",
+  "_location": "/js-nuid",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "js-nuid@^1.1.1-4",
+    "name": "js-nuid",
+    "escapedName": "js-nuid",
+    "rawSpec": "^1.1.1-4",
+    "saveSpec": null,
+    "fetchSpec": "^1.1.1-4"
+  },
+  "_requiredBy": [
+    "/nats.ws"
+  ],
+  "_resolved": "https://registry.npmjs.org/js-nuid/-/js-nuid-1.1.1-6.tgz",
+  "_shasum": "b9d3d8ab26f2c0cb5152434f2554629bf3b149c9",
+  "_spec": "js-nuid@^1.1.1-4",
+  "_where": "C:\\dev\\finfr\\node_modules\\nats.ws",
+  "author": {
+    "name": "NATS Authors"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Nuid for javascript",
+  "keywords": [
+    "nuid",
+    "nats-io"
+  ],
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "name": "js-nuid",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com//nats-io/js-nuid"
+  },
+  "scripts": {
+    "prepare": "npm run test",
+    "test": "deno fmt --check index.js && deno test"
+  },
+  "type": "module",
+  "version": "1.1.1-6"
+}
