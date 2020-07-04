@@ -48,7 +48,10 @@ export class FlowSocketIONATS extends FlowSocketIO {
 
 		this.socket.on('publish', (msg)=>{
 			this.trace && console.log("sio/publish",msg);
-			let { req : { subject, data } } = msg;
+			let {req} = msg;
+			let { subject, data } = req || {};
+			if(!subject)
+				return
 			this.events.emit(subject, data);
 			
 			// TODO - check this.events for handlers
@@ -101,7 +104,7 @@ export class FlowSocketIONATS extends FlowSocketIO {
 		});
 	}
 
-	publish(subject, msg, callback) {
+	publish(subject, data, callback) {
 		return new Promise((resolve, reject) => {
 			let rid = UID();
 
@@ -126,16 +129,21 @@ export class FlowSocketIONATS extends FlowSocketIO {
 	}
 
 
-	subscribe(subject, msg) {
+	subscribe(subject, data, callback) {
 		return new Promise((resolve, reject) => {
 			let rid = UID();
+
+			if(typeof(data)=='function'){
+				callback = data;
+				data = undefined;
+			}
 
 			let ack = !!callback;
 
 			ack && this.pending.set(rid, {
 				ts:Date.now(),
-				callback : (err)=>{
-					return err ? reject(err) : resolve();
+				callback:(err)=>{
+					return err?reject(err):resolve();
 				}
 			})
 
