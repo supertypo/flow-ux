@@ -4,7 +4,7 @@ import {dpc, UID} from './helpers.js';
 export class FlowSocketIONATS extends FlowSocketIO {
 	constructor(options) {
 		super(options);
-		this.trace = true;
+		this.trace = false;
 		this.subscribers = { }
 		this.subscriberIdentMap = { }
 		this.handlers = { }

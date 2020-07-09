@@ -35,6 +35,7 @@ export class FlowDropdown extends BaseElement {
 			padding:16px;border-radius:3px;
 			border:none;
 			cursor:pointer;user-select:none;
+			width:var(--flow-dropdown-trigger-width, 80px)
 		}
 
 		.trigger:hover, .trigger:focus {
@@ -46,7 +47,7 @@ export class FlowDropdown extends BaseElement {
 			display:none;
 			position:absolute;
 			background-color:var(--flow-dropdown-bg, #FFF);
-			min-width:160px;
+			min-width:var(--flow-dropdown-content-min-width, 160px);
 			overflow:auto;border-radius:3px;
 			box-shadow:var(--flow-box-shadow);
 			z-index:1000;
@@ -70,6 +71,11 @@ export class FlowDropdown extends BaseElement {
 		this.renderRoot
 			//.querySelector(".trigger")
 			.addEventListener("click", this._onClick.bind(this));
+		this.dropdownEl = this.renderRoot.querySelector(".dropdown");
+		this.dropdownContentEl = this.renderRoot.querySelector(".dropdown-content");
+	}
+	updated(){
+		this.updateDropdownSize();
 	}
 
 	_onClick(e){
@@ -93,14 +99,81 @@ export class FlowDropdown extends BaseElement {
 		if(!dropdown || dropdown!=this)
 			this.opened = false;
 	}
+	onWindowResize(){
+		this.updateDropdownSize();
+	}
+	onParentScroll(){
+		this.updateDropdownSize();
+	}
+	updateDropdownSize(){
+		let {dropdownContentEl, dropdownEl} = this;
+		if(!dropdownContentEl || !dropdownEl)
+			return
+
+		//let box = dropdownContentEl.getBoundingClientRect();
+		let firstScrollParent = this.scrollParants[0];
+		let firstScrollParentBox = firstScrollParent.getBoundingClientRect();
+		let parentBox = dropdownEl.getBoundingClientRect();
+
+		let topMargin = Math.max(parentBox.top - firstScrollParentBox.top, 0);
+		let top = Math.max(firstScrollParentBox.top - parentBox.top, 0);
+		let height = firstScrollParentBox.height - topMargin - 20
+
+		let leftMargin = Math.max(parentBox.left - firstScrollParentBox.left, 0);
+		let left = Math.max(firstScrollParentBox.left - parentBox.left, 0);
+		let width = firstScrollParentBox.width - leftMargin - 20
+
+		/*this.log("width, height",
+			top,
+			topMargin,
+			firstScrollParent.scrollTop,
+			firstScrollParentBox,
+			parentBox,
+			width,
+			height
+		)*/
+		dropdownContentEl.style.transform = `translate(${left}px, ${top}px)`;
+		dropdownContentEl.style.maxWidth = width+"px";
+		dropdownContentEl.style.maxHeight = height+"px";
+
+	}
 	connectedCallback(){
     	super.connectedCallback();
-    	this._onWindowClick = this._onWindowClick || this.onWindowClick.bind(this);
+    	this._onWindowClick = this._onWindowClick||this.onWindowClick.bind(this);
+    	this._onWindowResize = this._onWindowResize||this.onWindowResize.bind(this);
+    	this._onParentScroll = this._onParentScroll||this.onParentScroll.bind(this);
     	window.addEventListener("click", this._onWindowClick, {capture:true})
+    	window.addEventListener("resize", this._onWindowResize, {capture:true})
+    	this.scrollParants = this.findScrollParents();
+    	this.scrollParants.forEach(p=>{
+    		p.addEventListener("scroll", this._onParentScroll);
+    	})
     }
 	disconnectedCallback(){
     	super.disconnectedCallback();
-    	window.removeEventListener("click", this._onWindowClick)
+    	window.removeEventListener("click", this._onWindowClick);
+    	window.removeEventListener("resize", this._onWindowResize);
+    	this.scrollParants.forEach(p=>{
+    		p.removeEventListener("scroll", this._onParentScroll);
+    	})
+    }
+    findScrollParents(){
+    	let list = [];
+    	let p = this.parentNode;
+    	while(p){
+    		if(!(p instanceof HTMLElement))
+    			break;
+    		if(this.isScrollEl(p))
+    			list.push(p);
+    		p = p.parentNode;
+    	}
+
+    	return list;
+    }
+
+    isScrollEl(element){
+    	const { overflow, overflowX, overflowY } = getComputedStyle(element);
+  		return /auto|scroll|overlay|hidden/.test(overflow + overflowY + overflowX);
     }
 }
 
