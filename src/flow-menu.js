@@ -16,7 +16,7 @@ import {BaseElement, html, css} from './base-element.js';
 export class FlowMenu extends BaseElement {
 	static get properties() {
 		return {
-			selected:{type:Array},
+			selected:{type:Object},
 			selector:{type:String},
 			valueAttr:{type:String},
 			multiple:{type:Boolean}
@@ -35,6 +35,7 @@ export class FlowMenu extends BaseElement {
 		
 		::slotted(flow-menu-item),
 		::slotted(.menu-item){
+			box-sizing:border-box;
 			cursor:pointer;padding:10px;margin:1px;user-select:none;
 			background-color:var(--flow-menu-item-bg, #FFF);
 			color:var(--flow-menu-item-color, #000);
@@ -54,18 +55,28 @@ export class FlowMenu extends BaseElement {
 			flex-wrap:wrap;
 			width:var(--flow-menu-grid-width, 500px);
 		}
-		:host(.grid) ::slotted(flow-menu-item),
-		:host(.grid) ::slotted(.menu-item){
-			flex:1;
-			min-width:calc(20% - 5px);
+		:host(.grid.full){
+			width:var(--flow-menu-gridfull-width, 1000px);
+		}
+		:host(.grid:not(.full)) ::slotted(flow-menu-item),
+		:host(.grid:not(.full)) ::slotted(.menu-item){
+			min-width:calc(20% - 2px);
+			max-width:calc(20% - 2px);
+		}
+		:host(.grid.full) ::slotted(flow-menu-item),
+		:host(.grid.full) ::slotted(.menu-item){
+			min-width:var(--flow-menu-gridfull-item-min-width, 100px);
+			max-width:var(--flow-menu-gridfull-item-max-width, initial);
+			flex:var(--flow-menu-gridfull-item-flex, 1);
 		}
 		`;
 	}
 	constructor(){
 		super();
-		this.selected = [];
+		this.selected = "";
 		this.selector = "flow-menu-item, .menu-item";
 		this.valueAttr = "value";
+		this._selected = []
 	}
 	render(){
 		return html`
@@ -84,7 +95,32 @@ export class FlowMenu extends BaseElement {
 			this.updateList();
 		});
 	}
-	updated(){
+	updated(changes){
+		if(changes.has("selected")){
+			//let selected = changes.get("selected")
+			
+			let {selected} = this;
+			//this.log("changes", changes, selected)
+			if(this.multiple){
+				if(!Array.isArray(selected)){
+					if(selected !== undefined)
+						selected = [selected];
+					else
+						selected = [];
+				}
+			}else{
+				if(Array.isArray(selected))
+					selected = selected[0];
+				if(selected !== undefined)
+					selected = [selected];
+				else
+					selected = []
+			}
+			selected = selected.filter(s=>s!==undefined).map(s=>s+"");
+			this.log("updated:selected", selected)
+			this._selected = selected;
+			this.updateList()
+		}
 		this.updateList()
 	}
 
@@ -99,7 +135,7 @@ export class FlowMenu extends BaseElement {
 	}
 
 	isSelected(value){
-		return this.selected.includes(value);
+		return this._selected.includes(value);
 	}
 
 	_onClick(e){
@@ -113,20 +149,23 @@ export class FlowMenu extends BaseElement {
 			this.selectOne(value)
 	}
 	selectOne(value){
-		this.selected = [value];
+		this._selected = [value];
 		this.selectionChanged();
 	}
 	toggle(value){
-		let index = this.selected.indexOf(value);
+		let index = this._selected.indexOf(value);
 		if(index<0)
-			this.selected.push(value);
+			this._selected.push(value);
 		else
-			this.selected.splice(index, 1);
+			this._selected.splice(index, 1);
 		this.selectionChanged();
 	}
 	selectionChanged(){
-		this.requestUpdate("selected", this.selected.slice(0))
-		this.fire("select", {selected:this.selected.slice(0)})
+		this.updateList()
+		let selected = this._selected.slice(0)
+		if(!this.multiple)
+			selected = selected[0];
+		this.fire("select", {selected})
 	}
 }
 
