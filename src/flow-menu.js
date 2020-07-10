@@ -16,7 +16,7 @@ import {BaseElement, html, css} from './base-element.js';
 export class FlowMenu extends BaseElement {
 	static get properties() {
 		return {
-			selected:{type:Object},
+			selected:{type:String},
 			selector:{type:String},
 			valueAttr:{type:String},
 			multiple:{type:Boolean}
@@ -104,9 +104,10 @@ export class FlowMenu extends BaseElement {
 			//let selected = changes.get("selected")
 			
 			let {selected} = this;
-			//this.log("changes", changes, selected)
+			//this.log("changes", changes, "selected:"+JSON.stringify(selected))
 			if(this.multiple){
 				if(!Array.isArray(selected)){
+					selected = JSON.parse(selected);
 					if(selected !== undefined)
 						selected = [selected];
 					else
@@ -121,15 +122,16 @@ export class FlowMenu extends BaseElement {
 					selected = []
 			}
 			selected = selected.filter(s=>s!==undefined).map(s=>s+"");
-			this.log("updated:selected", selected)
+			//this.log("updated:selected", selected)
 			this._selected = selected;
-			this.updateList()
 		}
 		this.updateList()
 	}
 
 	updateList(){
-		let list = this.renderRoot.querySelector('slot').assignedElements();
+		let list = this.renderRoot
+			.querySelector('slot')
+			.assignedElements();
 		list.forEach(item=>{
 			if(!item.matches(this.selector))
 				return
