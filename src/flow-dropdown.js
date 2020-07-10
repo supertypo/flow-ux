@@ -172,7 +172,11 @@ export class FlowDropdown extends BaseElement {
     	while(p){
     		if(!(p instanceof HTMLElement))
     			break;
-    		if(p.nodeName=="BODY" || this.isScrollEl(p))
+    		if(p.nodeName=="BODY"){
+    			list.push(p);
+    			break;
+    		}
+    		if(this.isScrollEl(p))
     			list.push(p);
     		p = p.parentNode;
     	}
@@ -182,7 +186,7 @@ export class FlowDropdown extends BaseElement {
 
     isScrollEl(element){
     	const { overflow, overflowX, overflowY } = getComputedStyle(element);
-    	this.log("overflow:::", element, overflow, overflowX, overflowY)
+    	//this.log("overflow:::", element, overflow, overflowX, overflowY)
   		return /auto|scroll|overlay|hidden/.test(overflow + overflowY + overflowX);
     }
 }
