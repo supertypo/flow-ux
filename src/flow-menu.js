@@ -27,16 +27,20 @@ export class FlowMenu extends BaseElement {
 		return css`
 		:host{
 			display:block;padding:5px 0px;
+			--flow-menu-item-margin-internal: var(--flow-menu-item-margin, 1px);
+			--flow-menu-item-margin-internal2x:calc(var(--flow-menu-item-margin-internal) * 2);
 		}
 
 		::slotted(flow-menu-item){
-			padding:10px;display:flex;align-items:center;
+			display:flex;align-items:center;
 		}
 		
 		::slotted(flow-menu-item),
 		::slotted(.menu-item){
 			box-sizing:border-box;
-			cursor:pointer;padding:10px;margin:1px;user-select:none;
+			cursor:pointer;user-select:none;
+			padding:var(--flow-menu-item-padding, 10px);
+			margin:var(--flow-menu-item-margin-internal);
 			background-color:var(--flow-menu-item-bg, #FFF);
 			color:var(--flow-menu-item-color, #000);
 		}
@@ -60,8 +64,8 @@ export class FlowMenu extends BaseElement {
 		}
 		:host(.grid:not(.full)) ::slotted(flow-menu-item),
 		:host(.grid:not(.full)) ::slotted(.menu-item){
-			min-width:calc(20% - 2px);
-			max-width:calc(20% - 2px);
+			min-width:calc(20% - var(--flow-menu-item-margin-internal2x));
+			max-width:calc(20% - var(--flow-menu-item-margin-internal2x));
 		}
 		:host(.grid.full) ::slotted(flow-menu-item),
 		:host(.grid.full) ::slotted(.menu-item){

@@ -1,4 +1,4 @@
-import {BaseElement, html, css} from './base-element.js';
+import {BaseElement, html, css, dpc} from './base-element.js';
 
 /**
  * @export
@@ -106,12 +106,14 @@ export class FlowDropdown extends BaseElement {
 		this.updateDropdownSize();
 	}
 	updateDropdownSize(){
-		let {dropdownContentEl, dropdownEl} = this;
-		if(!dropdownContentEl || !dropdownEl)
+		let {dropdownContentEl, dropdownEl, scrollParants} = this;
+
+		if(!dropdownContentEl||!dropdownEl||!scrollParants||!scrollParants.length)
 			return
 
 		//let box = dropdownContentEl.getBoundingClientRect();
-		let firstScrollParent = this.scrollParants[0];
+		let firstScrollParent = scrollParants[0];
+		//console.log("firstScrollParent", firstScrollParent)
 		let firstScrollParentBox = firstScrollParent.getBoundingClientRect();
 		let parentBox = dropdownEl.getBoundingClientRect();
 
@@ -143,11 +145,18 @@ export class FlowDropdown extends BaseElement {
     	this._onWindowResize = this._onWindowResize||this.onWindowResize.bind(this);
     	this._onParentScroll = this._onParentScroll||this.onParentScroll.bind(this);
     	window.addEventListener("click", this._onWindowClick, {capture:true})
-    	window.addEventListener("resize", this._onWindowResize, {capture:true})
-    	this.scrollParants = this.findScrollParents();
-    	this.scrollParants.forEach(p=>{
-    		p.addEventListener("scroll", this._onParentScroll);
-    	})
+    	window.addEventListener("resize", this._onWindowResize, {capture:true});
+    	let buildScrollEvents = ()=>{
+	    	this.scrollParants = this.findScrollParents();
+	    	this.scrollParants.forEach(p=>{
+	    		p.addEventListener("scroll", this._onParentScroll);
+	    	});
+	    }
+	    buildScrollEvents();
+    	if(!this.scrollParants.length){//Safari/FF issue
+    		dpc(1000, buildScrollEvents);
+    		//console.log("this.scrollParants", this.scrollParants)
+    	}
     }
 	disconnectedCallback(){
     	super.disconnectedCallback();
@@ -163,7 +172,7 @@ export class FlowDropdown extends BaseElement {
     	while(p){
     		if(!(p instanceof HTMLElement))
     			break;
-    		if(this.isScrollEl(p))
+    		if(p.nodeName=="BODY" || this.isScrollEl(p))
     			list.push(p);
     		p = p.parentNode;
     	}
@@ -173,6 +182,7 @@ export class FlowDropdown extends BaseElement {
 
     isScrollEl(element){
     	const { overflow, overflowX, overflowY } = getComputedStyle(element);
+    	this.log("overflow:::", element, overflow, overflowX, overflowY)
   		return /auto|scroll|overlay|hidden/.test(overflow + overflowY + overflowX);
     }
 }
