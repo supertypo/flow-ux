@@ -154,8 +154,10 @@ export class FlowDropdown extends BaseElement {
 	    }
 	    buildScrollEvents();
     	if(!this.scrollParants.length){//Safari/FF issue
-    		dpc(1000, buildScrollEvents);
-    		//console.log("this.scrollParants", this.scrollParants)
+    		dpc(1000, ()=>{
+    			buildScrollEvents();
+    			//this.log("this.scrollParants", this.scrollParants)
+    		});
     	}
     }
 	disconnectedCallback(){
@@ -170,6 +172,10 @@ export class FlowDropdown extends BaseElement {
     	let list = [];
     	let p = this.parentNode;
     	while(p){
+    		if(p instanceof ShadowRoot){
+    			p = p.host;
+    			continue;
+    		}
     		if(!(p instanceof HTMLElement))
     			break;
     		if(p.nodeName=="BODY"){
