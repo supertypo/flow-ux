@@ -92,6 +92,7 @@ export class FlowMenu extends BaseElement {
 			.addEventListener("click", this._onClick.bind(this));
 
 		let slot = this.renderRoot.querySelector('slot');
+		this.listSlot = slot;
 		slot.addEventListener('slotchange', (e)=>{
 			//let items = slot.assignedElements();
 			//this.items = items
@@ -100,41 +101,46 @@ export class FlowMenu extends BaseElement {
 		});
 	}
 	updated(changes){
-		if(changes.has("selected")){
-			//let selected = changes.get("selected")
-			
-			let {selected} = this;
-			//this.log("changes", changes, "selected:"+JSON.stringify(selected))
-			if(this.multiple){
-				if(!Array.isArray(selected)){
-					selected = JSON.parse(selected);
-					if(selected !== undefined)
-						selected = [selected];
-					else
-						selected = [];
-				}
-			}else{
-				if(Array.isArray(selected))
-					selected = selected[0];
-				if(selected !== undefined)
-					selected = [selected];
-				else
-					selected = []
-			}
-			selected = selected.filter(s=>s!==undefined).map(s=>s+"");
-			//this.log("updated:selected", selected)
-			this._selected = selected;
-		}
+		if(changes.has("selected"))
+			this.parseSelected();
+
 		this.updateList(changes)
 	}
 
+	parseSelected(){
+		let {selected} = this;
+		//this.log("changes", changes, "selected:"+JSON.stringify(selected))
+		if(this.multiple){
+			if(!Array.isArray(selected)){
+				selected = JSON.parse(selected);
+				if(selected !== undefined)
+					selected = [selected];
+				else
+					selected = [];
+			}
+		}else{
+			if(Array.isArray(selected))
+				selected = selected[0];
+			if(selected !== undefined)
+				selected = [selected];
+			else
+				selected = []
+		}
+		selected = selected.filter(s=>s!==undefined).map(s=>s+"");
+		//this.log("updated:selected", selected)
+		this._selected = selected;
+	}
+
+	get list(){
+		if(!this.listSlot)
+			return [];
+		return this.listSlot
+			.assignedElements()
+			.filter(item=>item.matches(this.selector))
+	}
+
 	updateList(){
-		let list = this.renderRoot
-			.querySelector('slot')
-			.assignedElements();
-		list.forEach(item=>{
-			if(!item.matches(this.selector))
-				return
+		this.list.forEach(item=>{
 			let value = item.getAttribute(this.valueAttr)
 			item.classList.toggle("selected", this.isSelected(value));
 		});

@@ -20,7 +20,8 @@ import {FlowMenu} from './flow-menu.js';
 export class FlowSelect extends FlowMenu {
 	static get properties() {
 		return {
-			label:{type:String}
+			label:{type:String},
+			textAttr:{type:String}
 		}
 	}
 
@@ -37,6 +38,10 @@ export class FlowSelect extends FlowMenu {
 			}
 		`];
 	}
+	constructor(){
+		super();
+		this.textAttr = "data-text";
+	}
 	render() {
 		return html
 		`<flow-dropdown>
@@ -52,8 +57,12 @@ export class FlowSelect extends FlowMenu {
 	}
 
 	renderSelected(){
+		let map = new Map();
+		this.list.forEach(item=>{
+			map.set(item.getAttribute(this.valueAttr), item.getAttribute(this.textAttr))
+		})
 		return this._selected.map(s=>html
-			`<div class="item" value="${s}">${s}</div>`
+			`<div class="item" value="${s}">${map.get(s) || s}</div>`
 		)
 	}
 
