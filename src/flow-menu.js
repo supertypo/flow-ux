@@ -125,7 +125,7 @@ export class FlowMenu extends BaseElement {
 			//this.log("updated:selected", selected)
 			this._selected = selected;
 		}
-		this.updateList()
+		this.updateList(changes)
 	}
 
 	updateList(){

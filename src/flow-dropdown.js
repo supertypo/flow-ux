@@ -27,15 +27,17 @@ export class FlowDropdown extends BaseElement {
 		return css`
 		:host{
 			display:inline-block;margin:5px 0px;
+			vertical-align:middle;
 			color:var(--flow-color, #000);
 		}
 		.trigger{
 			background-color:var(--flow-dropdown-trigger-bg, var(--flow-primary-color, #3498DB));
 			color:var(--flow-dropdown-trigger-color, #FFF);
-			padding:16px;border-radius:3px;
+			border-radius:3px;
 			border:none;
 			cursor:pointer;user-select:none;
-			width:var(--flow-dropdown-trigger-width, 80px)
+			padding:var(--flow-dropdown-trigger-padding, 16px);
+			min-width:var(--flow-dropdown-trigger-width, 80px)
 		}
 
 		.trigger:hover, .trigger:focus {

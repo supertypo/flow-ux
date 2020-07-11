@@ -37,4 +37,5 @@ export * from './src/flow-socketio-nats.js';
 export * from './src/flow-app.js';
 export * from './src/flow-dropdown.js';
 export * from './src/flow-menu.js';
+export * from './src/flow-select.js';
 
