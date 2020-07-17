@@ -95,6 +95,12 @@ E.task('resources', ['create-dirs'], callback=>{
 			)
 		)
 	);
+	list.push(
+		E.utils.copy(
+			path.join(REPO, 'node_modules', '@webcomponents', 'webcomponentsjs'),
+			path.join(MODULES, 'webcomponentsjs')
+		)
+	)
 
 	return Promise.all(list);
 });
@@ -142,7 +148,12 @@ E.task('cleanup', ['node_modules'], async(callback)=>{
 			return fs.unlink(file);
 		});
 	})
-	//console.log("list", list)
+	let WCPATH = path.join(MODULES, 'webcomponentsjs');
+	['src', 'bundles'].forEach(f=>{
+		list.push( fs.remove(path.join(WCPATH, f)) );
+	})
+	
+	//E.log("list", list)
 	await Promise.all(list);
 	//console.log("folders", folders);
 
