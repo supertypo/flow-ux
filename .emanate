@@ -1,0 +1,173 @@
+"use strict";
+
+const E = new Emanator(__dirname, {
+	type : 'UTIL',
+	guid : 'c1072045-6d98-44d8-9aa5-e9be6c79bd01',
+	group : 'aspectron',
+	ident : 'flow-ux',
+	title : 'flow-ux',
+	banner : 'flow-ux',
+	git : 'git@github.com:aspectron/flow-ux',
+	author : "ASPECTRON Inc.",
+	url : "http://aspectron.com",
+	archive : true,
+	folder : true,
+	standalone : true,
+	production: true,
+	DMG: false,
+	//nwjs : { version : '0.46.2' },
+	resources : 'resources/setup',
+	skipDirCreation:true,
+	debugTask:true,
+	manifest:manifest=>{
+		return manifest;
+	}
+});
+
+const REPO = __dirname;
+const DIST = path.join(REPO, 'dist');
+const FLOW_UX_STATIC = path.join(DIST, 'flow-ux-static');
+const FLOW_UX = path.join(FLOW_UX_STATIC, "flow-ux");
+const MODULES = FLOW_UX_STATIC;//path.join(FLOW_UX_STATIC, 'node_modules');
+const DEMO = path.join(DIST, 'demo');
+
+E.task('create-dirs', [], (callback)=>{
+	return E.emptyDir(FLOW_UX_STATIC);
+	//return E.mkdirp(DIST);
+});
+
+E.task('resources', ['create-dirs'], callback=>{
+	let uxFiles =  ['resources', 'flow-ux.js', 'flow-ux.css', 'src'];
+	let list = uxFiles.map(file => 
+		E.utils.copy(path.join(REPO, file), path.join(FLOW_UX, file))
+	);
+
+	let node_modules = ['lit-element', 'lit-html'];
+	list = list.concat(
+		node_modules.map(file => 
+			E.utils.copy(
+				path.join(REPO, 'node_modules', file),
+				path.join(MODULES, file)
+			)
+		)
+	);
+
+	return Promise.all(list);
+});
+
+E.task('node_modules', ['resources'], callback=>{
+	return Promise.all(
+		['lit-element', 'lit-html']
+		.map(module=>{
+			let SRC = path.join(MODULES, module);
+			return E.utils.iterateFolder(SRC, /\.js$/, file=>{
+				//console.log("file, folder", file, folder);
+				return fs.writeFile(file, getFileContent(file));
+			});
+		})
+	)
+});
+
+E.task('flow-src', ['resources'],  callback=>{
+	let SRC = path.join(FLOW_UX, 'src');
+	return E.utils.iterateFolder(SRC, /\.js$/, file=>{
+		//console.log("file, folder", file, folder);
+		return fs.writeFile(file, getFileContent(file));
+	});
+});
+
+E.task('cleanup', ['node_modules'], async(callback)=>{
+	let folders = new Map();
+	let list = ['lit-element', 'lit-html'].map(module=>{
+		let SRC = path.join(MODULES, module);
+		return E.utils.iterateFolder(SRC, /(\.ts(\.map)?|tsconfig\.json)$/, file=>{
+			//console.log("file, folder", file);
+			let map = folders;
+			//console.log("------------")
+			path.dirname(file).substring(MODULES.length+1)
+			.split(path.sep).forEach(f=>{
+				//console.log("fff", f)
+				let d = map.get(f);
+				if(!d){
+					d = new Map();
+					map.set(f, d);
+				}
+				map = d;
+			})
+			
+			return fs.unlink(file);
+		});
+	})
+	//console.log("list", list)
+	await Promise.all(list);
+	console.log("folders", folders);
+
+	let digest = (folders, parent)=>{
+		folders.forEach((map, folder)=>{
+			folder = path.join(parent, folder);
+			digest(map, folder)
+			console.log("folder", folder, map);
+			if(fs.existsSync(folder)){
+				try{
+					fs.rmdirSync(folder, {maxRetries:0});
+				}catch(e){
+					console.log("eeee", e.code)
+				}
+			}
+		});
+	}
+
+	digest(folders.get("lit-html"), path.join(MODULES, 'lit-html'))
+	digest(folders.get("lit-element"), path.join(MODULES, 'lit-element'))
+	//console.log("list2", list)
+	//await Promise.all(list)
+});
+
+E.task('static', ['node_modules', 'flow-src', 'cleanup']);
+
+
+E.task('demo-site', ['static'], async(callback)=>{
+	await E.emptyDir(path.join(DEMO, 'flow-ux'));
+	await E.emptyDir(path.join(DEMO, 'lit-html'));
+	await E.emptyDir(path.join(DEMO, 'lit-element'));
+	return E.utils.copy(FLOW_UX_STATIC, DEMO);
+})
+
+let getFileContent = (filePath)=>{
+	let filePath_ = filePath.substring(FLOW_UX_STATIC.length+1);
+	let prefix = "../".repeat(Math.max(filePath_.split("/").length - 1, 0));
+
+	//console.log("filePath_", filePath_, filePath, prefix)
+	let regExp = /(import|export)([^'"].*)from[ ]*['"]([^'"].*)['"]/g;
+	return (fs.readFileSync(filePath)+"").replace(regExp, (a, imEx, modules, file)=>{
+		//'import $1 from "/node_modules/$2"'
+		//console.log("a, imEx, modules, file", a, imEx, modules, file)
+		if(!/\.js$/.test(file))
+			file += "/"+file.split("/").pop()+".js";
+		if(/^\./.test(file))
+			return `${imEx} ${modules} from "${file}"`;
+
+		/*
+		let found = this.urlProxies.find(p=>{
+			return file.indexOf(p.proxyUrl)===0;
+		})
+		if(found)
+			return `${imEx} ${modules} from "${file}"`;
+		*/
+
+		if(!/^\/node_modules/.test(file))
+			file = `${prefix}${file}`;
+
+		return `${imEx} ${modules} from "${file}"`;
+	});
+}
+
+
+if(E.flags['demo-site'])
+	E.run(['demo-site']);
+else if(E.flags.static)
+	E.run(['static']);
+else{
+	//E.run();
+}
+
