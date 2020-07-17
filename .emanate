@@ -1,4 +1,48 @@
 "use strict";
+const UglifyJS = require("uglify-es");
+
+var code = `
+function add(first, second) { 
+	return first + second;
+}
+let a = () =>     b();
+
+//let c = a?.();
+
+`;
+
+/*
+minify.js(code, {js:{}})
+ .then(console.log)
+    .catch(console.error);
+*/
+/*
+var result = UglifyJS.minify(code);
+if(result.error)
+	console.log(result.error); // runtime error, or `undefined` if no error
+console.log(result.code);
+*/
+
+
+/*
+const ClosureCompiler = require('google-closure-compiler').jsCompiler; 
+console.log('CONTRIB_PATH:', ClosureCompiler.CONTRIB_PATH);
+// absolute path to the contrib folder which contains externs
+const closureCompiler = new ClosureCompiler({
+  compilation_level: 'SIMPLE_OPTIMIZATIONS'//'ADVANCED'
+});
+ 
+const compilerProcess = closureCompiler.run([{
+	path: 'file-one.js',
+	src: code,
+	sourceMap: null, // optional input source map
+	markUntranspilableFeaturesAsRemoved:false
+}], (exitCode, stdOut, stdErr) => {
+	//compilation complete
+	console.log("exitCode, stdOut, stdErr", exitCode, stdOut, stdErr)
+});
+*/
+
 
 const E = new Emanator(__dirname, {
 	type : 'UTIL',
@@ -26,7 +70,7 @@ const E = new Emanator(__dirname, {
 
 const REPO = __dirname;
 const DIST = path.join(REPO, 'dist');
-const FLOW_UX_STATIC = path.join(DIST, 'flow-ux-static');
+const FLOW_UX_STATIC = path.join(DIST, `flow-ux-static${E.flags.minify?'-min':''}`);
 const FLOW_UX = path.join(FLOW_UX_STATIC, "flow-ux");
 const MODULES = FLOW_UX_STATIC;//path.join(FLOW_UX_STATIC, 'node_modules');
 const DEMO = path.join(DIST, 'demo');
@@ -69,7 +113,7 @@ E.task('node_modules', ['resources'], callback=>{
 });
 
 E.task('flow-src', ['resources'],  callback=>{
-	let SRC = path.join(FLOW_UX, 'src');
+	let SRC = FLOW_UX;//path.join(FLOW_UX, 'src');
 	return E.utils.iterateFolder(SRC, /\.js$/, file=>{
 		//console.log("file, folder", file, folder);
 		return fs.writeFile(file, getFileContent(file));
@@ -100,18 +144,19 @@ E.task('cleanup', ['node_modules'], async(callback)=>{
 	})
 	//console.log("list", list)
 	await Promise.all(list);
-	console.log("folders", folders);
+	//console.log("folders", folders);
 
 	let digest = (folders, parent)=>{
 		folders.forEach((map, folder)=>{
 			folder = path.join(parent, folder);
 			digest(map, folder)
-			console.log("folder", folder, map);
+			//console.log("folder", folder, map);
 			if(fs.existsSync(folder)){
 				try{
 					fs.rmdirSync(folder, {maxRetries:0});
 				}catch(e){
-					console.log("eeee", e.code)
+					if(e.code != 'ENOTEMPTY')
+						console.log("rmdirSync:error", folder, e.code)
 				}
 			}
 		});
@@ -139,7 +184,8 @@ let getFileContent = (filePath)=>{
 
 	//console.log("filePath_", filePath_, filePath, prefix)
 	let regExp = /(import|export)([^'"].*)from[ ]*['"]([^'"].*)['"]/g;
-	return (fs.readFileSync(filePath)+"").replace(regExp, (a, imEx, modules, file)=>{
+	let code = (fs.readFileSync(filePath)+"")
+		.replace(regExp, (a, imEx, modules, file)=>{
 		//'import $1 from "/node_modules/$2"'
 		//console.log("a, imEx, modules, file", a, imEx, modules, file)
 		if(!/\.js$/.test(file))
@@ -160,6 +206,17 @@ let getFileContent = (filePath)=>{
 
 		return `${imEx} ${modules} from "${file}"`;
 	});
+
+	if(!E.flags.minify)
+		return code;
+
+	let result = UglifyJS.minify(code);
+	if(result.error){
+		E.log("UglifyJS.minify:error", filePath, result.error)
+		return code;
+	}
+
+	return result.code;
 }
 
 
