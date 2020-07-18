@@ -1,6 +1,7 @@
 "use strict";
 const UglifyJS = require("uglify-es");
-
+const _ = require("underscore");
+/*
 var code = `
 function add(first, second) { 
 	return first + second;
@@ -10,7 +11,7 @@ let a = () =>     b();
 //let c = a?.();
 
 `;
-
+*/
 /*
 minify.js(code, {js:{}})
  .then(console.log)
@@ -68,10 +69,25 @@ const E = new Emanator(__dirname, {
 	}
 });
 
+E.manifest_read_sync();
+
 const REPO = __dirname;
 const DIST = path.join(REPO, 'dist');
-const FLOW_UX_STATIC = path.join(DIST, `flow-ux-static${E.flags.minify?'-min':''}`);
-const FLOW_UX = path.join(FLOW_UX_STATIC, "flow-ux");
+let FLOW_UX_STATIC = path.join(DIST, `flow-ux-static${E.flags.minify?'-min':''}`);
+if(E.flags.out && E.flags.out.length){
+	if(path.isAbsolute(E.flags.out))
+		FLOW_UX_STATIC = E.flags.out;
+	else
+		FLOW_UX_STATIC = path.join(REPO, E.flags.out);
+
+	if(!fs.existsSync(FLOW_UX_STATIC))
+		throw new Error(`Output directory (${FLOW_UX_STATIC}) dont exists.`)
+
+}
+
+const FLOW_UX_FOLDER = `flow-ux${E.flags['no-version']?'':'-'+E.manifest.version}`
+
+const FLOW_UX = path.join(FLOW_UX_STATIC, FLOW_UX_FOLDER);
 const MODULES = FLOW_UX_STATIC;//path.join(FLOW_UX_STATIC, 'node_modules');
 const DEMO = path.join(DIST, 'demo');
 
@@ -183,7 +199,7 @@ E.task('static', ['node_modules', 'flow-src', 'cleanup']);
 
 
 E.task('demo-site', ['static'], async(callback)=>{
-	await E.emptyDir(path.join(DEMO, 'flow-ux'));
+	await E.emptyDir(path.join(DEMO, FLOW_UX_FOLDER));
 	await E.emptyDir(path.join(DEMO, 'lit-html'));
 	await E.emptyDir(path.join(DEMO, 'lit-element'));
 	return E.utils.copy(FLOW_UX_STATIC, DEMO);
@@ -230,11 +246,36 @@ let getFileContent = (filePath)=>{
 	return result.code;
 }
 
+let start_watching = ()=>{
+
+	const update = _.debounce((folderName, filename) => {
+		console.log("update running...");
+		fs.copyFileSync(
+			path.join(__dirname, folderName, filename),
+			path.join(FLOW_UX, folderName, filename)
+		)
+	}, 300, true);
+
+	[".", "src"].forEach(folderName=> {
+		const folderPath = path.join(__dirname, folderName);
+		console.log(`watching... ${folderPath}`);
+		fs.watch(folderPath, (type, filename)=>{
+			if(filename.indexOf("flow-") !== 0)
+				return
+			console.log("type, filename", type, filename);
+			//console.log("running update...")
+			update(folderName, filename);
+		})
+	})
+}
+
 
 if(E.flags['demo-site'])
 	E.run(['demo-site']);
 else if(E.flags.static)
 	E.run(['static']);
+else if(E.flags.watch)
+	start_watching();
 else{
 	//E.run();
 }
