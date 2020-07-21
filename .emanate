@@ -83,6 +83,14 @@ if(E.flags.out && E.flags.out.length){
 	if(!fs.existsSync(FLOW_UX_STATIC))
 		throw new Error(`Output directory (${FLOW_UX_STATIC}) dont exists.`)
 
+	FLOW_UX_STATIC = FLOW_UX_STATIC.split(/[\/\\]/);
+
+	if(FLOW_UX_STATIC[FLOW_UX_STATIC.length-1] == "")
+		FLOW_UX_STATIC.pop();
+
+	FLOW_UX_STATIC = FLOW_UX_STATIC.join(path.sep);
+	E.log("FLOW_UX_STATIC", FLOW_UX_STATIC)
+
 }
 
 const FLOW_UX_FOLDER = `flow-ux${E.flags['no-version']?'':'-'+E.manifest.version}`
@@ -92,7 +100,11 @@ const MODULES = FLOW_UX_STATIC;//path.join(FLOW_UX_STATIC, 'node_modules');
 const DEMO = path.join(DIST, 'demo');
 
 E.task('create-dirs', [], (callback)=>{
-	return E.emptyDir(FLOW_UX_STATIC);
+	return Promise.all(
+		[
+		FLOW_UX_FOLDER, 'lit-element', 'lit-html', 'webcomponentsjs'
+		].map(f=>E.emptyDir(path.join(FLOW_UX_STATIC, f)))
+	);
 	//return E.mkdirp(DIST);
 });
 
@@ -171,9 +183,12 @@ E.task('cleanup', ['node_modules'], async(callback)=>{
 	
 	//E.log("list", list)
 	await Promise.all(list);
-	//console.log("folders", folders);
+	//E.log("folders", folders);
 
 	let digest = (folders, parent)=>{
+		if(!folders){
+			E.log("folders, parent", folders, parent)
+		}
 		folders.forEach((map, folder)=>{
 			folder = path.join(parent, folder);
 			digest(map, folder)
