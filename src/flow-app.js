@@ -111,6 +111,21 @@ export class FlowAppComponent extends FlowAppBaseMixin(BaseElement){
 			}
 			:host([no-drawer]) .drawer{display:none}
 			.main{flex:1;overflow:auto}
+
+			.main::-webkit-scrollbar-track{
+			    box-shadow:var(--flow-scrollbar-track-box-shadow, initial);
+			    background:var(--flow-scrollbar-track-bg, initial);
+			}
+
+			.main::-webkit-scrollbar{
+				width:var(--flow-scrollbar-width, initial);
+				background:var(--flow-scrollbar-bg, initial);
+			}
+			.main::-webkit-scrollbar-thumb{
+			    box-shadow:var(--flow-scrollbar-thumb-box-shadow, initial);
+			    background:var(--flow-scrollbar-thumb-bg, initial);
+			}
+
 			::slotted(.flex){flex:1}
 		`
 	}
