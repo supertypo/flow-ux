@@ -54,7 +54,7 @@ export const FlowAppBaseMixin = (baseClass)=>{
 		}
 
 		setLoading(isLoading=true, el=null){
-			(el || this.bodyEl).classList.toggle("loading", isLoading)
+			(el || document.body).classList.toggle("loading", isLoading)
 		}
 
 		initLog(){
@@ -109,6 +109,7 @@ export class FlowAppComponent extends FlowAppBaseMixin(BaseElement){
 				width:var(--flow-app-drawer-width, 300px);
 				overflow:auto;
 			}
+			:host([no-drawer]) .drawer{display:none}
 			.main{flex:1;overflow:auto}
 			::slotted(.flex){flex:1}
 		`
@@ -121,8 +122,11 @@ export class FlowAppComponent extends FlowAppBaseMixin(BaseElement){
 		<div class="header"><slot name="header"></slot></div>
 		<div class="body">
 			<div class="drawer"><slot name="drawer"></slot></div>
-			<div class="main"><slot name="main"></slot></div>
+			<div class="main sbar"><slot name="main"></slot></div>
 		</div>`
+	}
+	firstUpdated(){
+		this.setLoading(false);
 	}
 }
 
