@@ -2,7 +2,7 @@ import {dpc, UID} from './helpers.js';
 import {FlowSocketIORPC} from './flow-socketio-rpc.js';
 import {FlowSocketIONATS} from './flow-socketio-nats.js';
 
-import {BaseElement, html, css} from './base-element.js';
+import {BaseElement, ScrollbarStyle, html, css} from './base-element.js';
 
 class FlowAppBase {}
 
@@ -74,7 +74,7 @@ export class FlowApp extends FlowAppBaseMixin(FlowAppBase){}
 
 export class FlowAppComponent extends FlowAppBaseMixin(BaseElement){
 	static get styles(){
-		return css`
+		return [ScrollbarStyle, css`
 			:host{
 				display:flex;
 				flex-direction:column;
@@ -82,7 +82,8 @@ export class FlowAppComponent extends FlowAppBaseMixin(BaseElement){
 				height:var(--flow-app-height, 100vh);
 			}
 			.header{
-				display:flex;flex-direction:row;align-items:center;
+				display:flex;flex-direction:row;
+				align-items:var(--flow-app-header-align-items, center);
 				height:var(--flow-app-header-height, 60px);
 				background-color:var(--flow-app-header-bg, #161926);
 				color:var(--flow-app-header-color, #91aec1);
@@ -110,24 +111,9 @@ export class FlowAppComponent extends FlowAppBaseMixin(BaseElement){
 				overflow:auto;
 			}
 			:host([no-drawer]) .drawer{display:none}
-			.main{flex:1;overflow:auto}
-
-			.main::-webkit-scrollbar-track{
-			    box-shadow:var(--flow-scrollbar-track-box-shadow, initial);
-			    background:var(--flow-scrollbar-track-bg, initial);
-			}
-
-			.main::-webkit-scrollbar{
-				width:var(--flow-scrollbar-width, initial);
-				background:var(--flow-scrollbar-bg, initial);
-			}
-			.main::-webkit-scrollbar-thumb{
-			    box-shadow:var(--flow-scrollbar-thumb-box-shadow, initial);
-			    background:var(--flow-scrollbar-thumb-bg, initial);
-			}
-
+			.main{flex:1;overflow:var(--flow-app-main-overflow,auto)}
 			::slotted(.flex){flex:1}
-		`
+		`]
 	}
 	constructor(...args){
 		super(...args);
@@ -136,7 +122,7 @@ export class FlowAppComponent extends FlowAppBaseMixin(BaseElement){
 		return html`
 		<div class="header"><slot name="header"></slot></div>
 		<div class="body">
-			<div class="drawer"><slot name="drawer"></slot></div>
+			<div class="drawer sbar"><slot name="drawer"></slot></div>
 			<div class="main sbar"><slot name="main"></slot></div>
 		</div>`
 	}
