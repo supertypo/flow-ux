@@ -6,6 +6,7 @@ export * from 'lit-html/lit-html.js';
 import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon} from './helpers.js';
 
 export * from './helpers.js';
+export * from './pagination.js';
 /**
 * @class BaseElement
 * @extends LitElement
