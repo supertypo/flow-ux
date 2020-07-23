@@ -17,6 +17,8 @@ import {BaseElement, html, css} from './base-element.js';
 * @cssvar {border-bottom-left-radius} [--flow-input-blbr, 4p]
 * @cssvar {border-top-right-radius} [--flow-input-trbr=4px]
 * @cssvar {border-bottom-right-radius} [--flow-input-brbr=4px]
+* @cssvar {border-input} [--flow-input-border=2px]
+* @cssvar {border-label} [--flow-input-border-label=2px]
 * @cssvar {color} [--flow-border-invert-color=var(--flow-primary-invert-color, #FFF))]
 * @cssvar {margin-right} [--flow-input-vmr=2px]
 * @cssvar {background-color} [--flow-input-bg=inherit]
@@ -68,7 +70,8 @@ export class FlowInput extends BaseElement {
 			}
 			label{
 				font-size:0.7rem;padding:2px 5px;
-				border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
+				border: var(--flow-input-border-label, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:8px;
     			margin-left:10px;z-index:1;
     			position:relative;background-color:var(--flow-input-bg, inherit);
@@ -93,7 +96,8 @@ export class FlowInput extends BaseElement {
 			}
 			.input{
 				width:100px;flex:1;box-sizing:border-box;
-			    border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
+				border: var(--flow-input-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				/*
 				border-top-left-radius: 8px;
 				border-bottom-left-radius: 8px;
