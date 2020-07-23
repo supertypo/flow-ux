@@ -9,12 +9,9 @@ import {FlowMenu} from './flow-menu.js';
 
  * 
  * @example
- * <flow-select>
- *   <div slot="trigger">Menu</div>
- *   <flow-menu>
+ * <flow-select label="menu" selected="0">
  *		<flow-menu-item value="0">Menu Item 1</flow-menu-item>
  *	 	<flow-menu-item value="1">Menu Item 2</flow-menu-item>
- *   </flow-menu>
  * </flow-select>
  */
 export class FlowSelect extends FlowMenu {
