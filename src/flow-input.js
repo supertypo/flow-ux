@@ -20,6 +20,7 @@ import {BaseElement, html, css} from './base-element.js';
 * @cssvar {border-input} [--flow-input-border=2px]
 * @cssvar {border-label} [--flow-input-border-label=2px]
 * @cssvar {color} [--flow-border-invert-color=var(--flow-primary-invert-color, #FFF))]
+* @cssvar {margin} [--flow-input-margin=5px 0px]
 * @cssvar {margin-right} [--flow-input-vmr=2px]
 * @cssvar {background-color} [--flow-input-bg=inherit]
 
@@ -50,7 +51,7 @@ export class FlowInput extends BaseElement {
 				width:var(--flow-input-width, 100%);
 				min-width:var(--flow-input-min-width, 100px);
 				max-width:var(--flow-input-max-width, 500px);
-				margin:5px 0px;
+				margin:var(--flow-input-margin, 5px 0px);
 			}
 			:host(:not([disabled])) .btn{
 				cursor:pointer;
