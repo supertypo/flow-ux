@@ -45,9 +45,9 @@ export class FlowInput extends BaseElement {
 				display:inline-block;vertical-align:middle;
 				font-family:var(--flow-font-family, "Julius Sans One");
 				font-weight:var(--flow-font-weight, bold);
-				width:var(--flow-folder-input-width, 100%);
-				min-width:var(--flow-folder-input-min-width, 100px);
-				max-width:var(--flow-folder-input-max-width, 500px);
+				width:var(--flow-input-width, 100%);
+				min-width:var(--flow-input-min-width, 100px);
+				max-width:var(--flow-input-max-width, 500px);
 				margin:5px 0px;
 			}
 			:host(:not([disabled])) .btn{
@@ -61,7 +61,7 @@ export class FlowInput extends BaseElement {
 			.wrapper{
 				display:flex;
 				align-items:stretch;
-				min-width:50px;
+				min-width_:50px;
 				text-align:center;
 				justify-content:center;
 			    margin-top:-0.5rem;
@@ -92,7 +92,7 @@ export class FlowInput extends BaseElement {
 				border-color:var(--flow-border-hover-color, var(--flow-primary-color, rgba(0,151,115,1)))
 			}
 			.input{
-				flex:1;box-sizing:border-box;
+				width:100px;flex:1;box-sizing:border-box;
 			    border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				/*
 				border-top-left-radius: 8px;
