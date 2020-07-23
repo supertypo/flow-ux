@@ -42,7 +42,7 @@ export class FlowInput extends BaseElement {
 	static get styles(){
 		return css`
 			:host{
-				display:inline-block;
+				display:inline-block;vertical-align:middle;
 				font-family:var(--flow-font-family, "Julius Sans One");
 				font-weight:var(--flow-font-weight, bold);
 				width:var(--flow-folder-input-width, 100%);
@@ -100,9 +100,12 @@ export class FlowInput extends BaseElement {
 				*/
 				border-radius: 8px;
     			margin:0px;
-    			padding:15px 30px 10px 10px;
+    			padding:16px 30px 10px 10px;
 				background-color:var(--flow-input-bg, inherit);
 				color:var(--flow-input-color, inherit);
+				font-size:var(--flow-input-font-size, 1rem);
+				font-weight:var(--flow-input-font-weight, 400);
+				line-height:var(--flow-input-line-height, 1.2);
 			}
 
 			:host([apply-btn]) .input{

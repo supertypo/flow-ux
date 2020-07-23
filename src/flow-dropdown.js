@@ -36,8 +36,11 @@ export class FlowDropdown extends BaseElement {
 			border-radius:3px;
 			border:none;
 			cursor:pointer;user-select:none;
-			padding:var(--flow-dropdown-trigger-padding, 16px);
-			min-width:var(--flow-dropdown-trigger-width, 80px)
+			padding:var(--flow-dropdown-trigger-padding, 21px 20px 20px);
+			min-width:var(--flow-dropdown-trigger-width, 80px);
+			font-size:var(--flow-dropdown-trigger-font-size, var(--flow-input-font-size, 1rem));
+			font-weight:var(--flow-dropdown-trigger-font-weight, var(--flow-input-font-weight, 400));
+			line-height:var(--flow-dropdown-trigger-line-height, var(--flow-input-line-height, 1.2));
 		}
 
 		.trigger:hover, .trigger:focus {
@@ -48,12 +51,14 @@ export class FlowDropdown extends BaseElement {
 		.dropdown-content{
 			display:none;
 			position:absolute;
-			background-color:var(--flow-dropdown-bg, #FFF);
+			background-color:var(--flow-dropdown-bg, var(--flow-background-color, #FFF));
+			color:var(--flow-dropdown-color, var(--flow-color, #000));
 			min-width:var(--flow-dropdown-content-min-width, 160px);
 			overflow:auto;border-radius:3px;
 			box-shadow:var(--flow-box-shadow);
 			z-index:1000;
 			top:0px;left:0px;
+			padding:var(--flow-dropdown-content-padding, 5px);
 		}
 		:host([opened]) .dropdown-content{display:block;}
 		`;
