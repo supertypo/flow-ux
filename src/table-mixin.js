@@ -6,12 +6,7 @@ export const TableMixin = baseClass=>{
 			return {}//api.getRecords(options);
 		}
 
-		loadRecords(options={}, name=""){
-			this.debounce('loadRecords'+name, ()=>{
-				this._loadRecords(options, name)
-			}, window.api?100:500)
-		}
-		async _loadRecords(options={}, name=""){
+		async loadRecords(options={}, name=""){
 			//this.log("loadRecords", this)
 			let {req, params} = this.buildFetchRequest(options, name);
 			if(!req)

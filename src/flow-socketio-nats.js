@@ -142,9 +142,9 @@ export class FlowSocketIONATS extends FlowSocketIO {
 
 			ack && this.pending.set(rid, {
 				ts:Date.now(),
-				callback : (err)=>{
+				callback : (err, data)=>{
 					if(typeof callback == 'function')
-						return callback(err);
+						return callback(err, data);
 					else
 						return err ? reject(err) : resolve();
 				}
