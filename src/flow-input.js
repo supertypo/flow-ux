@@ -23,6 +23,9 @@ import {BaseElement, html, css} from './base-element.js';
 * @cssvar {margin} [--flow-input-margin=5px 0px]
 * @cssvar {margin-right} [--flow-input-vmr=2px]
 * @cssvar {background-color} [--flow-input-bg=inherit]
+* @cssvar {width} [--flow-input-width=100%]
+* @cssvar {min-width} [--flow-input-min-width=100px]
+* @cssvar {max-width} [--flow-input-max-width=500px]
 
 * @example
 *   <flow-input></flow-input>
@@ -70,7 +73,9 @@ export class FlowInput extends BaseElement {
 			    margin-top:-0.5rem;
 			}
 			label{
-				font-size:0.7rem;padding:2px 5px;
+				/*font-size:0.7rem;*/
+				font-size:var(--flow-input-font-size-label, 0.7rem);
+				padding:var(--flow-input-padding-label,2px 5px);
 				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
 				border: var(--flow-input-border-label, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:8px;
@@ -97,6 +102,7 @@ export class FlowInput extends BaseElement {
 			}
 			.input{
 				width:100px;flex:1;box-sizing:border-box;
+				height:var(--flow-input-height);
 				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
 				border: var(--flow-input-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				/*

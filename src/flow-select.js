@@ -49,7 +49,10 @@ export class FlowSelect extends FlowMenu {
 			    margin-top:-0.5rem;
 			}
 			label{
-				font-size:0.7rem;padding:2px 5px;
+				/*font-size:0.7rem;
+				padding:2px 5px;*/
+				font-size:var(--flow-select-font-size-label, 0.7rem);
+				padding:var(--flow-select-padding-label,2px 5px);
 				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
 				border: var(--flow-select-border-label, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:8px;
