@@ -6,7 +6,9 @@ import {FlowMenu} from './flow-menu.js';
  * @class FlowSelect
  * @extends {FlowMenu}
 
-
+ * @cssvar {margin} [--flow-select-margin=5px 0px]
+ * @cssvar {border-select} [--flow-input-border=2px]
+ * @cssvar {border-label} [--flow-select-border-label=2px]
  * 
  * @example
  * <flow-select label="menu" selected="0">
@@ -35,22 +37,21 @@ export class FlowSelect extends FlowMenu {
 				--flow-dropdown-trigger-hover-bg:var(--flow-select-trigger-hover-bg, transparent);
 				--flow-dropdown-trigger-hover-color:var(--flow-select-trigger-hover-color, var(--flow-dropdown-trigger-color));
 				--flow-dropdown-trigger-line-height:var(--flow-select-trigger-line-height, 1);
-				margin:5px 0px;
-				padding:0px;
-				--flow-dropdown-trigger-padding:0px;
+				/*padding:0px;*/
 			}
 			flow-dropdown{margin:0px;}
 			.wrapper{
 				display:flex;
 				align-items:stretch;
-				min-width:50px;
+				/*min-width:50px;*/
 				text-align:center;
 				justify-content:center;
 			    margin-top:-0.5rem;
 			}
 			label{
 				font-size:0.7rem;padding:2px 5px;
-				border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
+				border: var(--flow-select-border-label, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:8px;
     			margin-left:10px;z-index:1;
     			position:relative;background-color:var(--flow-input-bg, inherit);
@@ -58,7 +59,8 @@ export class FlowSelect extends FlowMenu {
 			}
 			.input{
 				flex:1;box-sizing:border-box;
-			    border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+			    /*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
+				border: var(--flow-select-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius: 8px;
     			margin:0px;
     			padding:16px 30px 10px 10px;
@@ -73,6 +75,7 @@ export class FlowSelect extends FlowMenu {
 			.input::-webkit-input-placeholder { color: var(--flow-input-placeholder, #888 ); }
 			.selected{
 				min-width:var(--flow-select-selected-min-width, 100px);
+				max-width:var(--flow-select-selected-max-width, 500px);
 				min-height:var(--flow-select-selected-min-height, 44px);
 			}
 			flow-dropdown:not([multiple]) .selected{white-space:nowrap}
