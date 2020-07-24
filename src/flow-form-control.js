@@ -32,6 +32,10 @@ export class FlowFormControl extends BaseElement {
 			max-width:30px;
 			text-align:center;
 		}
+		:host([icon="none"]) .icon-box{display:none}
+		:host(.no-icon]) .icon-box{display:none}
+		:host([no-icon]) .icon-box{display:none}
+
 		.icon-box svg{
 			width:24px;
 			height:24px;
