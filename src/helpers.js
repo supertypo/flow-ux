@@ -24,6 +24,7 @@ if(!baseUrl){
 	baseUrl = (new URL("../", import.meta.url)).href;
 	debug && console.log("FlowUX: baseUrl", baseUrl)
 }
+const isSmallScreen = navigator.userAgent.toLowerCase().includes("mobi");
 
 const IconMap = Object.assign({
 	fal:'light',
@@ -66,7 +67,7 @@ const dpc = (delay, fn)=>{
 		return setTimeout(delay, fn||0);
 	return setTimeout(fn, delay||0);
 }
-export {IconMap, FlowIcons, NativeIcons, dpc}
+export {IconMap, FlowIcons, NativeIcons, dpc, isSmallScreen}
 export {baseUrl, debug, FlowIconPath, flow, UID, storage, resolveIcon};
 
 

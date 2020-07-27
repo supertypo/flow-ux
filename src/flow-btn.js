@@ -150,7 +150,8 @@ export class FlowBtn extends BaseElement {
 				display:flex;
 				align-items:center;
 				margin:var(--flow-btn-wrapper-margin, 5px);
-				min-width:50px;
+				/*min-width:50px;*/
+				min-width: var(--flow-btn-wrapper-min-width,50px);
 				text-align:center;
 				justify-content:center;
 			}

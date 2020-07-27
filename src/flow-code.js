@@ -15,12 +15,12 @@ export class FlowCode extends BaseElement {
 			.typ{font-weight:700}.str{color:#060}.kwd{color:#006}.com{color:#600;
 			font-style:italic}.typ{color:#404}.lit{color:#044}.clo,.opn,
 			.pun{color:#440}.tag{color:#006}.atn{color:#404}.atv{color:#060}}
-			pre.prettyprint{padding:2px;border:1px solid #888}
+			pre.prettyprint{padding:2px;}
 			ol.linenums{margin-top:0;margin-bottom:0}
 			li.L0,li.L1,li.L2,li.L3,li.L5,li.L6,li.L7,li.L8{list-style-type:none}
 			li.L1,li.L3,li.L5,li.L7,li.L9{background:#eee}
 
-			pre{margin:0px}
+			pre{margin:0px;white-space:var(--flow-code-white-space, nowrap);}
 			:host{
 				display:inline-block;
 				padding:var(--flow-code-padding, 5px);

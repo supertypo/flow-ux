@@ -5,9 +5,8 @@ export class FlowSocketIONATS extends FlowSocketIO {
 	constructor(options) {
 		super(options);
 		this.trace = false;
-		this.subscribers = { }
-		this.subscriberIdentMap = { }
-		this.handlers = { }
+		this.subscribers = new Map();
+		this.handlers = new Map();
 	}
 
 	initSocketHandlers() {
@@ -46,15 +45,15 @@ export class FlowSocketIONATS extends FlowSocketIO {
 			let info = rid && this.pending.get(rid);
 			if(info) {
 				info.callback.call(this, error, ident);
-				let handler = this.handlers[rid];
+				let handler = this.handlers.get(rid);
 				if(!error && subject?.length && handler) {
-					let subscribers = this.subscribers[subject];
-					if(!subscribers)
-						subscribers = this.subscribers[subject] = [];
-					subscribers.push({ ident, handler });
-					delete this.handlers[rid];
-
-//					this.subscriberIdentMap[ident] = 
+					let subscribers = this.subscribers.get(subject);
+					if(!subscribers){
+						subscribers = new Map();
+						this.subscribers.set(subject, subscribers)
+					}
+					subscribers.set(rid, {ident, handler});
+					this.handlers.delete(rid);
 				}
 			}
 			else if(rid)
@@ -88,8 +87,8 @@ export class FlowSocketIONATS extends FlowSocketIO {
 			this.trace && console.log("sio/publish",msg);
 			let { subject, data } = msg;
 			this.events.emit(subject, data);
-			const subscribers = this.subscribers[subject];
-			if(subscribers?.length)
+			const subscribers = this.subscribers.get(subject);
+			if(subscribers)
 				subscribers.forEach(subscriber=>subscriber.handler(data));
 			// TODO - check this.events for handlers
 		})
@@ -114,16 +113,10 @@ export class FlowSocketIONATS extends FlowSocketIO {
 	}
 	
 	request(subject, data, callback) {
-		// if(subject.op){//<-- old way
-		// 	callback = data;
-		// 	data = subject;
-		// 	subject = subject.op;
-		// }else{
-			if(typeof(data)=='function'){
-				callback = data;
-				data = undefined;
-			}
-		// }
+		if(typeof(data)=='function'){
+			callback = data;
+			data = undefined;
+		}
 
 		if(!callback)
 			throw new Error(`FlowSocketIONATS::request() - callback required`);
@@ -149,9 +142,9 @@ export class FlowSocketIONATS extends FlowSocketIO {
 
 			ack && this.pending.set(rid, {
 				ts:Date.now(),
-				callback : (err)=>{
+				callback : (err, data)=>{
 					if(typeof callback == 'function')
-						return callback(err);
+						return callback(err, data);
 					else
 						return err ? reject(err) : resolve();
 				}
@@ -166,23 +159,31 @@ export class FlowSocketIONATS extends FlowSocketIO {
 	}
 
 	subscribe(subject, handler, opt) {
-		return new Promise((resolve, reject) => {
-			let rid = UID();
-
-			this.handlers[rid] = handler;
-			
+		let rid = UID();
+		let p = new Promise((resolve, reject)=>{
+			this.handlers.set(rid, handler);
 			this.pending.set(rid, {
 				ts:Date.now(),
 				callback:(err)=>{
 					return err?reject(err):resolve();
 				}
-			})
+			});
 
 			this.socket.emit('subscribe', {
 				req : { subject, opt },
 				rid
 			})
-		})	
+		});
+		p.rid = rid;
+		return p;
+	}
+
+	unsubscribe(rid){
+		this.handlers.delete(rid);
+		this.pending.delete(rid);
+		this.subscribers.forEach(subscribers=>{
+			subscribers.delete(rid);
+		})
 	}
 
 }

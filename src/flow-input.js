@@ -9,18 +9,31 @@ import {BaseElement, html, css} from './base-element.js';
 * @property {String} [btnText]
 * @property {String} [value]
 *
+*
 * @cssvar {font-family} [--flow-font-family="Julius Sans One"]
 * @cssvar {font-weight} [--flow-font-weight=bold]
-* @cssvar {background-color|border} [--flow-border-color=var(--flow-primary-color, rgba(0,151,115,1))]
-* @cssvar {background|border} [--flow-border-hover-color=var(--flow-primary-color, rgba(0,151,115,1))]
-* @cssvar {border-top-left-radius} [--flow-input-tlbr=4px]
-* @cssvar {border-bottom-left-radius} [--flow-input-blbr, 4p]
-* @cssvar {border-top-right-radius} [--flow-input-trbr=4px]
-* @cssvar {border-bottom-right-radius} [--flow-input-brbr=4px]
-* @cssvar {color} [--flow-border-invert-color=var(--flow-primary-invert-color, #FFF))]
-* @cssvar {margin-right} [--flow-input-vmr=2px]
+* @cssvar {font-weight} [--flow-input-font-weight=400]
+* @cssvar {font-size} [--flow-input-font-size-label=0.7rem]
+* @cssvar {font-size} [--flow-input-font-size=1rem]
+* @cssvar {width} [--flow-input-width=100%]
+* @cssvar {min-width} [--flow-input-min-width=100px]
+* @cssvar {max-width} [--flow-input-max-width=500px]
+* @cssvar {height} [--flow-input-height]
+* @cssvar {line-height} [--flow-input-line-height=1.2]
+* @cssvar {background-color} [--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1))]
+* @cssvar {background-color} [--flow-border-hover-color, var(--flow-primary-color, rgba(0,151,115,1))]
 * @cssvar {background-color} [--flow-input-bg=inherit]
-
+* @cssvar {border} [--flow-input-border-label=2px solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)))]
+* @cssvar {border} [--flow-input-border=2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1))]
+* @cssvar {border-top-left-radius} [--flow-input-btn-tlbr=0px]
+* @cssvar {border-bottom-left-radius} [--flow-input-btn-blbr=0px]
+* @cssvar {border-color} [--flow-border-hover-color, var(--flow-primary-color, rgba(0,151,115,1)]
+* @cssvar {color} [--flow-border-invert-color, var(--flow-primary-invert-color, #FFF)]
+* @cssvar {color} [--flow-input-color=inherit]
+* @cssvar {color} [--flow-input-placeholder=#888]
+* @cssvar {color} [--flow-input-invalid-color=red]
+* @cssvar {padding} [--flow-input-padding-label=2px 5px]
+* @cssvar {margin} [--flow-input-margin=5px 0px]
 * @example
 *   <flow-input></flow-input>
 *
@@ -42,13 +55,13 @@ export class FlowInput extends BaseElement {
 	static get styles(){
 		return css`
 			:host{
-				display:inline-block;
+				display:inline-block;vertical-align:middle;
 				font-family:var(--flow-font-family, "Julius Sans One");
 				font-weight:var(--flow-font-weight, bold);
-				width:var(--flow-folder-input-width, 100%);
-				min-width:var(--flow-folder-input-min-width, 100px);
-				max-width:var(--flow-folder-input-max-width, 500px);
-				margin:5px 0px;
+				width:var(--flow-input-width, 100%);
+				min-width:var(--flow-input-min-width, 100px);
+				max-width:var(--flow-input-max-width, 500px);
+				margin:var(--flow-input-margin, 5px 0px);
 			}
 			:host(:not([disabled])) .btn{
 				cursor:pointer;
@@ -61,14 +74,17 @@ export class FlowInput extends BaseElement {
 			.wrapper{
 				display:flex;
 				align-items:stretch;
-				min-width:50px;
+				min-width_:50px;
 				text-align:center;
 				justify-content:center;
 			    margin-top:-0.5rem;
 			}
 			label{
-				font-size:0.7rem;padding:2px 5px;
-				border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+				/*font-size:0.7rem;*/
+				font-size:var(--flow-input-font-size-label, 0.7rem);
+				padding:var(--flow-input-padding-label,2px 5px);
+				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
+				border: var(--flow-input-border-label, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:8px;
     			margin-left:10px;z-index:1;
     			position:relative;background-color:var(--flow-input-bg, inherit);
@@ -92,17 +108,22 @@ export class FlowInput extends BaseElement {
 				border-color:var(--flow-border-hover-color, var(--flow-primary-color, rgba(0,151,115,1)))
 			}
 			.input{
-				flex:1;box-sizing:border-box;
-			    border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+				width:100px;flex:1;box-sizing:border-box;
+				height:var(--flow-input-height);
+				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
+				border: var(--flow-input-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				/*
 				border-top-left-radius: 8px;
 				border-bottom-left-radius: 8px;
 				*/
 				border-radius: 8px;
     			margin:0px;
-    			padding:15px 30px 10px 10px;
+    			padding:16px 30px 10px 10px;
 				background-color:var(--flow-input-bg, inherit);
 				color:var(--flow-input-color, inherit);
+				font-size:var(--flow-input-font-size, 1rem);
+				font-weight:var(--flow-input-font-weight, 400);
+				line-height:var(--flow-input-line-height, 1.2);
 			}
 
 			:host([apply-btn]) .input{

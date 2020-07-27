@@ -38,4 +38,5 @@ export * from './src/flow-app.js';
 export * from './src/flow-dropdown.js';
 export * from './src/flow-menu.js';
 export * from './src/flow-select.js';
+export * from './src/table-mixin.js';
 
