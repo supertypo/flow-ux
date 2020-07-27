@@ -199,8 +199,7 @@ export class FlowGraph extends Flowd3Element {
 
 
 		if(this.overlay) {
-			return html
-			`
+			return html`
 			<div class='wrapper'>
 				<div class="d3-holder">${super.render()}</div>
 				<div class="overlay">
@@ -234,8 +233,7 @@ export class FlowGraph extends Flowd3Element {
 			`;	
 		} else {
 
-			return html
-			`
+			return html`
 			<div class='wrapper'>
 				<div class="d3-holder">${super.render()}</div>
 				<div>
