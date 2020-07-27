@@ -24,32 +24,36 @@ export const FlowAppBaseMixin = (baseClass)=>{
 		}
 
 		initSocketIORPC(){
+			return new Promise((resolve, reject) => {
+				this.rpc = new FlowSocketIORPC({
+					path:"/rpc"
+				});
 
-			this.rpc = new FlowSocketIORPC({
-				path:"/rpc"
-			});
-
-			this.rpc.on("init", ()=>{
-				this.log("RPC:init")
-				// this.rpc.dispatch("rpc-test-1", {key:"value-1"});
-				// this.rpc.dispatch("rpc-test-2", {key:"value-2"}, (err, data)=>{
-				// 	console.log("rpc-test-2: err, data", err, data)
-				// })
+				this.rpc.on("init", ()=>{
+					this.log("RPC:init");
+					resolve();
+					// this.rpc.dispatch("rpc-test-1", {key:"value-1"});
+					// this.rpc.dispatch("rpc-test-2", {key:"value-2"}, (err, data)=>{
+					// 	console.log("rpc-test-2: err, data", err, data)
+					// })
+				})
 			})
 		}
 
 		initSocketIONATS(){
+			return new Promise((resolve, reject) => {
+				this.nats = new FlowSocketIONATS({
+					path:"/nats"
+				});
 
-			this.nats = new FlowSocketIONATS({
-				path:"/nats"
-			});
-
-			this.nats.on("init", ()=>{
-				this.log("NATS:init");
-				// this.rpc.dispatch("rpc-test-1", {key:"value-1"});
-				// this.nats.request("nats.hello", {key:"origin-client-init"}, (err, data)=>{
-				// 	console.log("nats-test-reponse: err, data", err, data);
-				// })
+				this.nats.on("init", ()=>{
+					this.log("NATS:init");
+					resolve();
+					// this.rpc.dispatch("rpc-test-1", {key:"value-1"});
+					// this.nats.request("nats.hello", {key:"origin-client-init"}, (err, data)=>{
+					// 	console.log("nats-test-reponse: err, data", err, data);
+					// })
+				})
 			})
 		}
 
