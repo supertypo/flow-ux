@@ -77,7 +77,7 @@ export class FlowInput extends BaseElement {
 				min-width_:50px;
 				text-align:center;
 				justify-content:center;
-			    margin-top:-0.5rem;
+			    margin-top: var(--flow-input-wrapper-margin-top,-0.5rem);
 			}
 			label{
 				/*font-size:0.7rem;*/
@@ -86,8 +86,10 @@ export class FlowInput extends BaseElement {
 				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
 				border: var(--flow-input-border-label, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:8px;
-    			margin-left:10px;z-index:1;
-    			position:relative;background-color:var(--flow-input-bg, inherit);
+				margin-left: var(--flow-input-label-margin-left,10px);
+				z-index: var(--flow-input-label-z-index, 1);
+				position: var(--flow-input-label-position, relative);
+				background-color:var(--flow-input-bg, inherit);
 			}
 			.btn{
 				position:relative;
