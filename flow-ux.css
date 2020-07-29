@@ -59,6 +59,8 @@ body{
     --flow-scrollbar-bg:#F5F5F5;
     --flow-scrollbar-thumb-box-shadow:inset 0 0 6px rgba(0,0,0,.3);
     --flow-scrollbar-thumb-bg:#888;
+
+    --flow-app-header-bg:var(--flow-background-color);
 }
 
 body.flow-theme-dark{
@@ -93,6 +95,8 @@ body.flow-theme-dark{
     --flow-input-bg: #2f2f2f;
     --flow-input-color: var(--flow-color, #b1b1b1);
     --flow-input-placeholder: #555;
+
+    --flow-app-header-bg:#191818;
 }
 
 .hide{display:none;}
