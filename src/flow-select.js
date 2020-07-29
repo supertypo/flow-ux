@@ -123,6 +123,7 @@ export class FlowSelect extends FlowMenu {
 				position:relative;display:flex;align-items:center;
 				margin:var(--flow-select-filter-input-margin, 0px 0px 5px);
 			}
+			.filter-box[hidden]{display:none}
 			.filter-box .clear-btn{
 				position:absolute;right:10px;cursor:pointer;display:none;
 				font-size:1.5rem;color:var(--flow-input-color, inherit);
@@ -158,13 +159,12 @@ export class FlowSelect extends FlowMenu {
 				</div>
 				
 			</div><div>
-				<div class="filter-box">
+				<div class="filter-box" ?hidden=${this.hidefilter}>
 					<svg class="icon">
 						<use href="${iconSrc}"></use>
 					</svg>
 					<input class="input filter" type="text" 
 						placeholder="${this.placeholder || 'Search...'}"
-						?hidden=${this.hidefilter}
 						?has-content=${this.filterText}
 						.value="${this.filterText||''}"
 						@keyup=${this.onSearch} />
