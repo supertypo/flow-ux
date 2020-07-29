@@ -108,7 +108,8 @@ export class FlowSelect extends FlowMenu {
 			}
 			.selected::after{
 				content:"";display:inline-block;
-				position:absolute;right:10px;top:1rem;
+				position:absolute;right:10px;
+				top:calc(var(--flow-input-font-size, 1rem) * 1.5);
 				width:0px;height:0px;
 				border:5px solid var(--flow-primary-color, #000);
 				border-left-color:transparent;
@@ -186,8 +187,15 @@ export class FlowSelect extends FlowMenu {
 		)
 	}
 
+	selectionChanged(){
+		super.selectionChanged();
+		if(!this.multiple && this.dropdown)
+			this.dropdown.close();
+	}
+
 	firstUpdated(){
 		super.firstUpdated();
+		this.dropdown = this.renderRoot.querySelector("flow-dropdown");
 		let slot = this.renderRoot.querySelector('slot.menu-list');
 		this.listSlot = slot;
 		slot.addEventListener('slotchange', (e)=>{

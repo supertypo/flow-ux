@@ -179,6 +179,11 @@ export class FlowMenu extends BaseElement {
 			selected = selected[0];
 		this.fire("select", {selected})
 	}
+	get value(){
+		if(!this.multiple)
+			return this._selected[0]
+		return this._selected
+	}
 }
 
 FlowMenu.define('flow-menu');
