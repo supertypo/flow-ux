@@ -100,7 +100,16 @@ export class FlowSelect extends FlowMenu {
 				min-width:var(--flow-select-selected-min-width, 100px);
 				max-width:var(--flow-select-selected-max-width, 500px);
 				min-height:var(--flow-select-selected-min-height, 44px);
-				
+				position:relative;
+			}
+			.selected::after{
+				content:"";display:inline-block;
+				position:absolute;right:10px;top:0.75rem;
+				width:10px;height:10px;
+				border:2px solid var(--flow-primary-color, #000);
+				border-left-color:transparent;
+				border-top-color:transparent;
+				transform:rotate(45deg) skew(5deg, 5deg);
 			}
 			flow-dropdown:not([multiple]) .selected{white-space:nowrap}
 			.filter{
