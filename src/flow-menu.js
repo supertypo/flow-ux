@@ -41,8 +41,8 @@ export class FlowMenu extends BaseElement {
 			cursor:pointer;user-select:none;
 			padding:var(--flow-menu-item-padding, 10px);
 			margin:var(--flow-menu-item-margin-internal);
-			background-color:var(--flow-menu-item-bg, #FFF);
-			color:var(--flow-menu-item-color, #000);
+			background-color:var(--flow-menu-item-bg, var(--flow-background-color));
+			color:var(--flow-menu-item-color, var(--flow-color));
 		}
 		::slotted(flow-menu-item:hover),
 		::slotted(.menu-item:hover){
@@ -52,7 +52,7 @@ export class FlowMenu extends BaseElement {
 		::slotted(flow-menu-item.selected),
 		::slotted(.menu-item.selected){
 			background-color:var(--flow-menu-item-selected-bg, var(--flow-primary-color));
-			color:var(--flow-menu-item-selected-color, #FFF);
+			color:var(--flow-menu-item-selected-color, var(--flow-primary-invert-color));
 		}
 		:host(.grid){
 			display:flex;

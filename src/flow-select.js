@@ -21,10 +21,11 @@ import {FlowMenu} from './flow-menu.js';
 * @cssvar {color} [--flow-input-color=inherit]
 * @cssvar {color} [--flow-input-placeholder=#888]
 * @cssvar {padding} [--flow-select-padding-label=2px 5px]
+* @cssvar {padding} [--flow-select-padding=5px]
 * @cssvar {margin} [--flow-select-filter-input-margin=0px 0px 5px]
 * @cssvar {--flow-dropdown-trigger-bg} [--flow-select-trigger-bg=transparent]
 * @cssvar {--flow-dropdown-trigger-color} [--flow-select-trigger-color= var(--flow-color, #000)]
-* @cssvar {--flow-dropdown-trigger-padding} [--flow-select-trigger-padding=5px 5px]
+* @cssvar {--flow-dropdown-trigger-padding} [--flow-select-trigger-padding=0px]
 * @cssvar {--flow-dropdown-trigger-hover-bg} [--flow-select-trigger-hover-bg=transparent]
 * @cssvar {--flow-dropdown-trigger-hover-color} [--flow-select-trigger-hover-color=var(--flow-dropdown-trigger-color)]
 * @cssvar {--flow-dropdown-trigger-line-height} [--flow-select-trigger-line-height=1]
@@ -41,7 +42,8 @@ export class FlowSelect extends FlowMenu {
 			label:{type:String},
 			textAttr:{type:String},
 			hidefilter:{type:Boolean},
-			filterText:{type:String}
+			filterText:{type:String},
+			searchIcon:{type:String}
 		}
 	}
 
@@ -50,13 +52,15 @@ export class FlowSelect extends FlowMenu {
 			:host{
 				display:inline-block;vertical-align:middle;
 				font-family:var(--flow-font-family, "Julius Sans One");
+				padding:var(--flow-select-padding, 5px);
+				--flow-dropdown-border:var(--flow-select-dropdown-border, 1px solid var(--flow-primary-color, #000));
 				--flow-dropdown-trigger-bg:var(--flow-select-trigger-bg, transparent);
 				--flow-dropdown-trigger-color:var(--flow-select-trigger-color, var(--flow-color, #000));
-				--flow-dropdown-trigger-padding:var(--flow-select-trigger-padding, 5px 5px);
+				--flow-dropdown-trigger-padding:var(--flow-select-trigger-padding, 0px);
 				--flow-dropdown-trigger-hover-bg:var(--flow-select-trigger-hover-bg, transparent);
 				--flow-dropdown-trigger-hover-color:var(--flow-select-trigger-hover-color, var(--flow-dropdown-trigger-color));
 				--flow-dropdown-trigger-line-height:var(--flow-select-trigger-line-height, 1);
-				/*padding:0px;*/
+				--flow-dropdown-top:var(--flow-select-dropdown-border-top, -8px);
 			}
 			flow-dropdown{margin:0px;}
 			.wrapper{
@@ -104,12 +108,12 @@ export class FlowSelect extends FlowMenu {
 			}
 			.selected::after{
 				content:"";display:inline-block;
-				position:absolute;right:10px;top:0.75rem;
-				width:10px;height:10px;
-				border:2px solid var(--flow-primary-color, #000);
+				position:absolute;right:10px;top:1rem;
+				width:0px;height:0px;
+				border:5px solid var(--flow-primary-color, #000);
 				border-left-color:transparent;
-				border-top-color:transparent;
-				transform:rotate(45deg) skew(5deg, 5deg);
+				border-bottom-color:transparent;
+				border-right-color:transparent;
 			}
 			flow-dropdown:not([multiple]) .selected{white-space:nowrap}
 			.filter{
@@ -124,6 +128,13 @@ export class FlowSelect extends FlowMenu {
 				font-size:1.5rem;color:var(--flow-input-color, inherit);
 			}
 			.filter-box input[has-content]+.clear-btn{display:inline-block}
+			.filter-box input{
+				padding-left:30px;
+			}
+			.filter-box .icon{
+				width:15px;height:15px;fill:var(--flow-primary-color);
+				position:absolute;left:10px;
+			}
 
 			::slotted([flow-select-filtred]){display:none}
 		`];
@@ -133,6 +144,7 @@ export class FlowSelect extends FlowMenu {
 		this.textAttr = "data-text";
 	}
 	render() {
+		let iconSrc = this.iconPath(this.searchIcon || "search");
 		return html
 		`<flow-dropdown ?multiple="${this.multiple}">
 			<div slot="trigger">
@@ -147,6 +159,9 @@ export class FlowSelect extends FlowMenu {
 				
 			</div><div>
 				<div class="filter-box">
+					<svg class="icon">
+						<use href="${iconSrc}"></use>
+					</svg>
 					<input class="input filter" type="text" 
 						placeholder="${this.placeholder || 'Search...'}"
 						?hidden=${this.hidefilter}

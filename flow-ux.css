@@ -9,6 +9,7 @@ body{
     --flow-caption-logo-bg-color:transparent;
     --flow-font-weight:bold;
     --flow-primary-color: #0382a8;
+    --flow-primary-invert-color: #FFF;
     --flow-border-color: #0382a8;
     --flow-border-hover-color:rgb(1, 62, 119);
     --flow-tab-font-size:1.5rem;
@@ -72,6 +73,7 @@ body.flow-theme-dark{
     --flow-color: #b1b1b1;
     /*--flow-primary-color: #b1b1b1;*/
     --flow-primary-color:  #0382a8;
+    --flow-primary-invert-color: #FFF;
     --flow-border-color: #0382a8;
     --flow-tab-bg-top: #363537;
     --flow-tab-bg-bottom: #363537;

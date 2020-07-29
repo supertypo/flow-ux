@@ -57,8 +57,10 @@ export class FlowDropdown extends BaseElement {
 			overflow:auto;border-radius:3px;
 			box-shadow:var(--flow-box-shadow);
 			z-index:1000;
-			top:0px;left:0px;
+			top:var(--flow-dropdown-top, 0px);
+			left:0px;
 			padding:var(--flow-dropdown-content-padding, 5px);
+			border:var(--flow-dropdown-border, none);
 		}
 		:host([opened]) .dropdown-content{display:block;}
 		`;
