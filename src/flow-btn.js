@@ -44,6 +44,7 @@ export class FlowBtn extends BaseElement {
 		return css`
 			:host{
 				display:inline-block;
+				margin: var(--flow-btn-margin);
 				padding:var(--flow-btn-padding, 5px);
 				border: 2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:var(--flow-btn-radius, 8px);
