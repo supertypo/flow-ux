@@ -31,6 +31,7 @@ export const FlowAppBaseMixin = (baseClass)=>{
 
 				this.rpc.on("init", ()=>{
 					this.log("RPC:init");
+					this.fire('network-iface-online');
 					resolve();
 					// this.rpc.dispatch("rpc-test-1", {key:"value-1"});
 					// this.rpc.dispatch("rpc-test-2", {key:"value-2"}, (err, data)=>{
@@ -40,6 +41,12 @@ export const FlowAppBaseMixin = (baseClass)=>{
 			})
 		}
 
+		// taken from BaseElement...
+		fireEvent(eventName, detail={}, options={}){
+			let ev = new CustomEvent(eventName, Object.assign({}, options, {detail}));
+			return window.dispatchEvent(ev);
+		}
+	
 		initSocketIONATS(){
 			return new Promise((resolve, reject) => {
 				this.nats = new FlowSocketIONATS({
@@ -48,11 +55,17 @@ export const FlowAppBaseMixin = (baseClass)=>{
 
 				this.nats.on("init", ()=>{
 					this.log("NATS:init");
+					this.fireEvent('network-iface-online');
 					resolve();
 					// this.rpc.dispatch("rpc-test-1", {key:"value-1"});
 					// this.nats.request("nats.hello", {key:"origin-client-init"}, (err, data)=>{
 					// 	console.log("nats-test-reponse: err, data", err, data);
 					// })
+				})
+
+				this.nats.on('disconnected', () => {
+					console.log("disconnected...");
+					this.fireEvent('network-iface-offline');
 				})
 			})
 		}

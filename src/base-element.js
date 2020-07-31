@@ -191,6 +191,36 @@ export class BaseElement extends LitElement{
 	*/
 	log(...args){
 	}
+
+	connectedCallback() {
+		super.connectedCallback();
+
+		if(!this.online && !this.offline)
+			return;
+
+		if(this.online) {
+			this.online_ = this.online.bind(this);
+			window.addEventListener('network-iface-online', this.online_);
+		}
+
+		if(this.offline) {
+			this.offline_ = this.offline.bind(this);
+			window.addEventListener('network-iface-offline', this.offline_);
+		}
+	}
+
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		
+		if(this.online_) {
+			window.removeEventListener('network-iface-online', this.online_);
+			delete this.online_;
+		}
+		if(this.offline_) {
+			window.removeEventListener('network-iface-offline', this.offline_);
+			delete this.offline_;
+		}
+	}
 }
 
 export const ScrollbarStyle = css`
