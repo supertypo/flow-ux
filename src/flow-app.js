@@ -66,7 +66,6 @@ export const FlowAppBaseMixin = (baseClass)=>{
 				this.nats.on('disconnected', () => {
 					console.log("disconnected...");
 					this.onNetworkIfaceOffline();
-					this.fireEvent('network-iface-offline');
 				})
 			})
 		}
