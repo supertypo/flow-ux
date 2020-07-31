@@ -199,12 +199,18 @@ export class BaseElement extends LitElement{
 			return;
 
 		if(this.onlineCallback) {
-			this.onlineCallback_ = this.onlineCallback.bind(this);
+			this.onlineCallback_ = (...args)=>{
+				this.__online = true;
+				this.onlineCallback(...args);
+			}
 			window.addEventListener('network-iface-online', this.onlineCallback_);
 		}
 
 		if(this.offlineCallback) {
-			this.offlineCallback_ = this.offlineCallback.bind(this);
+			this.offlineCallback_ = (...args)=>{
+				this.__online = false;
+				this.offlineCallback(...args);
+			}
 			window.addEventListener('network-iface-offline', this.offlineCallback_);
 		}
 	}
@@ -220,6 +226,9 @@ export class BaseElement extends LitElement{
 			window.removeEventListener('network-iface-offline', this.offlineCallback_);
 			delete this.offlineCallback_;
 		}
+	}
+	isOnline(){
+		return this.__online;
 	}
 }
 

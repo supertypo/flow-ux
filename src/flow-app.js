@@ -84,10 +84,16 @@ export const FlowAppMixin = (baseClass)=>{
 		}
 
 		onNetworkIfaceOnline(){
+			this._online = true;
 			this.fireEvent('network-iface-online');
 		}
 		onNetworkIfaceOffline(){
+			this._online = false;
 			this.fireEvent('network-iface-offline');
+		}
+
+		isOnline(){
+			return this._online;
 		}
 	}
 	return base;
