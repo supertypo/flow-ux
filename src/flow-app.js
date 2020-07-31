@@ -31,6 +31,7 @@ export const FlowAppBaseMixin = (baseClass)=>{
 
 				this.rpc.on("init", ()=>{
 					this.log("RPC:init");
+					this.beforeNetworkIfaceOnlineEvent();
 					this.fire('network-iface-online');
 					resolve();
 					// this.rpc.dispatch("rpc-test-1", {key:"value-1"});
@@ -55,6 +56,7 @@ export const FlowAppBaseMixin = (baseClass)=>{
 
 				this.nats.on("init", ()=>{
 					this.log("NATS:init");
+					this.beforeNetworkIfaceOnlineEvent();
 					this.fireEvent('network-iface-online');
 					resolve();
 					// this.rpc.dispatch("rpc-test-1", {key:"value-1"});
@@ -65,6 +67,7 @@ export const FlowAppBaseMixin = (baseClass)=>{
 
 				this.nats.on('disconnected', () => {
 					console.log("disconnected...");
+					this.beforeNetworkIfaceOfflineEvent();
 					this.fireEvent('network-iface-offline');
 				})
 			})
@@ -82,6 +85,13 @@ export const FlowAppBaseMixin = (baseClass)=>{
 				`%c[${name}]`,
 				`font-weight:bold;color:#41c7ef`
 			);
+		}
+
+		beforeNetworkIfaceOnlineEvent(){
+			
+		}
+		beforeNetworkIfaceOfflineEvent(){
+
 		}
 	}
 	return base;
