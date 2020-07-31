@@ -4,9 +4,8 @@ import {FlowSocketIONATS} from './flow-socketio-nats.js';
 
 import {BaseElement, ScrollbarStyle, html, css} from './base-element.js';
 
-class FlowAppBase {}
 
-export const FlowAppBaseMixin = (baseClass)=>{
+export const FlowAppMixin = (baseClass)=>{
 	class base extends baseClass{
 		constructor(...args) {
 			super(...args)
@@ -94,9 +93,8 @@ export const FlowAppBaseMixin = (baseClass)=>{
 	return base;
 }
 
-export class FlowApp extends FlowAppBaseMixin(FlowAppBase){}
 
-export class FlowAppComponent extends FlowAppBaseMixin(BaseElement){
+export class FlowApp extends FlowAppMixin(BaseElement){
 	static get styles(){
 		return [ScrollbarStyle, css`
 			:host{
@@ -155,5 +153,5 @@ export class FlowAppComponent extends FlowAppBaseMixin(BaseElement){
 	}
 }
 
-FlowAppComponent.define("flow-app");
+FlowApp.define("flow-app");
 
