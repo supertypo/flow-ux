@@ -195,30 +195,30 @@ export class BaseElement extends LitElement{
 	connectedCallback() {
 		super.connectedCallback();
 
-		if(!this.online && !this.offline)
+		if(!this.onlineCallback && !this.offlineCallback)
 			return;
 
-		if(this.online) {
-			this.online_ = this.online.bind(this);
-			window.addEventListener('network-iface-online', this.online_);
+		if(this.onlineCallback) {
+			this.onlineCallback_ = this.onlineCallback.bind(this);
+			window.addEventListener('network-iface-online', this.onlineCallback_);
 		}
 
-		if(this.offline) {
-			this.offline_ = this.offline.bind(this);
-			window.addEventListener('network-iface-offline', this.offline_);
+		if(this.offlineCallback) {
+			this.offlineCallback_ = this.offlineCallback.bind(this);
+			window.addEventListener('network-iface-offline', this.offlineCallback_);
 		}
 	}
 
 	disconnectedCallback() {
 		super.disconnectedCallback();
 		
-		if(this.online_) {
-			window.removeEventListener('network-iface-online', this.online_);
-			delete this.online_;
+		if(this.onlineCallback_) {
+			window.removeEventListener('network-iface-online', this.onlineCallback_);
+			delete this.onlineCallback_;
 		}
-		if(this.offline_) {
-			window.removeEventListener('network-iface-offline', this.offline_);
-			delete this.offline_;
+		if(this.offlineCallback_) {
+			window.removeEventListener('network-iface-offline', this.offlineCallback_);
+			delete this.offlineCallback_;
 		}
 	}
 }
