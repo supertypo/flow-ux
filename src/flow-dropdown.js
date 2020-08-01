@@ -67,9 +67,7 @@ export class FlowDropdown extends BaseElement {
 	}
 	render() {
 		return html`
-			<div class="trigger">
-				<slot name="trigger"></slot>
-			</div><div class="dropdown">
+			<div class="trigger"><slot name="trigger"></slot></div><div class="dropdown">
 				<div class="dropdown-content">
 					<slot></slot>
 				</div>

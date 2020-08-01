@@ -62,6 +62,7 @@ export class FlowInput extends BaseElement {
 				min-width:var(--flow-input-min-width, 100px);
 				max-width:var(--flow-input-max-width, 500px);
 				margin:var(--flow-input-margin, 5px 0px);
+				font-size:0px;
 			}
 			:host(:not([disabled])) .btn{
 				cursor:pointer;
@@ -81,10 +82,10 @@ export class FlowInput extends BaseElement {
 			}
 			label{
 				/*font-size:0.7rem;*/
-				font-size:var(--flow-input-font-size-label, 0.7rem);
-				padding:var(--flow-input-padding-label,2px 5px);
+				font-size:var(--flow-input-label-font-size, 0.7rem);
+				padding:var(--flow-input-label-padding,2px 5px);
 				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
-				border: var(--flow-input-border-label, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+				border: var(--flow-input-label-border, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:8px;
 				margin-left: var(--flow-input-label-margin-left,10px);
 				z-index: var(--flow-input-label-z-index, 1);
@@ -160,8 +161,7 @@ export class FlowInput extends BaseElement {
         this.value = '';
     }
 	render() {
-		return html`
-		<label ?hidden=${!this.label}>${this.label||""}</label>
+		return html`<label ?hidden=${!this.label}>${this.label||""}</label>
 		<div class="wrapper" @click=${this.onClick} ?has-value=${!!this.value}>
 			<slot name="prefix"></slot>
 			<input class="input" type="${this.type}" 
