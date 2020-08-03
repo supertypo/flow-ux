@@ -43,7 +43,7 @@ export class FlowFormControl extends BaseElement {
 			fill:var(--flow-primary-color, rgba(0,151,115,1.0));
 		}
 		.input-box{
-			width:100px;
+			width: var(--flow-form-control-input-box-width,100px);
 			flex:1;
 		}
 		.input{margin:5px 5px 5px 10px;}
