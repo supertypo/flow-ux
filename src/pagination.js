@@ -14,7 +14,7 @@ export const paginationStyle = css`
 		transition: background-color .3s;
 		border: 1px solid #555;
 		border-color:var(--k-pagination-border-color, var(--k-btn-border-color, #555));
-		margin:2px 4px;
+		margin:var(--flow-pagination-margin, 2px 4px);
         cursor:pointer;
         user-select:none;
 	}
