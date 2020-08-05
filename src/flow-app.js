@@ -46,11 +46,11 @@ export const FlowAppMixin = (baseClass)=>{
 			return window.dispatchEvent(ev);
 		}
 	
-		initSocketIONATS(){
+		initSocketIONATS(options={}){
 			return new Promise((resolve, reject) => {
-				this.nats = new FlowSocketIONATS({
+				this.nats = new FlowSocketIONATS(Object.assign({
 					path:"/nats"
-				});
+				}, options));
 
 				this.nats.on("init", ()=>{
 					this.log("NATS:init");
