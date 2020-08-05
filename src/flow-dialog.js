@@ -119,6 +119,8 @@ export class FlowDialog extends BaseElement {
 		return html
 		`<dialog @close=${this.onDialogClose}>
 			<div class="heading" ?hide=${!this.heading}>${this.heading}</div>
+			<span class="close-btn" title="Close" 
+				@click="${this.onCloseClick}">&times;</span>
 			<div class="body">
 				${this.renderBody()}
 			</div>
@@ -185,6 +187,12 @@ export class FlowDialog extends BaseElement {
 	destroy(){
 		this.close();
 		this.remove();
+	}
+
+	onCloseClick(){
+		if(this.resolve)
+			return this.resolve({btn:"close"})
+		this.destroy();
 	}
 
 	onDialogClose(e){
