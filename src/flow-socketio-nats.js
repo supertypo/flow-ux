@@ -6,6 +6,7 @@ export class FlowSocketIONATS extends FlowSocketIO {
 		super(options);
 		this.trace = false;
 		this.subscribers = new Map();
+		this.subscriptionTokenMap = new Map();
 		this.handlers = new Map();
 	}
 
@@ -41,10 +42,10 @@ export class FlowSocketIONATS extends FlowSocketIO {
 
 		this.socket.on('subscribe::response', (msg)=>{
 			this.trace && console.log("sio/subscribe::response",msg);
-			let {rid, error, ident, subject} = msg;
+			let {rid, error, token, subject} = msg;
 			let info = rid && this.pending.get(rid);
 			if(info) {
-				info.callback.call(this, error, ident);
+				info.callback.call(this, error, token);
 				let handler = this.handlers.get(rid);
 				if(!error && subject?.length && handler) {
 					let subscribers = this.subscribers.get(subject);
@@ -52,8 +53,9 @@ export class FlowSocketIONATS extends FlowSocketIO {
 						subscribers = new Map();
 						this.subscribers.set(subject, subscribers)
 					}
-					subscribers.set(rid, {ident, handler});
+					subscribers.set(rid, {token, handler});
 					this.handlers.delete(rid);
+					this.subscriptionTokenMap.set(token, { subscribers, rid });
 				}
 			}
 			else if(rid)
@@ -64,10 +66,10 @@ export class FlowSocketIONATS extends FlowSocketIO {
 
 		this.socket.on('unsubscribe::response', (msg)=>{
 			this.trace && console.log("sio/subscribe::response",msg);
-			let {rid, error} = msg;
+			let {rid, error, ok} = msg;
 			let info = rid && this.pending.get(rid);
 			if(info)
-				info.callback.call(this, error);
+				info.callback.call(this, error, ok);
 			else if(rid)
 				console.log("RPC received unknown unsubscribe::response rid");
 
@@ -164,8 +166,10 @@ export class FlowSocketIONATS extends FlowSocketIO {
 			this.handlers.set(rid, handler);
 			this.pending.set(rid, {
 				ts:Date.now(),
-				callback:(err)=>{
-					return err?reject(err):resolve();
+				callback:(err, data)=>{
+
+					// TODO - Data should be a token...
+					return err?reject(err):resolve(data);
 				}
 			});
 
@@ -178,7 +182,37 @@ export class FlowSocketIONATS extends FlowSocketIO {
 		return p;
 	}
 
-	unsubscribe(rid){
+	unsubscribe(token) {
+		this.unsubscribe_local_refs(token);
+
+		let rid = UID();
+		let p = new Promise((resolve, reject)=>{
+			this.handlers.set(rid, handler);
+			this.pending.set(rid, {
+				ts:Date.now(),
+				callback:(err, ok)=>{
+					return err?reject(err):resolve(ok);
+				}
+			});
+
+			this.socket.emit('unsubscribe', {
+				req : { token },
+				rid
+			})
+		});
+		p.rid = rid;
+		return p;
+	}
+
+
+	unsubscribe_local_refs(token) {
+// this.subscriptionTokenMap.set(token, { subscribers, rid });
+		let rec = this.subscribtionTokenMap.get(token);
+		if(!rec)
+			return;
+
+		const { rid } = rec;
+
 		this.handlers.delete(rid);
 		this.pending.delete(rid);
 		this.subscribers.forEach(subscribers=>{
