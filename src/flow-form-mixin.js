@@ -1,4 +1,4 @@
-import { finfr } from "../../finfr-ux/src/base";
+// import { finfr } from "../../finfr-ux/src/base";
 
 export const FlowFormValidators = {
     email : (email) => {
@@ -7,8 +7,8 @@ export const FlowFormValidators = {
     }
 }
 
-export const FormMixin = baseClass => {
-	class Form extends baseClass {
+export const FlowFormMixin = baseClass => {
+	class FlowFormIface extends baseClass {
 
 
 
@@ -22,11 +22,33 @@ export const FormMixin = baseClass => {
             }
         }
 
-        gatherInputs() {
+        gatherInputs(list) {
+            let ctls = { };
+            list.forEach(item => {
+                const [id, property] = item.split('.');
+                ctls[id] = this.renderRoot.getElementById(id)[property||'value'];
+            });
+            return ctls;
+        }
+
+        async gatherInputData(schema, resolve) {
+
+            if(!schema)
+                schema = this.schema;
+            if(!schema) {
+                return Promise.reject(`missing schema in ${this.constructor.name}`);
+            }
+
+            if(Array.isArray(schema)) {
+                const src = schema;
+                schema = { };
+                src.forEach(t => { schema[t] = { type : String }; });
+            }
+
 
             const data = { };
-            Object.keys(this.schema).forEach((key) => {
-                let el = this.getElementById(`${key}`);
+            Object.keys(schema).forEach((key) => {
+                let el = this.renderRoot.getElementById(`${key}`);
                 if(!el)
                     return console.error(`unknown field ${key} in data`,data,`occurred in`,this);
 
@@ -49,9 +71,21 @@ export const FormMixin = baseClass => {
 
         fillInputs(data) {
 
+            if(!schema)
+                schema = this.schema;
+            if(!schema) {
+                return Promise.reject(`missing schema in ${this.constructor.name}`);
+            }
+
+            if(Array.isArray(schema)) {
+                const src = schema;
+                schema = { };
+                src.forEach(t => { schema[t] = { type : String }; });
+            }
+
             const keys = Object.keys(data);
-            Object.keys(this.schema).forEach((key) => {
-                let el = this.getElementById(`${key}`);
+            Object.keys(schema).forEach((key) => {
+                let el = this.renderRoot.getElementById(`${key}`);
                 if(!el)
                     return console.error(`unknown field ${key} in data`,data,`occurred in`,this);
                 
@@ -75,70 +109,7 @@ export const FormMixin = baseClass => {
         //     let fields = Object.keys(this.schema);
         //     gatherInput
         // }
-
-        set(prefix) {
-
-        }
-
-        // FINFR USER
-        get(prefix) {
-            finfr.nats.request(`FDXI.${prefix}.get`, (err, data) => {
-                let fields = Object.keys(data);
-                this.fillInputs(data);
-            })
-        }
-
-/*        
-		buildFetchRequest(options, name=""){
-			return {}//api.getRecords(options);
-		}
-
-		async loadRecords(options={}, name=""){
-			//this.log("loadRecords", this)
-			let {req, params} = this.buildFetchRequest(options, name);
-			if(!req)
-				return
-			let {result, error} = await req;
-			if(error)
-				return
-
-			let {total, items} = result;
-			let {skip, limit} = params;
-			let prefix = name?name+'_':'';
-			this[`${prefix}pagination`] = buildPagination(total, skip, limit);
-			this[`${prefix}pagination`].type = name;
-			this[`${prefix}state`] = {params};
-			this[`${prefix}items`] = items;
-			this.setLoading(false, name);
-			return result;
-		}
-		onPaginationClick(e){
-			const target = e.target;
-			if(target.matches(".disabled, .active"))
-				return
-
-			let paginationEl = target.closest("[data-pagination]");
-			let pageEl = target.closest('[data-skip]');
-			if(!paginationEl || !pageEl)
-				return
-			let name = paginationEl.getAttribute('data-pagination');
-			let skip = pageEl.getAttribute('data-skip');
-			let prefix = name?name+'_':'';
-
-			let {params={}} = this[`${prefix}state`];
-			params.skip = skip;
-			//console.log("params", params)
-			this.setLoading(true, name);
-			this.loadRecords(params, name);
-		}
-
-		setLoading(isLoading, listName=""){
-			let el = listName?this.querySelector(`.${listName}-holder`):this;
-			(el || this).classList.toggle("loading", !!isLoading)
-        }
-        
-*/        
 	}
 
-	return Table;
+	return FlowFormIface;
 }
