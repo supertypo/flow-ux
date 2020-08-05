@@ -182,11 +182,17 @@ export class FlowDialog extends BaseElement {
 			this.dialog.close();
 	}
 
-	onDialogClose(){
+	destroy(){
+		this.close();
+		this.remove();
+	}
+
+	onDialogClose(e){
 		if(this._show){
 			this[this._show]();
 			return
 		}
+		let detail = {e};
 		this.dispatchEvent(new CustomEvent('closed', {detail}))
 	}
 	onBtnClick(e){
