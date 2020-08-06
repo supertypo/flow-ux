@@ -187,7 +187,6 @@ export class FlowSocketIONATS extends FlowSocketIO {
 
 		let rid = UID();
 		let p = new Promise((resolve, reject)=>{
-			this.handlers.set(rid, handler);
 			this.pending.set(rid, {
 				ts:Date.now(),
 				callback:(err, ok)=>{
@@ -206,8 +205,8 @@ export class FlowSocketIONATS extends FlowSocketIO {
 
 
 	unsubscribe_local_refs(token) {
-// this.subscriptionTokenMap.set(token, { subscribers, rid });
-		let rec = this.subscribtionTokenMap.get(token);
+		// this.subscriptionTokenMap.set(token, { subscribers, rid });
+		let rec = this.subscriptionTokenMap.get(token);
 		if(!rec)
 			return;
 

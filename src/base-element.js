@@ -3,7 +3,7 @@ import {LitElement, html, css} from 'lit-element';
 export * from 'lit-element';
 export * from 'lit-html/lit-html.js';
 
-import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon} from './helpers.js';
+import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon, FlowStates} from './helpers.js';
 
 export * from './helpers.js';
 export * from './pagination.js';
@@ -192,26 +192,58 @@ export class BaseElement extends LitElement{
 	log(...args){
 	}
 
+
+	renderOnStateChange(state, ON=true){
+		if(!this._renderOnStateChange)
+			this._renderOnStateChange = {};
+		this._renderOnStateChange[state] = ON;
+	}
+
 	connectedCallback() {
 		super.connectedCallback();
 
-		if(!this.onlineCallback && !this.offlineCallback)
-			return;
+		let stateChange = this._renderOnStateChange || {};
+		let ONLINE = stateChange[FlowStates.ONLINE];
+		let SIGNIN = stateChange[FlowStates.SIGNIN];
 
-		if(this.onlineCallback) {
+		if(this.onlineCallback || ONLINE) {
 			this.onlineCallback_ = (...args)=>{
 				this.__online = true;
-				this.onlineCallback(...args);
+				this.onlineCallback?.(...args);
+				if(ONLINE)
+					this.requestUpdate("FLOW-NETWORK-ONLINE", false)
 			}
 			window.addEventListener('network-iface-online', this.onlineCallback_);
 		}
 
-		if(this.offlineCallback) {
+		if(this.offlineCallback || ONLINE) {
 			this.offlineCallback_ = (...args)=>{
 				this.__online = false;
-				this.offlineCallback(...args);
+				this.offlineCallback?.(...args);
+				if(ONLINE)
+					this.requestUpdate("FLOW-NETWORK-ONLINE", true)
 			}
 			window.addEventListener('network-iface-offline', this.offlineCallback_);
+		}
+
+		if(this.signinCallback || SIGNIN) {
+			this.signinCallback_ = (...args)=>{
+				this.__signedin = true;
+				this.signinCallback?.(...args);
+				if(SIGNIN)
+					this.requestUpdate("FLOW-USER-SIGNIN", false)
+			}
+			window.addEventListener('flow-user-signin', this.signinCallback_);
+		}
+
+		if(this.signoutCallback || SIGNIN) {
+			this.signoutCallback_ = (...args)=>{
+				this.__signedin = false;
+				this.signoutCallback?.(...args);
+				if(SIGNIN)
+					this.requestUpdate("FLOW-USER-SIGNIN", true)
+			}
+			window.addEventListener('flow-user-signout', this.signoutCallback_);
 		}
 	}
 
@@ -226,9 +258,20 @@ export class BaseElement extends LitElement{
 			window.removeEventListener('network-iface-offline', this.offlineCallback_);
 			delete this.offlineCallback_;
 		}
+		if(this.signinCallback_) {
+			window.removeEventListener('flow-user-signin', this.signinCallback_);
+			delete this.signinCallback_;
+		}
+		if(this.signoutCallback) {
+			window.removeEventListener('flow-user-signout', this.signoutCallback);
+			delete this.signoutCallback;
+		}
 	}
 	isOnline(){
 		return this.__online;
+	}
+	isSignedin(){
+		return this.__signedin;
 	}
 }
 

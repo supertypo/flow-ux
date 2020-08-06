@@ -38,6 +38,7 @@ iconFile = iconFile||'icons';
 const NativeIcons = baseUrl+'resources/icons/sprites/';
 const FlowIconPath = iconPath || '/resources/fonts/sprites/';//NativeIcons;
 const FlowIcons = icons || {};
+const FlowStates = {ONLINE:1, SIGNIN:2}
 
 if(!resolveIcon){
 	resolveIcon = (cname, name, i)=>{
@@ -67,7 +68,7 @@ const dpc = (delay, fn)=>{
 		return setTimeout(delay, fn||0);
 	return setTimeout(fn, delay||0);
 }
-export {IconMap, FlowIcons, NativeIcons, dpc, isSmallScreen}
+export {IconMap, FlowIcons, NativeIcons, dpc, isSmallScreen, FlowStates}
 export {baseUrl, debug, FlowIconPath, flow, UID, storage, resolveIcon};
 
 

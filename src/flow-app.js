@@ -157,6 +157,35 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 	firstUpdated(){
 		this.setLoading(false);
 	}
+	signinCallback(){
+		this.signedin = true;
+	}
+	signoutCallback(){
+		this.signedin = false;
+	}
+	connectedCallback() {
+		super.connectedCallback();
+		this.signinCallback_ = (...args)=>{
+			this.signinCallback(...args);
+		}
+		window.addEventListener('flow-user-signin', this.signinCallback_);
+
+		this.signoutCallback_ = (...args)=>{
+			this.signoutCallback(...args);
+		}
+		window.addEventListener('flow-user-signout', this.signoutCallback_);
+	}
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		if(this.signinCallback_){
+			window.removeEventListener('flow-user-signin', this.signinCallback_);
+			delete this.signinCallback_;
+		}
+		if(this.signoutCallback_){
+			window.removeEventListener('flow-user-signout', this.signoutCallback_);
+			delete this.signoutCallback_;
+		}
+	}
 }
 
 FlowApp.define("flow-app");
