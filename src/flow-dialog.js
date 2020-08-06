@@ -88,7 +88,10 @@ export class FlowDialog extends BaseElement {
 				dg.heading = title;
 
 			document.body.append(dg)
-			modal?dg.showModal():dg.show();
+			setTimeout(()=>{
+				modal?dg.showModal():dg.show();
+			}, 100)
+			
 		})
 
 		promise.dialog = dg;
