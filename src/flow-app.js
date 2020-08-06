@@ -136,7 +136,8 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 				background-color:var(--flow-app-drawer-bg, var(--flow-background, inherit));
 				color:var(--flow-app-drawer-color, var(--flow-color, inherit));
 				width:var(--flow-app-drawer-width, 300px);
-				overflow:auto;
+				overflow:var(--flow-app-drawer-overflow, initial);
+				position:relative;
 			}
 			:host([no-drawer]) .drawer{display:none}
 			.main{flex:1;overflow:var(--flow-app-main-overflow,auto)}
