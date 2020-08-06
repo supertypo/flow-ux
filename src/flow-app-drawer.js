@@ -40,7 +40,7 @@ export class FlowAppDrawer extends BaseElement {
 				padding:var(--flow-appdrawer-btn-padding, 10px);
 				position:absolute;
 				right:var(--flow-appdrawer-btn-right, -10px);
-				top:var(--flow-appdrawer-btn-top, 20px);
+				top:var(--flow-appdrawer-btn-top, 5px);
 				background-color:var(--flow-appdrawer-btn-bg, var(--flow-background-color));
 				width:var(--flow-appdrawer-btn-width, 15px);
 				height:var(--flow-appdrawer-btn-height, 15px);
