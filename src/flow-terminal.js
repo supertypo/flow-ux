@@ -1,4 +1,4 @@
-import {BaseElement, html, css} from './base-element.js';
+import {BaseElement, html, css, ScrollbarStyle} from './base-element.js';
 
 
 
@@ -83,7 +83,7 @@ export class FlowTerminal extends BaseElement {
 		};
 	}
 	static get styles() {
-		return css`
+		return [ScrollbarStyle, css`
 			:host {
 				/*background-color: rgba(0,0,0,0.0);*/
 				/*color: black;*/
@@ -221,7 +221,7 @@ export class FlowTerminal extends BaseElement {
 			.xterm-underline {
 			    text-decoration: underline;
 			}
-		`;
+		`];
 	}
 
 	constructor() {

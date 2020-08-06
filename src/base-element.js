@@ -276,16 +276,19 @@ export class BaseElement extends LitElement{
 }
 
 export const ScrollbarStyle = css`
-.sbar::-webkit-scrollbar-track{
+*::-webkit-scrollbar-track,
+:host::-webkit-scrollbar-track{
     box-shadow:var(--flow-scrollbar-track-box-shadow, initial);
     background:var(--flow-scrollbar-track-bg, initial);
 }
 
-.sbar::-webkit-scrollbar{
+*::-webkit-scrollbar,
+:host::-webkit-scrollbar{
 	width:var(--flow-scrollbar-width, initial);
 	background:var(--flow-scrollbar-bg, initial);
 }
-.sbar::-webkit-scrollbar-thumb{
+*::-webkit-scrollbar-thumb,
+:host::-webkit-scrollbar-thumb{
     box-shadow:var(--flow-scrollbar-thumb-box-shadow, initial);
     background:var(--flow-scrollbar-thumb-bg, initial);
 }
