@@ -34,8 +34,9 @@ export class FlowLink extends BaseElement {
 		return css`
 			:host{
 				display:inline-block;
-				font-family:var(--flow-font-family, "Julius Sans One");
-				font-weight:var(--flow-font-weight, bold);
+				font-family:var(--flow-link-font-family, "Julius Sans One");
+				font-weight:var(--flow-link-font-weight, bold);
+				font-size:var(--flow-link-font-size, 16px);
 			}
 			:host([disabled]){
 				opacity:0.5;
