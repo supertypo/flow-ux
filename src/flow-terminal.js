@@ -546,7 +546,7 @@ export class FlowTerminal extends BaseElement {
 			});
 			this.resizeObserver.observe(this.terminalHolder);
 		}
-		this.setFontSize(this.fontSize || this.getFontSize());
+		this.setFontSize(this['font-size'] || this.getFontSize());
 
 		if(this.noscroll) {
 			let xtv = this.shadowRoot.querySelector(".xterm-viewport");
