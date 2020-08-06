@@ -38,7 +38,7 @@ iconFile = iconFile||'icons';
 const NativeIcons = baseUrl+'resources/icons/sprites/';
 const FlowIconPath = iconPath || '/resources/fonts/sprites/';//NativeIcons;
 const FlowIcons = icons || {};
-const FlowStates = {ONLINE:1, SIGNIN:2}
+const FlowStates = Object.freeze({ONLINE:'online', AUTH:'auth'});
 
 if(!resolveIcon){
 	resolveIcon = (cname, name, i)=>{

@@ -204,7 +204,7 @@ export class BaseElement extends LitElement{
 
 		let stateChange = this._renderOnStateChange || {};
 		let ONLINE = stateChange[FlowStates.ONLINE];
-		let SIGNIN = stateChange[FlowStates.SIGNIN];
+		let AUTH = stateChange[FlowStates.AUTH];
 
 		if(this.onlineCallback || ONLINE) {
 			this.onlineCallback_ = (...args)=>{
@@ -226,22 +226,22 @@ export class BaseElement extends LitElement{
 			window.addEventListener('network-iface-offline', this.offlineCallback_);
 		}
 
-		if(this.signinCallback || SIGNIN) {
+		if(this.signinCallback || AUTH) {
 			this.signinCallback_ = (...args)=>{
 				this.__signedin = true;
 				this.signinCallback?.(...args);
-				if(SIGNIN)
-					this.requestUpdate("FLOW-USER-SIGNIN", false)
+				if(AUTH)
+					this.requestUpdate("FLOW-USER-AUTH", false)
 			}
 			window.addEventListener('flow-user-signin', this.signinCallback_);
 		}
 
-		if(this.signoutCallback || SIGNIN) {
+		if(this.signoutCallback || AUTH) {
 			this.signoutCallback_ = (...args)=>{
 				this.__signedin = false;
 				this.signoutCallback?.(...args);
-				if(SIGNIN)
-					this.requestUpdate("FLOW-USER-SIGNIN", true)
+				if(AUTH)
+					this.requestUpdate("FLOW-USER-AUTH", true)
 			}
 			window.addEventListener('flow-user-signout', this.signoutCallback_);
 		}
