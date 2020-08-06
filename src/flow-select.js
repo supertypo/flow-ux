@@ -173,7 +173,9 @@ export class FlowSelect extends FlowMenu {
 						@keyup=${this.onSearch} />
 					<a class="clear-btn" @click=${this.clearFilter}>&times;</a>
 				</div>
+				<div class="menu-list-container">
 				<slot class="menu-list"></slot>
+				</div>
 			</div>
 		</flow-dropdown>`;
 	}

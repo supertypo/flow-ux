@@ -54,12 +54,14 @@ export class FlowMenu extends BaseElement {
 			background-color:var(--flow-menu-item-selected-bg, var(--flow-primary-color));
 			color:var(--flow-menu-item-selected-color, var(--flow-primary-invert-color));
 		}
-		:host(.grid){
+		:host(.grid),
+		:host(.grid) .menu-list-container{
 			display:flex;
 			flex-wrap:wrap;
 			width:var(--flow-menu-grid-width, 500px);
 		}
-		:host(.grid.full){
+		:host(.grid.full),
+		:host(.grid.full) .menu-list-container{
 			width:var(--flow-menu-gridfull-width, 1000px);
 		}
 		:host(.grid:not(.full)) ::slotted(flow-menu-item),
