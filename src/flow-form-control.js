@@ -19,7 +19,7 @@ export class FlowFormControl extends BaseElement {
 			icon:{type: String},
 			expandIcon:{type: String},
 			expandable:{type:Boolean},
-			expand:{type:Boolean, reflect:true}
+			expanded:{type:Boolean, reflect:true}
 		}
 	}
 
@@ -77,11 +77,11 @@ export class FlowFormControl extends BaseElement {
 		.info-box ::slotted(p){
 			font-size:0.8em;
 		}
-		:host([expandable]:not([expand])) .input,
-		:host([expandable]:not([expand])) .info-box ::slotted(*){
+		:host([expandable]:not([expanded])) .input,
+		:host([expandable]:not([expanded])) .info-box ::slotted(*){
 			display:none;
 		}
-		:host([expand]:not([static-icon])) .expandable-icon-box svg{
+		:host([expanded]:not([static-icon])) .expandable-icon-box svg{
 			transform:rotate(90deg)
 		}
 		`;
@@ -139,13 +139,13 @@ export class FlowFormControl extends BaseElement {
 */
 
 	open(){
-		this.expand = true;
+		this.expanded = true;
 	}
 	close(){
-		this.expand = false;
+		this.expanded = false;
 	}
 	toggle(){
-		this.expand = !this.expand;
+		this.expanded = !this.expanded;
 	}
 }
 
