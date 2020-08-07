@@ -98,6 +98,7 @@ export class FlowSocketIONATS extends FlowSocketIO {
 		this.socket.on('response', (msg)=>{
 			this.trace && console.log("sio/response",msg);
 			let {rid, error, data} = msg;
+			error = error || data.error;
 			let info = rid && this.pending.get(rid);
 			if(info)
 				info.callback.call(this, error, data);
