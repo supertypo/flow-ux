@@ -94,16 +94,16 @@ export class FlowFormControl extends BaseElement {
 		if(this.expandIcon != "-")
 			icon2Src = this.iconPath(this.expandIcon || "caret-right");
 		return html`
-			<div class="icon-box"><svg><use href="${iconSrc}"></use></svg></div>
+			<div class="icon-box" @click="${this.click}"><svg><use href="${iconSrc}"></use></svg></div>
 			${
 				this.expandable?
 				html`<div class="expandable-icon-box" 
-					data-flow-expandable="toggle"><svg>
+					data-flow-expandable="toggle" @click="${this.click}"><svg>
 				<use href="${icon2Src}"></use>
 				</svg></div>`: ''
 			}
 			<div class="input-box">
-				<label class="title-box" 
+				<label @click="${this.click}" class="title-box" 
 					data-flow-expandable="toggle"><slot name="title"></slot></label>
 				<div class="input"><slot></slot><slot name="input"></slot></div>
 			</div>
@@ -111,6 +111,18 @@ export class FlowFormControl extends BaseElement {
 		`;
 
 	}
+
+	click(){
+		// let target = e.target.closest("[data-flow-expandable]")
+		// if(!target)
+		// 	return
+		let action = this.getAttribute("data-flow-expandable") || 'toggle';
+
+		if(["toggle", "open", "close"].includes(action))
+			this[action]();
+	}
+
+/*	
 	firstUpdated(){
 		this.renderRoot.addEventListener("click", this._onClick.bind(this));
 	}
@@ -124,6 +136,7 @@ export class FlowFormControl extends BaseElement {
 		if(["toggle", "open", "close"].includes(action))
 			this[action]();
 	}
+*/
 
 	open(){
 		this.expand = true;
