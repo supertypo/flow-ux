@@ -56,9 +56,15 @@ export class FlowDataBadge extends BaseElement {
 
 			}
 			.container>div{padding:2px;}
-			.title{text-align:left; opacity:1;xmargin-top:7px; font-size: var(--flow-data-badge-title-font-size, 10px); 
-					color: var(--flow-data-badge-caption); xtext-shadow: 0px 0px 0px var(--flow-data-badge-caption-shadow, #fff); }
-			.value{text-align:right;opacity:1;
+			.title{
+				text-align:left; 
+				opacity:var(--flow-data-badge-title-opacity,1);
+				xmargin-top:7px; 
+				font-size: var(--flow-data-badge-title-font-size, 10px); 
+				color:var(--flow-data-badge-caption);
+				xtext-shadow: 0px 0px 0px var(--flow-data-badge-caption-shadow, #fff); }
+			.value{
+				text-align:right;opacity:1;
 				font-size:var(--flow-data-badge-value-font-size,14px);
 				font-family:var(--flow-data-badge-value-font-family,"Exo 2");
 				font-weight:var(--flow-data-badge-value-font-weight,normal);

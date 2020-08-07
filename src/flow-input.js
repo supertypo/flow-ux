@@ -78,13 +78,12 @@ export class FlowInput extends BaseElement {
 				min-width_:50px;
 				text-align:center;
 				justify-content:center;
-			    margin-top: var(--flow-input-wrapper-margin-top,-0.5rem);
+				margin-top:var(--flow-input-wrapper-margin-top,-0.5rem);
+				height:var(--flow-input-wrapper-height);
 			}
 			label{
-				/*font-size:0.7rem;*/
 				font-size:var(--flow-input-label-font-size, 0.7rem);
 				padding:var(--flow-input-label-padding,2px 5px);
-				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
 				border: var(--flow-input-label-border, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:8px;
 				margin-left: var(--flow-input-label-margin-left,10px);
@@ -113,12 +112,7 @@ export class FlowInput extends BaseElement {
 			.input{
 				width:100px;flex:1;box-sizing:border-box;
 				height:var(--flow-input-height);
-				/*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
 				border: var(--flow-input-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
-				/*
-				border-top-left-radius: 8px;
-				border-bottom-left-radius: 8px;
-				*/
 				border-radius: 8px;
     			margin:0px;
     			padding:16px 30px 10px 10px;

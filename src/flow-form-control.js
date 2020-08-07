@@ -43,9 +43,9 @@ export class FlowFormControl extends BaseElement {
 
 		.icon-box svg,
 		.expandable-icon-box svg{
-			width:24px;
-			height:24px;
-			margin-right: 8px;
+			width:var(--flow-form-control-icon-box-width,24px);
+			height:var(--flow-form-control-icon-box-height,24px);
+			margin-right:var(--flow-form-control-icon-box-margin,8px);
 			fill:var(--flow-primary-color, rgba(0,151,115,1.0));
 		}
 		.title-box{
