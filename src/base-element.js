@@ -84,12 +84,23 @@ export class BaseElement extends LitElement{
 		super();
 		const name = this.constructor.name;
 		this.__cname = name.toLowerCase().replace("flow", "");
-		this.log = Function.prototype.bind.call(
-			console.log,
-			console,
-			`%c[${name}]`,
-			`font-weight:bold;color:${this.constructor.strToColor(name)}`
-		);
+		this._initLog();
+	}
+	_initLog(forceLog = false){
+		let {localStorage:lS} = window;
+		let {debug} = lS||{};
+		if(forceLog||debug=="all"||debug=="*"||(debug+"").indexOf(this.__cname)>-1){
+			this.log = Function.prototype.bind.call(
+				console.log,
+				console,
+				`%c[${name}]`,
+				`font-weight:bold;color:${this.constructor.strToColor(name)}`
+			);
+		}else{
+			this.log = ()=>{
+				//
+			}
+		}
 	}
 
 	cloneValue(value){
