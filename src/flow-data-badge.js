@@ -48,6 +48,7 @@ export class FlowDataBadge extends BaseElement {
 			.container{
 				white-space: nowrap;
 				border: var(--flow-data-badge-container-border, 2px) solid var(--flow-primary-color,#333);
+				background-color:var(--flow-data-badge-bg, inherit);
 				xdisplay:flex;xflex-firection:column;xalign-items:center;
 				padding:var(--flow-data-badge-container-padding,2px 6px);
 				margin: var(--flow-data-badge-container-margin, 6px);
