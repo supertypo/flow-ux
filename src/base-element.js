@@ -89,7 +89,10 @@ export class BaseElement extends LitElement{
 	_initLog(forceLog = false){
 		let {localStorage:lS} = window;
 		let {debug} = lS||{};
-		if(forceLog||debug=="all"||debug=="*"||(debug+"").indexOf(this.__cname)>-1){
+		const name = this.constructor.name;
+		if(forceLog||debug=="all"||debug=="*"||
+			(debug+"").indexOf(this.__cname)>-1 ||
+			(debug+"").indexOf(name) >-1){
 			this.log = Function.prototype.bind.call(
 				console.log,
 				console,
