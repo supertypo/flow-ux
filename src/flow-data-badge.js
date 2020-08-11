@@ -52,7 +52,7 @@ export class FlowDataBadge extends BaseElement {
 				xdisplay:flex;xflex-firection:column;xalign-items:center;
 				padding:var(--flow-data-badge-container-padding,2px 6px);
 				margin: var(--flow-data-badge-container-margin, 6px);
-				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
+				box-shadow:var(--flow-data-badge-container-box-shadow, 2px 2px 1px rgba(1, 123, 104, 0.1));
 				border-radius:var(--flow-data-badge-container-border-radius, 10px);
 
 			}
