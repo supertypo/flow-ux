@@ -53,7 +53,7 @@ export class FlowDataBadge extends BaseElement {
 				padding:var(--flow-data-badge-container-padding,2px 6px);
 				margin: var(--flow-data-badge-container-margin, 6px);
 				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
-				border-radius: 10px;
+				border-radius:var(--flow-data-badge-container-border-radius, 10px);
 
 			}
 			.container>div{padding:2px;}
