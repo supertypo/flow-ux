@@ -90,6 +90,8 @@ export class Flowd3Element extends BaseElement {
 	}
 
     updateSVGSize(){
+    	if(!this.el_d3)
+    		return
     	let {width, height} = this.el_d3.getBoundingClientRect();
     	this.svg.attr("viewBox", this.svgViewBox || [0,0, width, height]);
     	this.draw();
