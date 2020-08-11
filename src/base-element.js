@@ -256,6 +256,13 @@ export class BaseElement extends LitElement{
 			}
 			window.addEventListener('flow-user-signout', this.signoutCallback_);
 		}
+
+		if(this.registeredListeners) {
+			this.registeredListeners.forEach(({ name, handler }) => {
+				window.addEventListener(name, handler);
+			})
+		}
+
 	}
 
 	disconnectedCallback() {
@@ -277,7 +284,32 @@ export class BaseElement extends LitElement{
 			window.removeEventListener('flow-user-signout', this.signoutCallback);
 			delete this.signoutCallback;
 		}
+
+		if(this.registeredListeners) {
+			this.registeredListeners.forEach(({ name, handler }) => {
+				window.removeEventListener(name, handler);
+			})
+		}
 	}
+
+	registerListener(name, handler_) {
+		if(!this.registeredListeners)
+			this.registeredListeners = [];
+		const handler = handler_ || (() => { this.requestUpdate(); });//.bind(this);
+		this.registeredListeners.push({name,handler});
+		window.addEventListener(name,handler);
+		console.log("window.addEventListener",name,handler);
+	}
+
+	removeListeners() {
+		if(this.registeredListeners) {
+			this.registeredListeners.forEach(({ name, handler }) => {
+				window.removeEventListener(name, handler);
+			})
+		}
+		this.registeredListeners = [];
+	}
+
 	isOnline(){
 		return this.__online;
 	}
