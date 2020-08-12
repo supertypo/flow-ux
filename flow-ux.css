@@ -66,7 +66,7 @@ body{
     --flow-terminal-cursor:var(--flow-color);
     --flow-terminal-selection:rgba(0, 0, 0, 0.2);
 
-    --flow-input-box-shadow:20px 20px 60px #489dcf, -20px -20px 60px #62d5ff;
+    /* --flow-input-box-shadow:20px 20px 60px #489dcf, -20px -20px 60px #62d5ff; */
 }
 
 body.flow-theme-dark{
