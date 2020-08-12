@@ -5,11 +5,14 @@ import {BaseElement, html, css} from './base-element.js';
 * @class FlowGroupBtns
 * @extends BaseElement
 * @example
-*   <flow-group-btns>
-*		<flow-btn>Button 1</flow-btn>
-*		<flow-btn>Button 2</flow-btn>
+*   <flow-group-btns selected="1">
+*		<flow-btn data-value="1">Button 1</flow-btn>
+*		<flow-btn data-value="2">Button 2</flow-btn>
 *	</flow-group-btns>
-* @property {Boolean} [disabled] 
+* @property {Boolean} [disabled]
+* @property {Boolean} [toggleable] 
+* @property {String} [selected=""] 
+* @property {String} [valueAttr="data-value"] 
 * @cssvar {font-family} [--flow-font-family="Julius Sans One"]
 * @cssvar {font-weight} [--flow-font-weight=bold]
 * @cssvar {border-radius} [--flow-btn-radius=8px]
@@ -19,7 +22,8 @@ export class FlowGroupBtns extends BaseElement {
 		return {
 			disabled:{type:Boolean, reflect: true},
 			selected:{type:String},
-			valueAttr:{type:String}
+			valueAttr:{type:String},
+			toggleable:{type:Boolean}
 		}
 	}
 
@@ -91,9 +95,18 @@ export class FlowGroupBtns extends BaseElement {
 	}
 
 	click(e) {
+		if(this.disabled)
+			return
 		let target = e.target;
-		this.selected = target.getAttribute(this.valueAttr);
-		this.fire("flow-group-btns-click", {el:this, selected:this.selected})
+		let selected = target.getAttribute(this.valueAttr);
+		if(this.toggleable && this.selected == selected){
+			selected = "";
+		}
+
+		this.log("selected", selected)
+
+		this.selected = selected;
+		this.fire("flow-group-btns-click", {el:this, selected})
 		this.updateList();
 	}
 	updateList(){
