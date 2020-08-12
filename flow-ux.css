@@ -114,8 +114,8 @@ flow-dialog{display:block;}
 flow-dialog [hide]{display:none}
 flow-dialog dialog{
     margin:10% auto;min-width:200px;border-radius:3px;
-    background-color:var(--flow-background-color);
-    color:var(--flow-color);
+    background-color:var(--flow-dialog-background-color ,var(--flow-background-color));
+    color:var(--flow-dialog-color,var(--flow-color));
     box-shadow:var(--flow-box-shadow);
     border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 }
