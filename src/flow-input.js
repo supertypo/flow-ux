@@ -122,6 +122,7 @@ export class FlowInput extends BaseElement {
 				font-size:var(--flow-input-font-size, 1rem);
 				font-weight:var(--flow-input-font-weight, 400);
 				line-height:var(--flow-input-line-height, 1.2);
+				box-shadow:var(--flow-input-box-shadow);
 			}
 
 			:host([apply-btn]) .input{

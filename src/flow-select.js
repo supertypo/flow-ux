@@ -107,6 +107,7 @@ export class FlowSelect extends FlowMenu {
 				max-width:var(--flow-select-selected-max-width, 500px);
 				min-height:var(--flow-select-selected-min-height, 44px);
 				position:relative;
+				box-shadow:var(--flow-input-box-shadow);
 			}
 			.selected::after{
 				content:"";display:inline-block;
