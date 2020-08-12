@@ -48,7 +48,8 @@ export class FlowInput extends BaseElement {
 			pattern:{type:String},
 			validator:{type:Function},
 			placeholder:{type:String},
-			label:{type:String}
+			label:{type:String},
+			readonly:{type:Boolean}
 		}
 	}
 
@@ -160,8 +161,11 @@ export class FlowInput extends BaseElement {
 			<slot name="prefix"></slot>
 			<input class="input" type="${this.type}" 
 				placeholder="${this.placeholder || ''}"
-				pattern="${this.pattern}"
-				?disabled=${this.disabled} @change=${this.onChange} .value="${this.value}" />
+				pattern="${this.pattern||''}"
+				?readonly=${this.readonly}
+				?disabled=${this.disabled} 
+				@change=${this.onChange} 
+				.value="${this.value}" />
 			<div class="btn">
 				<div class="text"><flow-i18n text="${this.btnText || 'Apply'}"></flow-i18n></div>
 			</div>
@@ -198,8 +202,6 @@ export class FlowInput extends BaseElement {
 
 	onChange(e) {
 		let value = this.shadowRoot.querySelector("input").value;
-		if(!value)
-			return
 		if(!this.validate(value)){
 			this.classList.add("invalid")
 			return

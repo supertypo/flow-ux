@@ -93,6 +93,10 @@ export class FlowGroupBtns extends BaseElement {
 		this.listSlot = this.renderRoot.querySelector('slot');
 		this.updateList();
 	}
+	updated(...args){
+		super.updated(...args);
+		this.updateList();
+	}
 
 	click(e) {
 		if(this.disabled)
@@ -106,7 +110,7 @@ export class FlowGroupBtns extends BaseElement {
 		this.log("selected", selected)
 
 		this.selected = selected;
-		this.fire("flow-group-btns-click", {el:this, selected})
+		this.fire("group-btn-select", {el:this, selected})
 		this.updateList();
 	}
 	updateList(){
