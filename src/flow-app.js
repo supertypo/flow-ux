@@ -20,6 +20,9 @@ export const FlowAppMixin = (baseClass)=>{
 			.forEach(cls=>body.classList.remove(cls));
 
 			body.classList.add(`flow-theme-${theme}`);
+			let ce = new CustomEvent("flow-theme-changed", {detail:{theme}})
+			document.body.dispatchEvent(ce)
+
 		}
 
 		initSocketIORPC(){
@@ -160,9 +163,11 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 	}
 	signinCallback(){
 		this.signedin = true;
+		document.body.classList.toggle("flow-user-signedin", true);
 	}
 	signoutCallback(){
 		this.signedin = false;
+		document.body.classList.toggle("flow-user-signedin", false);
 	}
 	connectedCallback() {
 		super.connectedCallback();

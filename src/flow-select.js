@@ -89,10 +89,10 @@ export class FlowSelect extends FlowMenu {
 				flex:1;box-sizing:border-box;
 			    /*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
 				border: var(--flow-select-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
-				border-radius: 8px;
+				border-radius:var(--flow-select-input-border-radius, var(--flow-input-border-radius, 8px));
     			margin:0px;
     			padding:16px 30px 10px 10px;
-				background-color:var(--flow-input-bg, inherit);
+				background-color:var(--flow-select-input-bg, var(--flow-input-bg, inherit));
 				color:var(--flow-input-color, inherit);
 				font-size:var(--flow-input-font-size, 1rem);
 				font-weight:var(--flow-input-font-weight, 400);
