@@ -68,6 +68,25 @@ const dpc = (delay, fn)=>{
 		return setTimeout(delay, fn||0);
 	return setTimeout(fn, delay||0);
 }
+export const setTheme = theme=>{
+	const body = document.body;
+	[...body.classList]
+	.filter(cls=>cls.startsWith('flow-theme'))
+	.forEach(cls=>body.classList.remove(cls));
+
+	body.classList.add(`flow-theme-${theme}`);
+	let ce = new CustomEvent("flow-theme-changed", {detail:{theme}})
+	body.dispatchEvent(ce)
+}
+export const getTheme = (defaultTheme="dark")=>{
+	const body = document.body;
+	let theme = [...body.classList]
+	.find(cls=>cls.startsWith('flow-theme'))
+	if(!theme)
+		return defaultTheme;
+
+	return theme.replace("flow-theme-", "");
+}
 export {IconMap, FlowIcons, NativeIcons, dpc, isSmallScreen, FlowStates}
 export {baseUrl, debug, FlowIconPath, flow, UID, storage, resolveIcon};
 

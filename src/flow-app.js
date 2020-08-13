@@ -1,4 +1,4 @@
-import {dpc, UID} from './helpers.js';
+import {dpc, UID, setTheme} from './helpers.js';
 import {FlowSocketIORPC} from './flow-socketio-rpc.js';
 import {FlowSocketIONATS} from './flow-socketio-nats.js';
 
@@ -13,16 +13,7 @@ export const FlowAppMixin = (baseClass)=>{
 		}
 
 		setTheme(theme){
-			const body = document.querySelector('body');
-
-			[...body.classList]
-			.filter(cls=>cls.startsWith('flow-theme'))
-			.forEach(cls=>body.classList.remove(cls));
-
-			body.classList.add(`flow-theme-${theme}`);
-			let ce = new CustomEvent("flow-theme-changed", {detail:{theme}})
-			document.body.dispatchEvent(ce)
-
+			setTheme(theme);
 		}
 
 		initSocketIORPC(){

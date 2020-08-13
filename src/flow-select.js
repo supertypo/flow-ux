@@ -110,7 +110,7 @@ export class FlowSelect extends FlowMenu {
 				position:relative;
 				box-shadow:var(--flow-input-box-shadow);
 			}
-			:host(:not([disabled])) .selected::after{
+			:host(:not([disabled])) .input.selected::after{
 				content:"";display:inline-block;
 				position:absolute;right:10px;
 				top:calc(50% - 2px);
@@ -120,7 +120,7 @@ export class FlowSelect extends FlowMenu {
 				border-bottom-color:transparent;
 				border-right-color:transparent;
 			}
-			flow-dropdown:not([multiple]) .selected{white-space:nowrap}
+			flow-dropdown:not([multiple]) .input.selected{white-space:nowrap}
 			.filter{
 				padding-top:10px;border-radius:3px;
 			}
@@ -212,6 +212,8 @@ export class FlowSelect extends FlowMenu {
 		slot.addEventListener('slotchange', (e)=>{
 			this.updateList();
 		});
+		this.parseSelected();
+		this.requestUpdate("_selected", [])
 	}
 
 	updateList(changes){

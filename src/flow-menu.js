@@ -108,10 +108,14 @@ export class FlowMenu extends BaseElement {
 		});
 	}
 	updated(changes){
-		if(changes.has("selected"))
+		//this.log("changes", changes)
+		if(changes.has("selected")){
 			this.parseSelected();
+			this.requestUpdate("_selected")
+		}
 
 		this.updateList(changes)
+		super.updated(changes)
 	}
 
 	parseSelected(){
