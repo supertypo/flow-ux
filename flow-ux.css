@@ -65,8 +65,7 @@ body{
 
     --flow-terminal-cursor:var(--flow-color);
     --flow-terminal-selection:rgba(0, 0, 0, 0.2);
-
-    --flow-input-box-shadow:0px 1px 4px #50aee4, 0px -1px 4px #5ac4ff;
+    /* --flow-input-box-shadow:20px 20px 60px #489dcf, -20px -20px 60px #62d5ff; */
 }
 
 body.flow-theme-dark{
@@ -114,8 +113,8 @@ flow-dialog{display:block;}
 flow-dialog [hide]{display:none}
 flow-dialog dialog{
     margin:10% auto;min-width:200px;border-radius:3px;
-    background-color:var(--flow-background-color);
-    color:var(--flow-color);
+    background-color:var(--flow-dialog-background-color ,var(--flow-background-color));
+    color:var(--flow-dialog-color,var(--flow-color));
     box-shadow:var(--flow-box-shadow);
     border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 }
