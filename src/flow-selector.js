@@ -15,11 +15,17 @@ class FlowSelector extends FlowSelect{
         return [FlowSelect.styles, css`
             :host{
                 --flow-select-input-height:var(--flow-selector-input-height, auto);
+                width:var(--flow-selector-width, unset);
+            }
+            flow-dropdown{
+                width:var(--flow-selector-dropdown-width, auto);
             }
             .selected{
                 min-height:var(--flow-selector-selected-min-height, 50px);
                 min-width:var(--flow-selector-selected-min-width, 10px);
+                width:var(--flow-selector-selected-width, 100%);
                 font-size:0px;display:flex;align-items:center;
+                box-sizing:border-box;
                 padding:var(--flow-selector-selected-padding, 16px 30px 10px 10px);
                 flex-wrap:var(--flow-selector-selected-flex-wrap, wrap);
             }
