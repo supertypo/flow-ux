@@ -43,7 +43,8 @@ export class FlowSelect extends FlowMenu {
 			textAttr:{type:String},
 			hidefilter:{type:Boolean},
 			filterText:{type:String},
-			searchIcon:{type:String}
+			searchIcon:{type:String},
+			disabled:{type:Boolean}
 		}
 	}
 
@@ -151,7 +152,7 @@ export class FlowSelect extends FlowMenu {
 	render() {
 		let iconSrc = this.iconPath(this.searchIcon || "search");
 		return html
-		`<flow-dropdown ?multiple="${this.multiple}">
+		`<flow-dropdown ?multiple="${this.multiple}" ?disabled=${this.disabled}>
 			<div slot="trigger">
 				<label ?hidden=${!this.label}>${this.label||""}</label>
 				<div class="wrapper" @click=${this.onClick}>

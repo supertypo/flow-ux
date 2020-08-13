@@ -19,7 +19,8 @@ import {BaseElement, html, css, dpc} from './base-element.js';
 export class FlowDropdown extends BaseElement {
 	static get properties() {
 		return {
-			opened:{type:Boolean, reflect:true}
+			opened:{type:Boolean, reflect:true},
+			disabled:{type:Boolean}
 		}
 	}
 
@@ -86,6 +87,8 @@ export class FlowDropdown extends BaseElement {
 	}
 
 	_onClick(e){
+		if(this.disabled)
+			return
 		this.toggle();
 	}
 
