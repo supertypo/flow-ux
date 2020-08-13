@@ -177,7 +177,8 @@ export class FlowDropdown extends BaseElement {
     	window.removeEventListener("resize", this._onWindowResize);
     	this.scrollParants.forEach(p=>{
     		p.removeEventListener("scroll", this._onParentScroll);
-    	})
+    	});
+    	this.scrollParants = [];
     }
     findScrollParents(){
     	let list = [];
