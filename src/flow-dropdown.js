@@ -78,7 +78,7 @@ export class FlowDropdown extends BaseElement {
 	}
 	firstUpdated(){
 		this.renderRoot
-			//.querySelector(".trigger")
+			.querySelector(".trigger")
 			.addEventListener("click", this._onClick.bind(this));
 		this.dropdownEl = this.renderRoot.querySelector(".dropdown");
 		this.dropdownContentEl = this.renderRoot.querySelector(".dropdown-content");
@@ -105,8 +105,27 @@ export class FlowDropdown extends BaseElement {
 	onWindowClick(e){
 		if(!this.opened)
 			return
-		let dropdown = e.target.closest('flow-dropdown');
-		//console.log("dropdown", e.target, dropdown)
+		let dropdown = false;
+		let target = e.target;
+		if(!target){
+			this.opened = false;
+			return
+		}
+		dropdown = target.closest?.('flow-dropdown');
+		if(!dropdown){
+			let p = e.path?.[0] || target;
+			while(p){
+				if(p.matches?.("flow-dropdown")){
+					dropdown = p;
+					break;
+				}
+				if(p instanceof ShadowRoot){
+					p = p.host;
+					continue;
+				}
+				p = p.parentNode;
+			}
+		}
 		if(!dropdown || dropdown!=this)
 			this.opened = false;
 	}
