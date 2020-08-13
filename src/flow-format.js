@@ -58,6 +58,28 @@ if(!Number.prototype.toFileSize)
 		enumerable:false
 	});
 
+
+if(!Number.prototype.toUnitSize)
+	Object.defineProperty(Number.prototype, 'toUnitSize', {
+		value: function(asNumber){
+			var a,b,c,d;
+			var r = (
+				a=1e3,
+				b=Math,
+				c=b.log,
+				d=c(this)/c(a)|0,this/b.pow(a,d)
+			).toFixed(2)
+
+			if(!asNumber){
+				r += ' '+(d?('KMGTPEZY')[--d]:' ');
+			}
+			return r;
+		},
+		writable:false,
+		enumerable:false
+	});
+
+
 if(!Number.prototype.toHashMetric)
 	Object.defineProperty(Number.prototype, 'toHashMetric', {
 		value: function(precision, unit, commas) {
