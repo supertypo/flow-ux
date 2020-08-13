@@ -176,9 +176,14 @@ export class FlowSelect extends FlowMenu {
 				</div>
 				<div class="menu-list-container">
 				<slot class="menu-list"></slot>
+				${this.renderItems()}
 				</div>
 			</div>
 		</flow-dropdown>`;
+	}
+
+	renderItems(){
+		return '';
 	}
 
 	renderSelected(){

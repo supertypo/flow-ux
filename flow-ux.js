@@ -43,4 +43,5 @@ export * from './src/flow-menu.js';
 export * from './src/flow-select.js';
 export * from './src/table-mixin.js';
 export * from './src/flow-link.js';
+export * from './src/flow-selector.js';
 

@@ -301,7 +301,7 @@ export class BaseElement extends LitElement{
 		const handler = handler_ || (() => { this.requestUpdate(); });//.bind(this);
 		this.registeredListeners.push({name,handler});
 		window.addEventListener(name,handler);
-		console.log("window.addEventListener",name,handler);
+		//console.log("window.addEventListener",name,handler);
 	}
 
 	removeListeners() {
