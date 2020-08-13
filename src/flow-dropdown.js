@@ -20,7 +20,7 @@ export class FlowDropdown extends BaseElement {
 	static get properties() {
 		return {
 			opened:{type:Boolean, reflect:true},
-			disabled:{type:Boolean}
+			disabled:{type:Boolean, reflect:true}
 		}
 	}
 
@@ -36,13 +36,14 @@ export class FlowDropdown extends BaseElement {
 			color:var(--flow-dropdown-trigger-color, #FFF);
 			border-radius:3px;
 			border:none;
-			cursor:pointer;user-select:none;
+			user-select:none;
 			padding:var(--flow-dropdown-trigger-padding, 21px 20px 20px);
 			min-width:var(--flow-dropdown-trigger-width, 80px);
 			font-size:var(--flow-dropdown-trigger-font-size, var(--flow-input-font-size, 1rem));
 			font-weight:var(--flow-dropdown-trigger-font-weight, var(--flow-input-font-weight, 400));
 			line-height:var(--flow-dropdown-trigger-line-height, var(--flow-input-line-height, 1.2));
 		}
+		:host(:not([disabled])) .trigger{cursor:pointer;}
 
 		.trigger:hover, .trigger:focus {
 			background-color:var(--flow-dropdown-trigger-hover-bg, var(--flow-primary-color, #3498DB));

@@ -44,7 +44,7 @@ export class FlowSelect extends FlowMenu {
 			hidefilter:{type:Boolean},
 			filterText:{type:String},
 			searchIcon:{type:String},
-			disabled:{type:Boolean}
+			disabled:{type:Boolean, reflect:true}
 		}
 	}
 
@@ -110,10 +110,10 @@ export class FlowSelect extends FlowMenu {
 				position:relative;
 				box-shadow:var(--flow-input-box-shadow);
 			}
-			.selected::after{
+			:host(:not([disabled])) .selected::after{
 				content:"";display:inline-block;
 				position:absolute;right:10px;
-				top:calc(var(--flow-input-font-size, 1rem) * 1.5);
+				top:calc(50% - 2px);
 				width:0px;height:0px;
 				border:5px solid var(--flow-primary-color, #000);
 				border-left-color:transparent;
