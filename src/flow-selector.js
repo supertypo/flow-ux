@@ -18,6 +18,7 @@ class FlowSelector extends FlowSelect{
             }
             .selected{
                 min-height:var(--flow-selector-selected-min-height, 50px);
+                min-width:var(--flow-selector-selected-min-width, 10px);
                 font-size:0px;display:flex;align-items:center;
                 padding:var(--flow-selector-selected-padding, 16px 30px 10px 10px);
                 flex-wrap:var(--flow-selector-selected-flex-wrap, wrap);
