@@ -75,10 +75,13 @@ export const setTheme = theme=>{
 	.forEach(cls=>body.classList.remove(cls));
 
 	body.classList.add(`flow-theme-${theme}`);
+	localStorage.flowtheme = theme;
 	let ce = new CustomEvent("flow-theme-changed", {detail:{theme}})
 	body.dispatchEvent(ce)
 }
 export const getTheme = (defaultTheme="dark")=>{
+	if(localStorage.flowtheme)
+		return localStorage.flowtheme;
 	const body = document.body;
 	let theme = [...body.classList]
 	.find(cls=>cls.startsWith('flow-theme'))

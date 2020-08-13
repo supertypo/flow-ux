@@ -1,4 +1,4 @@
-import {dpc, UID, setTheme} from './helpers.js';
+import {dpc, UID, setTheme, getTheme} from './helpers.js';
 import {FlowSocketIORPC} from './flow-socketio-rpc.js';
 import {FlowSocketIONATS} from './flow-socketio-nats.js';
 
@@ -10,6 +10,11 @@ export const FlowAppMixin = (baseClass)=>{
 		constructor(...args) {
 			super(...args)
 			this.uid = UID();
+			this.setTheme(this.getTheme("dark"));
+		}
+
+		getTheme(defaultTheme){
+			return getTheme(defaultTheme);
 		}
 
 		setTheme(theme){

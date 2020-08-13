@@ -31,6 +31,7 @@ export class FlowThemeSelect extends FlowSelect {
 	constructor(){
 		super();
 		this.items = "dark,light";
+		this.label = "Theme"
 		this.selected = getTheme("dark");
 		this.hidefilter = true;
 	}
@@ -57,12 +58,12 @@ export class FlowThemeSelect extends FlowSelect {
 		super.selectionChanged();
 		let value = this.value;
 		if(value)
-			setTheme(value);
+			this.setTheme(value);
 	}
 
 	onThemeChange(){
 		//this.log("onThemeChange", getTheme())
-		this.selected = getTheme();
+		this.selected = this.getTheme();
 		this.requestUpdate("selected")
 	}
 
@@ -74,6 +75,14 @@ export class FlowThemeSelect extends FlowSelect {
 	disconnectedCallback(){
 		super.disconnectedCallback();
 		document.body.removeEventListener("flow-theme-changed", this._onThemeChange)
+	}
+
+	getTheme(defaultTheme){
+		return getTheme(defaultTheme)
+	}
+
+	setTheme(theme){
+		setTheme(theme);
 	}
 }
 
