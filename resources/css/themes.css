@@ -1,0 +1,111 @@
+body.flow-theme-controls-size{
+    --flow-input-border: 1px;
+    --flow-input-label-border: 1px;
+    --flow-input-margin: 5px 5px;
+    --flow-input-height: 40px;
+    --flow-input-font-size:0.75rem;
+    --flow-input-font-size-label: 0.6rem;
+    --flow-select-margin: 5px 5px;
+    --flow-select-border: 1px;
+    --flow-select-label-border: 1px;
+    --flow-select-label-font-size: 0.6rem;
+    --flow-input-font-size:0.7rem;
+    --flow-input-font-weight:normal;
+    --flow-input-line-height:80%;
+    --flow-select-selected-min-height: 40px;
+    --flow-select-input-height: 40px;
+    --flow-select-selected-min-width: 200px;
+    --flow-btn-border-width: 1px;
+    --flow-btn-padding: 3px 3px;
+    --flow-btn-font-weight: normal;
+    --flow-btn-font-size: 0.75rem;
+    --flow-btn-wrapper-min-width: 25px;
+    --flow-data-badge-container-border: 1px;
+    --flow-data-badge-value-font-size:12px;
+    --flow-data-badge-value-font-family:"Julius Sans One";
+    --flow-data-badge-value-font-weight:100;
+}
+body.flow-theme-lavender{
+    --flow-primary-color:  rgb(128, 123, 202);
+    --flow-border-color:  rgba(128, 123, 202);
+
+    --flow-data-badge-value: #fff;
+    --flow-data-badge-caption: #ccc;
+    --flow-data-badge-caption-shawod: rgba(128, 123, 202);
+
+
+    --flow-data-badge-graph-fill:  rgb(0, 105, 95, 0.5);
+    --flow-data-badge-graph-stroke:  rgb(128, 123, 202);
+    --flow-data-badge-graph-stroke-width: 1px;
+    --flow-data-badge-graph-stroke-opacity: 0.75;
+    --logo-light-display:none;
+}
+body.flow-theme-lavender-dark{
+    --flow-box-shadow:0 2px 2px 0 rgba(10,10,10,.14),
+            0 3px 1px -2px rgba(10,10,10,.2),
+            0 1px 5px 0 rgba(10,10,10,.12);
+    background-color: #232323;
+    --flow-background-inverse: #FFF;
+    --flow-background-inverse-soft: #CCC;
+    --flow-background-color: #232323;
+    color: #b1b1b1;
+    --flow-color: #b1b1b1;
+    /*--flow-primary-color: #b1b1b1;*/
+    --flow-primary-color:  rgb(136, 131, 200);
+    --flow-border-color:  rgba(136, 131, 200);
+    --flow-tab-bg-top: #363537;
+    --flow-tab-bg-bottom: #363537;
+    --flow-tab-active-bg-top: #232323; /* can not have this different color as tab can be as high as multiple rows... */
+    --flow-tab-active-bg-bottom: #232323;
+    --flow-checkbox-checked-bg:#b1b1b1;
+    --flow-list-item-border:1px solid #585858;
+    --flow-list-item-active-border:1px solid var(--flow-primary-color);
+    --flow-list-item-hover-bg:#585858;
+    --flow-list-item-active-bg:var(--flow-primary-color);
+    --flow-list-item-active-color:#FFF;
+
+    --flow-data-field-value: #fff;
+    --flow-data-field-caption: #ccc;
+    --flow-data-field-caption-shadow: rgba(136, 131, 200);
+
+    --flow-input-bg: #2f2f2f;
+    --flow-input-color: var(--flow-color, #b1b1b1);
+    --flow-input-placeholder: #555;
+    --logo-light-display:none;
+}
+body.flow-theme-sahara-nights{
+    --flow-box-shadow:0 2px 2px 0 rgba(10,10,10,.14),
+            0 3px 1px -2px rgba(10,10,10,.2),
+            0 1px 5px 0 rgba(10,10,10,.12);
+    background-color: #232323;
+    --flow-background-inverse: #FFF;
+    --flow-background-inverse-soft: #CCC;
+    --flow-background-color: #232323;
+    color: #b1b1b1;
+    --flow-color: #b1b1b1;
+    /*--flow-primary-color: #b1b1b1;*/
+    --flow-primary-color:  rgba(195, 150, 67);
+    --flow-border-color:  rgba(195, 150, 67);
+    --flow-tab-bg-top: #363537;
+    --flow-tab-bg-bottom: #363537;
+    --flow-tab-active-bg-top: #232323; /* can not have this different color as tab can be as high as multiple rows... */
+    --flow-tab-active-bg-bottom: #232323;
+    --flow-checkbox-checked-bg:#2f2f2f;
+    --flow-list-item-border:1px solid #585858;
+    --flow-list-item-active-border:1px solid var(--flow-primary-color);
+    --flow-list-item-hover-bg:#585858;
+    --flow-list-item-active-bg:var(--flow-primary-color);
+    --flow-list-item-active-color:#FFF;
+
+    --flow-data-field-value: #fff;
+    --flow-data-field-caption: #ccc;
+    --flow-data-field-caption-shadow: rgba(195, 150, 67);
+
+    --flow-input-bg: #2f2f2f;
+    --flow-input-color: var(--flow-color, #b1b1b1);
+    --flow-input-placeholder: #555;
+    
+    --flow-border-hover-color:rgb(36, 30, 27);
+    --flow-link-hover-color:#015b77;
+    --logo-light-display:none;
+}
