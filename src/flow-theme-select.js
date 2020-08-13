@@ -32,7 +32,7 @@ export class FlowThemeSelect extends FlowSelect {
 		super();
 		this.items = "dark,light";
 		this.label = "Theme"
-		this.selected = getTheme("dark");
+		this.selected = this.getTheme("dark");
 		this.hidefilter = true;
 	}
 
