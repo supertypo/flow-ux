@@ -155,7 +155,9 @@ export class FlowDropzoneField extends BaseElement {
 			:host(:not([disabled])) [has-value] .clear-btn{display:block;}
 			:host(.invalid) .input{color:var(--flow-input-invalid-color, red)}
 
-			.dz-preview{position:relative;display:inline-block;}
+			.dz-preview{
+				position:relative;display:block;
+			}
 			.dz-preview .dz-progress{display:block;height:2px;}
 			.dz-preview .dz-progress .dz-upload{
 				display:block;height:100%;width:0;background:green
@@ -172,12 +174,28 @@ export class FlowDropzoneField extends BaseElement {
 			}
 			.dz-preview .dz-remove{
 				position: absolute;
-			    right: 5px;
-			    top: 50%;
-			    font-size: 27px;
+			    right:-15px;
+			    top:-15px;
+			    font-size:27px;
 			    cursor: pointer;
-			    background: var(--flow-background);
-			    color: var(--flow-color);
+			    color:var(--flow-dz-field-remove-icon-color, var(--flow-color,#000));
+			    z-index:1;
+			    background:var(--flow-dz-field-remove-icon-bg, #FFF);
+			    box-shadow:var(--flow-dz-field-remove-icon-box-shadow, 0px 0px 4px #ccc);
+			    padding: 5px;
+			    border-radius:50%;
+			    width: 20px;
+			    height: 20px;
+			    line-height:20px;
+			}
+			.dz-image-holder{
+				position:relative;
+				height:100px;
+				background:var(--flow-dz-field-mage-holder-bg, rgba(0,0,0,0.1));
+			}
+			.dz-image-holder img{
+				max-width:100%;
+				max-height:100%;
 			}
 		`;
     }
@@ -221,9 +239,10 @@ export class FlowDropzoneField extends BaseElement {
 			  <div class="dz-details">
 			    <div class="dz-filename"><span data-dz-name></span></div>
 			    <div class="dz-size" data-dz-size></div>
-			    <img data-dz-thumbnail />
+			    <div class="dz-image-holder">
+			    	<img data-dz-thumbnail /> <div class="dz-remove" data-dz-remove>&times;</div>
+			    </div>
 			  </div>
-			  <div class="dz-remove" data-dz-remove>&times;</div>
 			  <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>
 			  <!--div class="dz-success-mark"><span>✔</span></div>
 			  <div class="dz-error-mark"><span>✘</span></div-->
@@ -259,6 +278,12 @@ export class FlowDropzoneField extends BaseElement {
 			this.fire('upload-success')
 			//this.msg = "Online preview";
 		});
+		this.dropzone.on("error", (file, xhr)=>{
+			this.cancelFiles();
+			this.fire('upload-error')
+			//this.msg = "Online preview";
+		});
+		
 	}
 
 	uploadFile(){
