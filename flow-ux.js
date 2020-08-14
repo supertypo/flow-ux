@@ -47,4 +47,5 @@ export * from './src/flow-selector.js';
 export * from './src/flow-format.js';
 export * from './src/flow-clock-widget.js';
 export * from './src/flow-theme-select.js';
+export * from './src/flow-dropzone-field.js';
 
