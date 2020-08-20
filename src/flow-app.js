@@ -196,7 +196,7 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 				:host([floating-drawer]) .header:not(.header-sm){display:none}
 				.drawer-top,
 				.header{
-					padding:var(--flow-app-header-padding-min, 0px 15px);
+					padding:var(--flow-app-header-sm-padding, 0px 15px);
 				}
 			}
 
