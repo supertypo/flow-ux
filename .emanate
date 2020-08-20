@@ -90,8 +90,8 @@ if(E.flags.out && E.flags.out.length){
 	DIST = DIST.join(path.sep);
 	E.log("DIST", DIST)
 }
-else if(fs.existsSync(path.join(__dirname,'..','flow-ux-static-dist'))) {
-	DIST = path.join(__dirname,'..','flow-ux-static-dist');
+else if(fs.existsSync(path.join(__dirname,'..','cdn'))) {
+	DIST = path.join(__dirname,'..','cdn');
 }
 const FLOW_UX_STATIC = path.join(DIST, `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`);
 console.log('target:',FLOW_UX_STATIC.brightCyan);
