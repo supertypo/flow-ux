@@ -261,12 +261,13 @@ let getFileContent = (filePath)=>{
 }
 
 let start_watching = ()=>{
+	const FLOW_UX_FOLDER_PATH = E.flags.direct? FLOW_UX_STATIC : FLOW_UX;
 
 	const update = _.debounce((folderName, filename) => {
 		console.log("update running...");
 		fs.copyFileSync(
 			path.join(__dirname, folderName, filename),
-			path.join(FLOW_UX, folderName, filename)
+			path.join(FLOW_UX_FOLDER_PATH, folderName, filename)
 		)
 	}, 300, true);
 

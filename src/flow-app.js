@@ -100,6 +100,13 @@ export const FlowAppMixin = (baseClass)=>{
 
 
 export class FlowApp extends FlowAppMixin(BaseElement){
+	static get properties(){
+		return {
+			"menu-icon":{type:String},
+			"floating-drawer":{type:Boolean, reflect:true},
+			"open-drawer":{type:Boolean, reflect:true},
+		}
+	}
 	static get styles(){
 		return [ScrollbarStyle, css`
 			:host{
@@ -122,6 +129,7 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 				--flow-dropdown-trigger-width:20px;
 				--flow-dropdown-trigger-padding:0px;
 			}
+			.header-sm{display:none}
 			.header ::slotted(.logo){
 				max-height:80%;
 			}
@@ -132,14 +140,68 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 			}
 			.body{flex:1;display:flex;flex-direction:row;overflow:hidden;}
 			.drawer{
-				background-color:var(--flow-app-drawer-bg, var(--flow-background, inherit));
+				background-color:var(--flow-app-drawer-bg, var(--flow-background-color, inherit));
 				color:var(--flow-app-drawer-color, var(--flow-color, inherit));
 				width:var(--flow-app-drawer-width, 300px);
 				overflow:var(--flow-app-drawer-overflow, initial);
 				position:relative;
 			}
 			:host([no-drawer]) .drawer{display:none}
-			.main{flex:1;overflow:var(--flow-app-main-overflow,auto)}
+			:host([floating-drawer]) .drawer{
+				position:absolute;
+				left:0px;top:0px;bottom:0px;
+				transition:var(--flow-app-drawer-transition, left 0.5s ease);
+				z-index:var(--flow-app-drawer-z-index, 10001);
+			}
+			:host([floating-drawer]:not([open-drawer])) .drawer{
+				left:var(--flow-app-drawer-hidden-left, -500px);
+			}
+			:host([floating-drawer][right-drawer]) .drawer{
+				left:initial;right:0px;
+				transition:var(--flow-app-drawer-transition, right 0.5s ease);
+			}
+			:host([floating-drawer][right-drawer]:not([open-drawer])) .drawer{
+				right:var(--flow-app-drawer-hidden-right, -500px);
+			}
+			.main{flex:1;overflow:var(--flow-app-main-overflow,auto);}
+			fa-icon{
+				--fa-icon-color:var(--flow-color);
+			}
+
+			.menu-icon{
+				cursor:pointer;
+				--fa-icon-color:var(--flow-app-menu-icon-color, var(--flow-color));
+			}
+			.drawer-top{
+				height:var(--flow-app-header-height, 60px);
+				display:flex;align-items:center;
+				padding:var(--flow-app-header-padding, 0px 100px);
+			}
+			.main-mask{
+				position:absolute;z-index:var(--flow-app-body-mask-z-index, 10000);
+				left:0px;top:0px;right:0px;bottom:0px;width:100%;height:100%;
+				background-color:var(--flow-app-body-mask-bg, initial);
+			}
+			:host([floating-drawer][open-drawer]) .main{position:relative}
+			:host(:not([floating-drawer])) .drawer-top,
+			:host(:not([floating-drawer])) .main-mask,
+			:host(:not([open-drawer])) .main-mask{display:none}
+			.drawer-close-icon{
+				cursor:pointer;
+				--fa-icon-color:var(--flow-app-drawer-close-icon-color, var(--flow-color));
+			}
+
+			@media(max-width:760px){
+				:host([floating-drawer]) .header-sm{display:flex}
+				:host([floating-drawer]) .header:not(.header-sm){display:none}
+				.drawer-top,
+				.header{
+					padding:var(--flow-app-header-padding-min, 0px 15px);
+				}
+			}
+
+
+
 			::slotted(.flex){flex:1}
 		`]
 	}
@@ -149,13 +211,29 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 	render(){
 		return html`
 		<div class="header"><slot name="header"></slot></div>
+		<div class="header header-sm"><fa-icon class="menu-icon"
+			icon="${this['menu-icon'] || 'bars'}" 
+			@click="${this.toggleFloatingDrawer}"></fa-icon><slot 
+			name="header-sm"></slot></div>
 		<div class="body">
-			<div class="drawer sbar"><slot name="drawer"></slot></div>
-			<div class="main sbar"><slot name="main"></slot></div>
+			<div class="drawer sbar">
+			<div class="drawer-top">
+				<fa-icon class="drawer-close-icon"
+				icon="${this['drawer-close-icon'] || 'times'}" 
+				@click="${this.toggleFloatingDrawer}"></fa-icon>
+			</div>
+			<slot name="drawer"></slot></div>
+			<div class="main sbar"><slot name="main"></slot><div 
+				class="main-mask" @click="${this.toggleFloatingDrawer}"></div></div>
 		</div>`
 	}
 	firstUpdated(){
 		this.setLoading(false);
+	}
+	toggleFloatingDrawer(){
+		if(!this['floating-drawer'])
+			return
+		this['open-drawer'] = !this['open-drawer'];
 	}
 	signinCallback(){
 		this.signedin = true;
