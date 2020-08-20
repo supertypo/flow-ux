@@ -79,6 +79,7 @@ export class FlowTerminal extends BaseElement {
 			noscroll : { type : Boolean },
 			fixed : { type : Boolean },
 			noinput : { type : Boolean },
+			resident : { type : Number },
 			/*data: { type: Array }*/
 		};
 	}
@@ -227,6 +228,10 @@ export class FlowTerminal extends BaseElement {
 	constructor() {
 		// Must call superconstructor first.
 		super();
+
+		this.resident = 0;
+		this.residentBuffers = [];
+		this.residentBuffersLength = 0;
 	}
 
 	/**
@@ -568,7 +573,28 @@ export class FlowTerminal extends BaseElement {
 		this.promptLength = prompt.length;
 	}
 
-	write(...args) {
+	enableResidentMode(length) {
+		this.resident = length;
+	}
+
+	flushResidentBuffers() {
+		while(this.residentBuffers.length)
+			this.term.write(this.residentBuffers.shift());
+	}
+
+	writeToResidentBuffers(text) {
+		if(!this.resident)
+			return this.term.write(text);
+
+		this.residentBuffers.push(text);
+		this.residentBuffersLength += text.length;
+		while(this.residentBuffersLength > this.resident && this.residentBuffers.length > 1) {
+			let tip = this.residentBuffers.shift();
+			this.residentBuffersLength -= tip.length;
+		}
+	}
+
+	writeln(...args) {
 
 		if(!args.length)
 			args = [''];
