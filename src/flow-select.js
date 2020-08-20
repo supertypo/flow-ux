@@ -23,12 +23,12 @@ import {FlowMenu} from './flow-menu.js';
 * @cssvar {padding} [--flow-select-padding-label=2px 5px]
 * @cssvar {padding} [--flow-select-padding=5px]
 * @cssvar {margin} [--flow-select-filter-input-margin=0px 0px 5px]
-* @cssvar {--flow-dropdown-trigger-bg} [--flow-select-trigger-bg=transparent]
-* @cssvar {--flow-dropdown-trigger-color} [--flow-select-trigger-color= var(--flow-color, #000)]
-* @cssvar {--flow-dropdown-trigger-padding} [--flow-select-trigger-padding=0px]
-* @cssvar {--flow-dropdown-trigger-hover-bg} [--flow-select-trigger-hover-bg=transparent]
-* @cssvar {--flow-dropdown-trigger-hover-color} [--flow-select-trigger-hover-color=var(--flow-dropdown-trigger-color)]
-* @cssvar {--flow-dropdown-trigger-line-height} [--flow-select-trigger-line-height=1]
+* @cssvar {color} [--flow-select-trigger-bg=transparent]
+* @cssvar {color} [--flow-select-trigger-color= var(--flow-color, #000)]
+* @cssvar {padding} [--flow-select-trigger-padding=0px]
+* @cssvar {color} [--flow-select-trigger-hover-bg=transparent]
+* @cssvar {color} [--flow-select-trigger-hover-color=var(--flow-dropdown-trigger-color)]
+* @cssvar {height} [--flow-select-trigger-line-height=1]
 
  * @example
  * <flow-select label="menu" selected="0">
