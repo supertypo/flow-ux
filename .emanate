@@ -73,7 +73,7 @@ E.manifest_read_sync();
 
 const REPO = __dirname;
 const DIST = path.join(REPO, 'dist');
-let FLOW_UX_STATIC = path.join(DIST, `flow-ux-static${E.flags.minify?'-min':''}`);
+let FLOW_UX_STATIC = path.join(DIST, `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`);
 if(E.flags.out && E.flags.out.length){
 	if(path.isAbsolute(E.flags.out))
 		FLOW_UX_STATIC = E.flags.out;
@@ -93,8 +93,7 @@ if(E.flags.out && E.flags.out.length){
 
 }
 
-const FLOW_UX_FOLDER = `flow-ux${E.flags['no-version']?'':'-'+E.manifest.version}`
-
+const FLOW_UX_FOLDER = `flow-ux`;
 const FLOW_UX = path.join(FLOW_UX_STATIC, FLOW_UX_FOLDER);
 const MODULES = FLOW_UX_STATIC;//path.join(FLOW_UX_STATIC, 'node_modules');
 const DEMO = path.join(DIST, 'demo');
