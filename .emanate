@@ -72,26 +72,30 @@ const E = new Emanator(__dirname, {
 E.manifest_read_sync();
 
 const REPO = __dirname;
-const DIST = path.join(REPO, 'dist');
-let FLOW_UX_STATIC = path.join(DIST, `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`);
+let DIST = path.join(REPO, 'dist');
 if(E.flags.out && E.flags.out.length){
 	if(path.isAbsolute(E.flags.out))
-		FLOW_UX_STATIC = E.flags.out;
+		DIST = E.flags.out;
 	else
-		FLOW_UX_STATIC = path.join(REPO, E.flags.out);
+		DIST = path.join(process.cwd(), E.flags.out);
 
-	if(!fs.existsSync(FLOW_UX_STATIC))
-		throw new Error(`Output directory (${FLOW_UX_STATIC}) dont exists.`)
+	if(!fs.existsSync(DIST))
+		throw new Error(`Output directory (${DIST}) dont exists.`)
 
-	FLOW_UX_STATIC = FLOW_UX_STATIC.split(/[\/\\]/);
+	DIST = DIST.split(/[\/\\]/);
 
-	if(FLOW_UX_STATIC[FLOW_UX_STATIC.length-1] == "")
-		FLOW_UX_STATIC.pop();
+	if(DIST[DIST.length-1] == "")
+		DIST.pop();
 
-	FLOW_UX_STATIC = FLOW_UX_STATIC.join(path.sep);
-	E.log("FLOW_UX_STATIC", FLOW_UX_STATIC)
-
+	DIST = DIST.join(path.sep);
+	E.log("DIST", DIST)
 }
+else if(fs.existsSync(path.join(__dirname,'..','cdn'))) {
+	DIST = path.join(__dirname,'..','cdn');
+}
+const FLOW_UX_STATIC = path.join(DIST, `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`);
+console.log('target:',FLOW_UX_STATIC.brightCyan);
+//let FLOW_UX_STATIC = `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`;
 
 const FLOW_UX_FOLDER = `flow-ux`;
 const FLOW_UX = path.join(FLOW_UX_STATIC, FLOW_UX_FOLDER);

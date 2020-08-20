@@ -190,7 +190,7 @@ flow-doc-boxes{display:flex;flex-wrap:wrap;}
 flow-doc-boxes>flow-doc{margin:10px;min-width:20%;flex:1;width:300px}
 
 
-a {
+/* a {
 
     color:var(--flow-link-color, red);
 
@@ -199,4 +199,4 @@ a {
 
 a:hover {
     border-bottom: 1px solid var(--flow-link-hover-color);
-}
+} */
