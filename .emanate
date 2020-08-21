@@ -221,7 +221,7 @@ E.task('static', ['node_modules', 'flow-src', 'cleanup'], async () => {
 
 	if(LATEST) {
 		const TARGET = FLOW_UX_STATIC;
-		const SYMLINK = path.join(LATEST,'flow-ux-static');
+		const SYMLINK = path.join(LATEST,`flow-ux-static${E.flags.minify?'-min':''}`);
 		if(fs.existsSync(SYMLINK))
 			fs.unlinkSync(SYMLINK);
 		fs.symlinkSync(TARGET,SYMLINK,'dir');
