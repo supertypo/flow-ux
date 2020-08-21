@@ -72,6 +72,7 @@ const E = new Emanator(__dirname, {
 E.manifest_read_sync();
 
 const REPO = __dirname;
+let LATEST = null;
 let DIST = path.join(REPO, 'dist');
 if(E.flags.out && E.flags.out.length){
 	if(path.isAbsolute(E.flags.out))
@@ -91,7 +92,9 @@ if(E.flags.out && E.flags.out.length){
 	E.log("DIST", DIST)
 }
 else if(fs.existsSync(path.join(__dirname,'..','cdn'))) {
-	DIST = path.join(__dirname,'..','cdn');
+	DIST = path.join(__dirname,'..','cdn','releases');
+	LATEST = path.join(__dirname,'..','cdn','latest');
+	await E.mkdirp(DIST);
 }
 const FLOW_UX_STATIC = path.join(DIST, `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`);
 console.log('target:',FLOW_UX_STATIC.brightCyan);
@@ -213,7 +216,17 @@ E.task('cleanup', ['node_modules'], async(callback)=>{
 	//await Promise.all(list)
 });
 
-E.task('static', ['node_modules', 'flow-src', 'cleanup']);
+E.task('static', ['node_modules', 'flow-src', 'cleanup'], async () => {
+
+	if(LATEST) {
+		const TARGET = FLOW_UX_STATIC;
+		const SYMLINK = path.join(LATEST,'flow-ux-static');
+		if(fs.existsSync(SYMLINK))
+			fs.unlinkSync(SYMLINK);
+		fs.symlinkSync(TARGET,SYMLINK,'dir');
+	}
+
+});
 
 
 E.task('demo-site', ['static'], async(callback)=>{
