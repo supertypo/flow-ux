@@ -95,6 +95,7 @@ else if(fs.existsSync(path.join(__dirname,'..','cdn'))) {
 	DIST = path.join(__dirname,'..','cdn','releases');
 	LATEST = path.join(__dirname,'..','cdn','latest');
 	await E.mkdirp(DIST);
+	await E.mkdirp(LATEST);
 }
 const FLOW_UX_STATIC = path.join(DIST, `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`);
 console.log('target:',FLOW_UX_STATIC.brightCyan);
