@@ -107,3 +107,64 @@ const bs58e = (function() {
 		return encoded;
 	}
 })();
+
+const resolveConditions = (src) => {
+	src = Object.entries(src).map(([k,v]) => {
+		return eval(k) ? undefined : v;
+	}).filter(v=>v!==undefined);
+	if(!src.length)
+		return null;
+	return src;
+}
+
+export const DeferComponent = (ctor, name, deps) => {
+
+	if(deps && typeof deps == 'object' && !Array.isArray(deps))
+		deps = resolveConditions(deps);
+
+    if(deps && Array.isArray(deps)) {
+		let count = 0;
+		deps = deps.slice();		
+		while(deps.length) {
+			let src = deps.shift();
+
+			switch(typeof src) {
+				case 'function': {
+					src = src();
+					if(!src)
+						continue;
+					if(Array.isArray(src)) {
+						deps = deps.concat(src);
+						continue;
+					}
+				} break;
+				case 'object': {
+					src = resolveConditions(src);
+					if(!src)
+						continue;
+					else
+					if(src.length == 1)
+						src = src.shift();
+					else {
+						deps = deps.concat(src);
+						continue;
+					}
+				} break;
+			}
+
+			console.log('Flow - loading dep:', src);
+            count++;
+            let script = document.createElement("script");
+            script.src = src;
+            document.head.appendChild(script);
+            script.onload = ()=>{
+                count--;
+                if(!count)
+                    ctor.define(name);
+            }
+        
+        }
+	}
+	else
+		ctor.define(name);
+}
