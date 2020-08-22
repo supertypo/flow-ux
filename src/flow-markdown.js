@@ -53,7 +53,12 @@ export class FlowMarkdown extends BaseElement {
 			}
 			.h-anchor:hover>a.anchor .anchor-icon{
 				opacity:var(--flow-markdown-anchor-icon-opacity-hover, 1);
-			}
+            }
+            
+            code, table tr td code {
+                font-family: var(--flow-markdown-code-font-family, monospace);
+                font-size: var(--flow-markdown-code-font-family, 1rem);
+            }
 		`;
 	}
 	render() {
