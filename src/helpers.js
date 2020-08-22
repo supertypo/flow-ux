@@ -81,7 +81,7 @@ export const setTheme = theme=>{
 }
 export const getTheme = (defaultTheme=((theme && theme.default) || "light"))=>{ 
 	if(localStorage.flowtheme)
-		return localStorage.flowtheme;
+		return localStorage.flowtheme; 
 	const body = document.body;
 	let theme = [...body.classList]
 	.find(cls=>cls.startsWith('flow-theme'))
