@@ -10,7 +10,7 @@ export const FlowAppMixin = (baseClass)=>{
 		constructor(...args) {
 			super(...args)
 			this.uid = UID();
-			this.setTheme(this.getTheme("dark"));
+			this.setTheme(this.getTheme("light"));
 		}
 
 		getTheme(defaultTheme){

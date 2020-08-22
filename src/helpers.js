@@ -79,7 +79,7 @@ export const setTheme = theme=>{
 	let ce = new CustomEvent("flow-theme-changed", {detail:{theme}})
 	body.dispatchEvent(ce)
 }
-export const getTheme = (defaultTheme="dark")=>{
+export const getTheme = (defaultTheme=((theme && theme.default) || "light"))=>{
 	if(localStorage.flowtheme)
 		return localStorage.flowtheme;
 	const body = document.body;
