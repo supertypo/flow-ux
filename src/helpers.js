@@ -161,8 +161,7 @@ export const DeferComponent = (ctor, name, deps) => {
                 count--;
                 if(!count)
                     ctor.define(name);
-            }
-        
+            }        
         }
 	}
 	else
