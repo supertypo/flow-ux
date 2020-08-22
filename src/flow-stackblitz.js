@@ -33,7 +33,7 @@ export class FlowStackblitz extends BaseElement {
               'index.html': 'hello world!'
             },
             title: 'TEST ABC - Dynamically Generated Project',
-            description: 'Created with <3 by Flow UX!',
+            description: 'Flow UX test project!',
             template: 'javascript',
             tags: ['test'] ,
             dependencies: {
