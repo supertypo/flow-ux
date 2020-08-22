@@ -76,8 +76,8 @@ export const setTheme = theme=>{
 
 	body.classList.add(`flow-theme-${theme}`);
 	localStorage.flowtheme = theme;
-	let ce = new CustomEvent("flow-theme-changed", {detail:{theme}})
-	body.dispatchEvent(ce)
+	let ce = new CustomEvent("flow-theme-changed", {detail:{theme}});
+	body.dispatchEvent(ce);
 }
 export const getTheme = (defaultTheme=((theme && theme.default) || "light"))=>{ 
 	if(localStorage.flowtheme)
