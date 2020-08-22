@@ -1,4 +1,19 @@
-import {BaseElement, html, css, baseUrl} from './base-element.js';
+import {BaseElement, html, css, baseUrl, dpc} from './base-element.js';
+
+export const markerdRenderer = {
+	heading(text, level) {
+		const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-')
+			.replace(/\-code\-/g, "")
+
+		return `
+			<h${level} class="h-anchor">
+			<a name="${escapedText}" class="anchor" href="#${escapedText}">
+				<span class="anchor-icon" part="anchor-icon"></span>
+			</a>
+			${text}
+			</h${level}>`;
+	}
+}
 
 /**
 * @class FlowMarkdown
@@ -13,7 +28,8 @@ import {BaseElement, html, css, baseUrl} from './base-element.js';
 export class FlowMarkdown extends BaseElement {
 	static get properties() {
 		return {
-			skipTrimming : { type : Boolean }
+			skipTrimming:{type:Boolean},
+			anchorScroll:{type:Boolean}
 		}
 	}
 
@@ -21,7 +37,28 @@ export class FlowMarkdown extends BaseElement {
 		return css`
 			:host{display:block;}
 			.md{display:none;}
+			.anchor{
+				font-size:0px;
+			}
+			.anchor-icon{
+				font-size:var(--flow-markdown-anchor-icon-font-size, 1rem);
+				display:var(--flow-markdown-anchor-icon-display, inline-block);
+				width:var(--flow-markdown-anchor-icon-width, 15px);
+				height:var(--flow-markdown-anchor-icon-height, 15px);
+				margin:var(--flow-markdown-anchor-icon-margin, 0px 2px);
+				opacity:var(--flow-markdown-anchor-icon-opacity, 0);
+				border:0px solid #F00;cursor:pointer;
+				background: center / contain;
+				background-image:var(--flow-markdown-icon);
+			}
+			.h-anchor:hover>a.anchor .anchor-icon{
+				opacity:var(--flow-markdown-anchor-icon-opacity-hover, 1);
+			}
 		`;
+	}
+	render() {
+		return html`<div class="md"><slot></slot></div><div 
+			id="output" @click="${this.onOutputClick}"></div>`;
 	}
 
 	constructor() {
@@ -89,11 +126,37 @@ export class FlowMarkdown extends BaseElement {
 	    }
     	let html = window.marked(text);
     	this.outputEl.innerHTML =  DOMPurify.sanitize(html);
+    	if(this.anchorScroll){
+    		dpc(100, ()=>{
+    			this.scrollToLocationHash();
+    		})
+    	}
+
+    }
+    scrollToLocationHash(){
+    	let hash = window.location.hash.replace("#", "");
+    	this.scrollToElement(hash)
+    }
+    scrollToElement(id){
+    	let ele = id.scrollIntoView?id:this.outputEl.querySelector(`a[name="${id}"]`);
+    	if(ele)
+    		ele.scrollIntoView(Object.assign(this.scrollIntoViewConfig || {}, {
+    			behavior: "smooth",
+    			block: "start",
+    			inline: "nearest"
+    		}));
     }
 
-	render() {
-		return html`<div class="md"><slot></slot></div><div id="output"></div>`;
-	}
+    onOutputClick(e){
+    	let anchor = e.target.closest("a.anchor,a.scroll-to");
+    	if(!anchor)
+    		return
+    	let href = (anchor.getAttribute("href")+"")
+    	if(href.startsWith("#"))
+    		anchor = href.replace("#", "")
+
+    	this.scrollToElement(anchor);
+    }
 }
 
 
@@ -102,6 +165,9 @@ let registerComponent =()=>{
 	if(defined)
 		return
 	defined = true;
+
+	marked.use({renderer: markerdRenderer})
+
 	FlowMarkdown.define('flow-markdown');
 }
 
