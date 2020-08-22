@@ -92,7 +92,7 @@ export const getTheme = (defaultTheme=((theme && theme.default) || "light"))=>{
 }
 export {IconMap, FlowIcons, NativeIcons, dpc, isSmallScreen, FlowStates};
 export {baseUrl, debug, FlowIconPath, flow, UID, storage, resolveIcon};
-
+ 
 
 const bs58e = (function() {
     var alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
