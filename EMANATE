@@ -71,40 +71,55 @@ const E = new Emanator(__dirname, {
 
 E.manifest_read_sync();
 
+
+/// TODO - GENERATE ZIP FILE IN DIST!
+/// TODO - GENERATE ZIP FILE IN DIST!
+/// TODO - GENERATE ZIP FILE IN DIST!
+
 const REPO = __dirname;
 let LATEST = null;
-let DIST = path.join(REPO, 'dist');
+let ZIP = null;
+let ROOT = path.join(REPO, 'dist');
+let DIST = ROOT;
 if(E.flags.out && E.flags.out.length){
 	if(path.isAbsolute(E.flags.out))
-		DIST = E.flags.out;
+		ROOT = E.flags.out;
 	else
-		DIST = path.join(process.cwd(), E.flags.out);
+		ROOT = path.join(process.cwd(), E.flags.out);
 
-	if(!fs.existsSync(DIST))
-		throw new Error(`Output directory (${DIST}) dont exists.`)
+	if(!fs.existsSync(ROOT))
+		throw new Error(`Output directory (${ROOT}) dont exists.`)
 
-	DIST = DIST.split(/[\/\\]/);
+	ROOT = ROOT.split(/[\/\\]/);
 
-	if(DIST[DIST.length-1] == "")
-		DIST.pop();
+	if(ROOT[ROOT.length-1] == "")
+		ROOT.pop();
 
-	DIST = DIST.join(path.sep);
-	E.log("DIST", DIST)
+	ROOT = ROOT.join(path.sep);
+	E.log("ROOT", ROOT);
+
+	DIST = path.join(ROOT,'dist');
+
 }
 else if(fs.existsSync(path.join(__dirname,'..','cdn'))) {
-	DIST = path.join(__dirname,'..','cdn','releases');
+	ROOT = path.join(__dirname,'..','cdn','releases');
 	LATEST = path.join(__dirname,'..','cdn','latest');
-	await E.mkdirp(DIST);
+	DIST = path.join(__dirname,'..','cdn','dist');
+	await E.mkdirp(ROOT);
 	await E.mkdirp(LATEST);
 }
-const FLOW_UX_STATIC = path.join(DIST, `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`);
+
+await E.mkdirp(DIST);
+const FLOW_UX_STATIC_FILENAME = `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`;
+const FLOW_UX_STATIC = path.join(ROOT, FLOW_UX_STATIC_FILENAME);
+const FLOW_UX_ARCHIVE = path.join(DIST,`${FLOW_UX_STATIC_FILENAME}.zip`);
 console.log('target:',FLOW_UX_STATIC.brightCyan);
 //let FLOW_UX_STATIC = `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`;
 
 const FLOW_UX_FOLDER = `flow-ux`;
 const FLOW_UX = path.join(FLOW_UX_STATIC, FLOW_UX_FOLDER);
 const MODULES = FLOW_UX_STATIC;//path.join(FLOW_UX_STATIC, 'node_modules');
-const DEMO = path.join(DIST, 'demo');
+const DEMO = path.join(ROOT, 'demo');
 
 E.task('create-dirs', [], (callback)=>{
 	return Promise.all(
@@ -112,7 +127,7 @@ E.task('create-dirs', [], (callback)=>{
 		FLOW_UX_FOLDER, 'lit-element', 'lit-html', 'webcomponentsjs'
 		].map(f=>E.emptyDir(path.join(FLOW_UX_STATIC, f)))
 	);
-	//return E.mkdirp(DIST);
+	//return E.mkdirp(ROOT);
 });
 
 E.task('resources', ['create-dirs'], callback=>{
@@ -225,6 +240,19 @@ E.task('static', ['node_modules', 'flow-src', 'cleanup'], async () => {
 		if(fs.existsSync(SYMLINK))
 			fs.unlinkSync(SYMLINK);
 		fs.symlinkSync(TARGET,SYMLINK,'dir');
+	}
+
+	if(E.flags.package) {
+		const FOLDER = FLOW_UX_STATIC;
+		const cwd = ROOT;
+		const target = FLOW_UX_STATIC_FILENAME;
+		const archive = FLOW_UX_ARCHIVE;
+		// console.log("FOLDER:", FOLDER);
+		// console.log("ARCHIVE:",ARCHIVE);
+		if(fs.existsSync(archive))
+			await E.remove(archive);
+		E.log(`creating dist archive for:`, target);
+		await E.zip(target,archive,{ cwd });
 	}
 
 });

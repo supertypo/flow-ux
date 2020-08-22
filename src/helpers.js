@@ -61,7 +61,7 @@ if(!resolveIcon){
 	}
 }
 
-// console.log("FlowIcons", FlowIcons)
+// console.log("FlowIcons", FlowIcons) 
 
 const dpc = (delay, fn)=>{
 	if(typeof delay == 'function')
@@ -161,8 +161,7 @@ export const DeferComponent = (ctor, name, deps) => {
                 count--;
                 if(!count)
                     ctor.define(name);
-            }
-        
+            }        
         }
 	}
 	else
