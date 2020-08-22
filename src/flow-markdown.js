@@ -47,7 +47,7 @@ export class FlowMarkdown extends BaseElement {
 				height:var(--flow-markdown-anchor-icon-height, 15px);
 				margin:var(--flow-markdown-anchor-icon-margin, 0px 2px);
 				opacity:var(--flow-markdown-anchor-icon-opacity, 0);
-				border:0px solid #F00;cursor:pointer;
+				border:1px solid #F00;cursor:pointer;
 				background: center / contain;
 				background-image:var(--flow-markdown-icon);
 			}
