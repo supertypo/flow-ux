@@ -61,7 +61,7 @@ if(!resolveIcon){
 	}
 }
 
-// console.log("FlowIcons", FlowIcons)
+// console.log("FlowIcons", FlowIcons) 
 
 const dpc = (delay, fn)=>{
 	if(typeof delay == 'function')
