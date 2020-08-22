@@ -90,7 +90,7 @@ export const getTheme = (defaultTheme=((theme && theme.default) || "light"))=>{
 
 	return theme.replace("flow-theme-", "");
 }
-export {IconMap, FlowIcons, NativeIcons, dpc, isSmallScreen, FlowStates}
+export {IconMap, FlowIcons, NativeIcons, dpc, isSmallScreen, FlowStates};
 export {baseUrl, debug, FlowIconPath, flow, UID, storage, resolveIcon};
 
 
