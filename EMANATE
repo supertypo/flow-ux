@@ -251,6 +251,7 @@ E.task('static', ['node_modules', 'flow-src', 'cleanup'], async () => {
 		// console.log("ARCHIVE:",ARCHIVE);
 		if(fs.existsSync(archive))
 			await E.remove(archive);
+		E.log(`creating dist archive for:`, target);
 		await E.zip(target,archive,{ cwd });
 	}
 
