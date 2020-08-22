@@ -154,7 +154,7 @@ export class BaseElement extends LitElement{
 		}
 		return updated;
 	}
-
+ 
 	/**
 	* fire CustomEvent
 	* @param {String} eventName name of event
