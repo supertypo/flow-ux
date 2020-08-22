@@ -162,10 +162,13 @@ export class FlowBtn extends BaseElement {
 	constructor(){
 		super()
 		this.setAttribute('role', 'button');
+		this.addEventListener("click", ()=>{
+			this.click();
+		})
 	}
 	render() {
 		return html`
-		<div class="wrapper" @click=${this.click}>
+		<div class="wrapper">
 			<slot></slot>
 		</div>
 		`;
