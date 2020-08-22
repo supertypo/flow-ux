@@ -69,7 +69,7 @@ const dpc = (delay, fn)=>{
 	return setTimeout(fn, delay||0);
 }
 export const setTheme = theme=>{
-	const body = document.body;
+	const body = document.body; 
 	[...body.classList]
 	.filter(cls=>cls.startsWith('flow-theme'))
 	.forEach(cls=>body.classList.remove(cls));
