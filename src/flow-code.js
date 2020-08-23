@@ -57,7 +57,7 @@ export class FlowCode extends BaseElement {
 	render() {
 		//let indent = this.clcIndent();
 		if (!this.innerHTML_) {
-			let ta = this.querySelector("textarea");
+			let ta = this.querySelector("textarea"); 
 			let v = ta ? ta.value : this.innerHTML;
 			// let v = this.innerHTML; //querySelector("textarea").value;
 			v = v.split("\n").map(v => {
