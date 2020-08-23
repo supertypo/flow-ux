@@ -13,13 +13,16 @@ const escapeHtml = (unsafe) => {
  }
 
 export const markerdRenderer = {
+    buildAnchorHref(text){
+        return text.toLowerCase().replace(/[^\w]+/g, '-')
+            .replace(/\-code\-/g, "")
+    },
 	heading(text, level) {
-		const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-')
-			.replace(/\-code\-/g, "")
+		const href = this.buildAnchorHref(text);
 
 		return `
 			<h${level} class="h-anchor">
-			<a name="${escapedText}" class="anchor" href="#${escapedText}">
+			<a name="${href}" class="anchor" href="#${href}">
 				<span class="anchor-icon" part="anchor-icon"></span>
 			</a>
 			${text}
@@ -59,7 +62,8 @@ export class FlowMarkdown extends BaseElement {
 			skipTrimming:{type:Boolean},
             anchorScroll:{type:Boolean},
             sanitize : {type:Boolean},
-            toc :{type:Boolean}
+            toc :{type:Boolean},
+            'full-height-toc':{type:Boolean, reflect:true}
 		}
 	}
 
@@ -129,6 +133,17 @@ export class FlowMarkdown extends BaseElement {
                 display: flex;
                 flex-direction:row;
             }
+            :host([full-height-toc]) #wrapper{
+                height:100%;
+            }
+            :host([full-height-toc]) .toc-outer,
+            :host([full-height-toc]) #output{
+                height:100%;
+                overflow:auto;
+            }
+            :host([full-height-toc]) .toc-outer{
+                min-width:var(--flow-markdown-toc-width, 200px);
+            }
             #toc {
                 border:0px solid red;
                 width:var(--flow-markdown-toc-width, 200px);
@@ -138,6 +153,14 @@ export class FlowMarkdown extends BaseElement {
                 list-style:none;
                 padding:var(--flow-markdown-toc-padding, 10px);
                 margin:0px;
+            }
+            :host([full-height-toc]) #toc{
+                position:relative;
+            }
+            #toc li{cursor:pointer}
+            #toc li:hover{
+                background-color:var(--flow-markdown-toc-li-hover-bg, var(--flow-menu-item-hover-bg, #DDD));
+                color:var(--flow-markdown-toc-li-hover-color, var(--flow-menu-item-hover-color, #000));
             }
             #toc [level="0"]{
                 padding-left:var(--flow-markdown-toc-level0-padding, 0px);
@@ -185,10 +208,9 @@ export class FlowMarkdown extends BaseElement {
         length = (length+"").length;
 
 		return html`<div id="wrapper">
-        <div>
         ${
             this.toc ? 
-            html`<ul id='toc'>${
+            html`<div class="toc-outer"><ul id='toc' @click="${this.onTOCClick}">${
                 this.toc_.map(t=> {
                     /*if(firstLevel == t.level){
                         num = (i++)+").";
@@ -196,11 +218,11 @@ export class FlowMarkdown extends BaseElement {
                         num = "";
                     }*/
                     /*<span>${num.padStart(length, " ")}</span>*/
-                    return html`<li level="${t.level}">${t.caption}</li>`;
+                    return html`<li level="${t.level}" 
+                        data-scroll-to="${t.href}">${t.caption}</li>`;
                 })
-            }</ul>`:''
+            }</ul></div>`:''
         }
-        </div>
         <div class="md"><slot></slot></div>
         <div id="output" @click="${this.onOutputClick}"></div>
         </div>`;
@@ -275,8 +297,11 @@ export class FlowMarkdown extends BaseElement {
 	    	*/
         }
 
+        const tokens = window.marked.lexer(text);
+        this.log("tokens", tokens);
+
         if(this.toc) {
-            this.toc_ = [];
+            /*
             text.split('\n').forEach((line) => {
                 if(/^#+/.test(line)) {
                     let level = -1;
@@ -284,16 +309,36 @@ export class FlowMarkdown extends BaseElement {
                         level++;
                         line = line.substring(1);
                     }
-                    let caption = line.trim();
-                    this.toc_.push({caption,level});
+                    let caption = line.trim().replace("")
+                    this.toc_.push({
+                        caption, level, 
+                        href: markerdRenderer.buildAnchorHref(caption)
+                    });
                 }
             })
+            */
+        
+            let tocList = tokens.filter(t=>t.type=="heading").map(t=>{
+                let caption = t.tokens[0].text;
+                return {
+                    caption,
+                    level:t.depth-1,
+                    href: markerdRenderer.buildAnchorHref(caption)
+                }
+            });
+
+            this.toc_ = tocList;
+
+            this.log("tocList", tocList);
 
             this.requestUpdate();
         }
 
-    	let html = window.marked(text);
-        console.log("this.toc_", this.toc, this.toc_, html)
+        const html = window.marked.parser(tokens);
+        this.log("html", html);
+
+    	//let html = window.marked(text);
+        //this.log("this.toc_", this.toc, this.toc_, html)
     	//let html = window.marked(text);
     	this.outputEl.innerHTML =  this.sanitize ? DOMPurify.sanitize(html) : html;
     	if(this.anchorScroll){
@@ -315,6 +360,15 @@ export class FlowMarkdown extends BaseElement {
     			block: "start",
     			inline: "nearest"
     		}));
+    }
+
+    onTOCClick(e){
+        let el = e.target.closest("li[data-scroll-to]");
+        if(!el)
+            return
+
+        let id = el.getAttribute("data-scroll-to");
+        this.scrollToElement(id);
     }
 
     onOutputClick(e){
