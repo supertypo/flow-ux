@@ -354,12 +354,16 @@ export class FlowMarkdown extends BaseElement {
     }
     scrollToElement(id){
     	let ele = id.scrollIntoView?id:this.outputEl.querySelector(`a[name="${id}"]`);
-    	if(ele)
-    		ele.scrollIntoView(Object.assign(this.scrollIntoViewConfig || {}, {
+    	if(ele){
+            let eleP = ele.parentNode?.matches(".h-anchor")?ele.parentNode:ele;
+            //this.log("eleP", eleP)
+    		eleP.scrollIntoView(Object.assign(this.scrollIntoViewConfig || {}, {
     			behavior: "smooth",
     			block: "start",
     			inline: "nearest"
     		}));
+        }
+
     }
 
     onTOCClick(e){
