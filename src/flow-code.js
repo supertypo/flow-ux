@@ -72,7 +72,7 @@ export class FlowCode extends BaseElement {
 		}
 
 		return html`<pre class="lang-${this.lang}">${this.innerHTML_}</pre>`
-	}
+	} 
 	htmlEscape(s) {
 		return s
 			.replace(/&/g, '&amp;')
