@@ -56,6 +56,7 @@ export class FlowMarkdown extends BaseElement {
 			skipTrimming:{type:Boolean},
             anchorScroll:{type:Boolean},
             sanitize : {type:Boolean},
+            toc : {type:Boolean},
 		}
 	}
 
@@ -120,17 +121,37 @@ export class FlowMarkdown extends BaseElement {
                 text-decoration: underline; 
                 color: var(--flow-link-hover-color, #161649);
             }
-            
+            #wrapper {
+                position:relative;
+                display: flex;
+                flex-direction:row;
+            }
+            #toc {
+                border: 1px solid red;
+                width: 200px;
+
+                position: -webkit-sticky;
+                position: sticky;
+                top: 0;
+
+            }
 		`;
 	}
 	render() {
-		return html`<div class="md"><slot></slot></div><div 
-			id="output" @click="${this.onOutputClick}"></div>`;
+		return html`<div id="wrapper">${ this.toc ? html`<div id='toc'>${
+            this.toc_.map((t) => {
+                const { caption, level } = t;
+                return html`[${level}]${caption}<br/>`;
+            })
+        }</div>` : '' }<div class="md"><slot></slot></div><div 
+			id="output" @click="${this.onOutputClick}"></div></div>`;
 	}
 
 	constructor() {
         super();
         this.sanitize = false;
+        this.toc = false;
+        this.toc_ = [];
     }
     
     firstUpdated() {
@@ -193,7 +214,26 @@ export class FlowMarkdown extends BaseElement {
     			}
 	    	}
 	    	*/
-	    }
+        }
+
+        if(this.toc) {
+            this.toc_ = [];
+            text.split('\n').forEach((line) => {
+                if(/^#+/.test(line)) {
+                    let level = -1;
+                    while(line.charAt(0) == '#') {
+                        level++;
+                        line = line.substring(1);
+                    }
+                    let caption = line.trim();
+                    this.toc_.push({caption,level});
+                }
+            })
+
+            this.requestUpdate();
+        }
+
+
     	let html = window.marked(text);
     	//let html = window.marked(text);
     	this.outputEl.innerHTML =  this.sanitize ? DOMPurify.sanitize(html) : html;
