@@ -55,6 +55,14 @@ export class FlowMarkdown extends BaseElement {
 				opacity:var(--flow-markdown-anchor-icon-opacity-hover, 1);
             }
             
+            #output > * {
+                margin-left: 19px;
+            }
+
+            #output > h1, #output > h2, #output > h3 {
+                margin-left: 0px;
+            }
+
             code, table tr td code {
                 font-family: var(--flow-markdown-code-font-family, monospace);
                 font-size: var(--flow-markdown-code-font-family, 1rem);
