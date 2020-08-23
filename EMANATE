@@ -77,10 +77,11 @@ E.manifest_read_sync();
 /// TODO - GENERATE ZIP FILE IN DIST!
 
 const REPO = __dirname;
-let LATEST = null;
+//let LATEST = null;
 let ZIP = null;
-let ROOT = path.join(REPO, 'dist');
-let DIST = ROOT;
+let ROOT = path.join(REPO, 'dist','releases');
+let LATEST = path.join(REPO, 'dist','latest');
+let DIST = path.join(REPO, 'dist');
 if(E.flags.out && E.flags.out.length){
 	if(path.isAbsolute(E.flags.out))
 		ROOT = E.flags.out;
@@ -106,9 +107,9 @@ else if(fs.existsSync(path.join(__dirname,'..','cdn'))) {
 	LATEST = path.join(__dirname,'..','cdn','latest');
 	DIST = path.join(__dirname,'..','cdn','dist');
 	await E.mkdirp(ROOT);
-	await E.mkdirp(LATEST);
 }
-
+if(LATEST)
+	await E.mkdirp(LATEST);
 await E.mkdirp(DIST);
 const FLOW_UX_STATIC_FILENAME = `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`;
 const FLOW_UX_STATIC = path.join(ROOT, FLOW_UX_STATIC_FILENAME);

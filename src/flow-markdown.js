@@ -164,32 +164,32 @@ export class FlowMarkdown extends BaseElement {
             }
             #toc [level="0"]{
                 padding-left:var(--flow-markdown-toc-level0-padding, 0px);
-                font-size:var(--flow-markdown-toc-level0-font-size, 1.2rem);
+                font-size:var(--flow-markdown-toc-level0-font-size, 0.96rem);
                 font-weight:var(--flow-markdown-toc-level0-font-weight, bold);
             }
             #toc [level="1"]{
                 padding-left:var(--flow-markdown-toc-level1-padding, 0px);
-                font-size:var(--flow-markdown-toc-level1-font-size, 1.2rem);
+                font-size:var(--flow-markdown-toc-level1-font-size, 0.92rem);
             }
             #toc [level="2"]{
                 padding-left:var(--flow-markdown-toc-level2-padding, 15px);
-                font-size:var(--flow-markdown-toc-level2-font-size, 1.1rem);
+                font-size:var(--flow-markdown-toc-level2-font-size, 0.86rem);
             }
             #toc [level="3"]{
                 padding-left:var(--flow-markdown-toc-level3-padding, 30px);
-                font-size:var(--flow-markdown-toc-level3-font-size, 1rem);
+                font-size:var(--flow-markdown-toc-level3-font-size, 0.5rem);
             }
             #toc [level="4"]{
                 padding-left:var(--flow-markdown-toc-level4-padding, 45px);
-                font-size:var(--flow-markdown-toc-level4-font-size, 0.9375rem);
+                font-size:var(--flow-markdown-toc-level4-font-size, 0.4rem);
             }
             #toc [level="5"]{
                 padding-left:var(--flow-markdown-toc-level5-padding, 60px);
-                font-size:var(--flow-markdown-toc-level5-font-size, 0.875rem);
+                font-size:var(--flow-markdown-toc-level5-font-size, 0.3rem);
             }
             #toc [level="6"]{
                 padding-left:var(--flow-markdown-toc-level6-padding, 75px);
-                font-size:var(--flow-markdown-toc-level6-font-size, 0.75rem);
+                font-size:var(--flow-markdown-toc-level6-font-size, 0.2rem);
             }
             #toc [level="7"]{
                 padding-left:var(--flow-markdown-toc-level7-padding, 90px);
