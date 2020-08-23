@@ -190,6 +190,7 @@ flow-doc flow-code{
 }
 flow-doc-boxes{display:flex;flex-wrap:wrap;}
 flow-doc-boxes>flow-doc{margin:10px;min-width:20%;flex:1;width:300px}
+flow-markdown textarea{display:none}
 
 
 /* a {

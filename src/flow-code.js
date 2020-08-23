@@ -8,7 +8,8 @@ if (!window.PR) {
 export class FlowCode extends BaseElement {
 	static get properties() {
 		return {
-			lang : {type:String}
+			lang : {type:String},
+			fixindent:{type:Boolean}
 		}
 	}
 	static get styles() {
@@ -61,13 +62,26 @@ export class FlowCode extends BaseElement {
 			let ta = this.querySelector("textarea"); 
 			let v = ta ? ta.value : this.innerHTML;
 			// let v = this.innerHTML; //querySelector("textarea").value;
-			v = v.split("\n").map(v => {
-				//console.log("v1", v)
-				// why was this here? this [\t ]* is breaking code...
-//				v = v.replace(/^[\t ]*/, "")
-				//console.log("v2", v)
-				return v;
-			}).join("\n");
+			if(this.fixindent){
+				v = v.split("\n");
+				let count = 0;
+				let line2 = v[0];
+				let i=0;
+				let c = line2[i++];
+				while(c == "\t"){
+					count++;
+					c = line2[i++];
+				}
+				let regExp = `^[\t]{1,${count}}`;
+				regExp = new RegExp(regExp)
+				v = v.map(v => {
+					//console.log("v1", v)
+					// why was this here? this [\t ]* is breaking code...
+					v = v.replace(regExp, "")
+					console.log("v2", v)
+					return v;
+				}).join("\n");
+			}
 			this.innerHTML_ = v;
 		}
 

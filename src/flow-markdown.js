@@ -7,7 +7,9 @@ const escapeHtml = (unsafe) => {
          .replace(/</g, "&lt;")
          .replace(/>/g, "&gt;")
          .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
+         .replace(/'/g, "&#039;")
+         .replace(/&amp;lt;/g, "&lt;")
+         .replace(/&amp;gt;/g, "&gt;")
  }
 
 export const markerdRenderer = {
@@ -36,6 +38,7 @@ export const markerdRenderer = {
 
     codespan(text) {
         console.log('codespan:',text);
+        text = text.replace(/&amp;lt;/g, "&lt;").replace(/&amp;gt;/g, "&gt;");
         return `<code>${text}</code>`;
     }
 }
@@ -56,7 +59,7 @@ export class FlowMarkdown extends BaseElement {
 			skipTrimming:{type:Boolean},
             anchorScroll:{type:Boolean},
             sanitize : {type:Boolean},
-            toc : {type:Boolean},
+            toc :{type:Boolean}
 		}
 	}
 
@@ -127,24 +130,80 @@ export class FlowMarkdown extends BaseElement {
                 flex-direction:row;
             }
             #toc {
-                border: 1px solid red;
-                width: 200px;
-
+                border:0px solid red;
+                width:var(--flow-markdown-toc-width, 200px);
                 position: -webkit-sticky;
                 position: sticky;
-                top: 0;
-
+                top:var(--flow-markdown-toc-top, 0);
+                list-style:none;
+                padding:var(--flow-markdown-toc-padding, 10px);
+                margin:0px;
+            }
+            #toc [level="0"]{
+                padding-left:var(--flow-markdown-toc-level0-padding, 0px);
+                font-size:var(--flow-markdown-toc-level0-font-size, 1.2rem);
+                font-weight:var(--flow-markdown-toc-level0-font-weight, bold);
+            }
+            #toc [level="1"]{
+                padding-left:var(--flow-markdown-toc-level1-padding, 0px);
+                font-size:var(--flow-markdown-toc-level1-font-size, 1.2rem);
+            }
+            #toc [level="2"]{
+                padding-left:var(--flow-markdown-toc-level2-padding, 15px);
+                font-size:var(--flow-markdown-toc-level2-font-size, 1.1rem);
+            }
+            #toc [level="3"]{
+                padding-left:var(--flow-markdown-toc-level3-padding, 30px);
+                font-size:var(--flow-markdown-toc-level3-font-size, 1rem);
+            }
+            #toc [level="4"]{
+                padding-left:var(--flow-markdown-toc-level4-padding, 45px);
+                font-size:var(--flow-markdown-toc-level4-font-size, 0.9375rem);
+            }
+            #toc [level="5"]{
+                padding-left:var(--flow-markdown-toc-level5-padding, 60px);
+                font-size:var(--flow-markdown-toc-level5-font-size, 0.875rem);
+            }
+            #toc [level="6"]{
+                padding-left:var(--flow-markdown-toc-level6-padding, 75px);
+                font-size:var(--flow-markdown-toc-level6-font-size, 0.75rem);
+            }
+            #toc [level="7"]{
+                padding-left:var(--flow-markdown-toc-level7-padding, 90px);
+                font-size:var(--flow-markdown-toc-level7-font-size, 0.625rem);
             }
 		`;
 	}
 	render() {
-		return html`<div id="wrapper">${ this.toc ? html`<div id='toc'>${
-            this.toc_.map((t) => {
-                const { caption, level } = t;
-                return html`[${level}]${caption}<br/>`;
-            })
-        }</div>` : '' }<div class="md"><slot></slot></div><div 
-			id="output" @click="${this.onOutputClick}"></div></div>`;
+        let i = 1;
+        let {level:firstLevel=0} = (this.toc_||[])[0]||{};
+        let length = 10, num;
+        (this.toc_||[]).forEach(o=>{
+            if(length<o.level)
+                length = o.level;
+        })
+        length = (length+"").length;
+
+		return html`<div id="wrapper">
+        <div>
+        ${
+            this.toc ? 
+            html`<ul id='toc'>${
+                this.toc_.map(t=> {
+                    /*if(firstLevel == t.level){
+                        num = (i++)+").";
+                    }else{
+                        num = "";
+                    }*/
+                    /*<span>${num.padStart(length, " ")}</span>*/
+                    return html`<li level="${t.level}">${t.caption}</li>`;
+                })
+            }</ul>`:''
+        }
+        </div>
+        <div class="md"><slot></slot></div>
+        <div id="output" @click="${this.onOutputClick}"></div>
+        </div>`;
 	}
 
 	constructor() {
@@ -233,8 +292,8 @@ export class FlowMarkdown extends BaseElement {
             this.requestUpdate();
         }
 
-
     	let html = window.marked(text);
+        console.log("this.toc_", this.toc, this.toc_, html)
     	//let html = window.marked(text);
     	this.outputEl.innerHTML =  this.sanitize ? DOMPurify.sanitize(html) : html;
     	if(this.anchorScroll){
