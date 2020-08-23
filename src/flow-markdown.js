@@ -15,7 +15,7 @@ const escapeHtml = (unsafe) => {
 export const markerdRenderer = {
     buildAnchorHref(text){
         return text.toLowerCase().replace(/[^\w]+/g, '-')
-            .replace(/\-code\-/g, "")
+            .replace(/\-code\-/g, "").replace(/^[\-]+|[\-]+$/g, '')
     },
 	heading(text, level) {
 		const href = this.buildAnchorHref(text);
