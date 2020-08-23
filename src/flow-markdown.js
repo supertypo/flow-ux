@@ -154,19 +154,19 @@ export class FlowMarkdown extends BaseElement {
             }
             #toc [level="3"]{
                 padding-left:var(--flow-markdown-toc-level3-padding, 30px);
-                font-size:var(--flow-markdown-toc-level3-font-size, 0.5rem);
+                font-size:var(--flow-markdown-toc-level3-font-size, 0.82rem);
             }
             #toc [level="4"]{
                 padding-left:var(--flow-markdown-toc-level4-padding, 45px);
-                font-size:var(--flow-markdown-toc-level4-font-size, 0.4rem);
+                font-size:var(--flow-markdown-toc-level4-font-size, 0.76rem);
             }
             #toc [level="5"]{
                 padding-left:var(--flow-markdown-toc-level5-padding, 60px);
-                font-size:var(--flow-markdown-toc-level5-font-size, 0.3rem);
+                font-size:var(--flow-markdown-toc-level5-font-size, 0.72rem);
             }
             #toc [level="6"]{
                 padding-left:var(--flow-markdown-toc-level6-padding, 75px);
-                font-size:var(--flow-markdown-toc-level6-font-size, 0.2rem);
+                font-size:var(--flow-markdown-toc-level6-font-size, 0.66rem);
             }
             #toc [level="7"]{
                 padding-left:var(--flow-markdown-toc-level7-padding, 90px);
