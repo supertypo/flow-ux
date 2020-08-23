@@ -156,7 +156,8 @@ export class FlowMarkdown extends BaseElement {
 	    		texts.push(el.innerHTML);
 	    		//texts.push(el.innerText);
 	    	})
-	    	text = texts.join("\n\n");
+            text = texts.join("\n\n");
+            /*
 	    	let line2 = text.trim().split("\n")[1];
 	    	this.log("line2line2", line2)
 	    	if(!this.skipTrimming && line2){
@@ -191,7 +192,7 @@ export class FlowMarkdown extends BaseElement {
 	    			//this.log("tabs", regExp, tabs, text)
     			}
 	    	}
-	    	
+	    	*/
 	    }
     	let html = window.marked(text);
     	//let html = window.marked(text);
