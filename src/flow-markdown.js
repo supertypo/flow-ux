@@ -157,22 +157,26 @@ export class FlowMarkdown extends BaseElement {
             :host([full-height-toc]) #toc{
                 position:relative;
             }
-            #toc li{cursor:pointer}
+            #toc li{
+                cursor:pointer;
+                padding: 1px;
+
+            }
             #toc li:hover{
                 background-color:var(--flow-markdown-toc-li-hover-bg, var(--flow-menu-item-hover-bg, #DDD));
                 color:var(--flow-markdown-toc-li-hover-color, var(--flow-menu-item-hover-color, #000));
             }
             #toc [level="0"]{
-                padding-left:var(--flow-markdown-toc-level0-padding, 0px);
+                padding-left:var(--flow-markdown-toc-level0-padding, 4px);
                 font-size:var(--flow-markdown-toc-level0-font-size, 0.96rem);
                 font-weight:var(--flow-markdown-toc-level0-font-weight, bold);
             }
             #toc [level="1"]{
-                padding-left:var(--flow-markdown-toc-level1-padding, 0px);
+                padding-left:var(--flow-markdown-toc-level1-padding, 4px);
                 font-size:var(--flow-markdown-toc-level1-font-size, 0.92rem);
             }
             #toc [level="2"]{
-                padding-left:var(--flow-markdown-toc-level2-padding, 15px);
+                padding-left:var(--flow-markdown-toc-level2-padding, 18px);
                 font-size:var(--flow-markdown-toc-level2-font-size, 0.86rem);
             }
             #toc [level="3"]{
