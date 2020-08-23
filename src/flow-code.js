@@ -57,7 +57,8 @@ export class FlowCode extends BaseElement {
 	render() {
 		//let indent = this.clcIndent();
 		if (!this.innerHTML_) {
-			let v = this.querySelector("textarea").value;
+//			let v = this.querySelector("textarea").value;
+			let v = this.innerHTML; //querySelector("textarea").value;
 			v = v.split("\n").map(v => {
 				//console.log("v1", v)
 				// why was this here? this [\t ]* is breaking code...
