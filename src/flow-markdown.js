@@ -71,9 +71,7 @@ export class FlowMarkdown extends BaseElement {
 		return css`
 			:host{display:block;}
 			.md{display:none;}
-			.anchor{
-				font-size:0px;
-			}
+			.anchor{font-size:0px;}
 			.anchor-icon{
 				font-size:var(--flow-markdown-anchor-icon-font-size, 1rem);
 				display:var(--flow-markdown-anchor-icon-display, inline-block);
@@ -89,10 +87,7 @@ export class FlowMarkdown extends BaseElement {
 				opacity:var(--flow-markdown-anchor-icon-opacity-hover, 1);
             }
             
-            #output > * {
-                margin-left: 19px;
-            }
-
+            #output > * {margin-left: 19px;}
             #output > h1, #output > h2, #output > h3, #output > h4, #output > h5 {
                 margin-left: 0px;
             }
@@ -110,7 +105,6 @@ export class FlowMarkdown extends BaseElement {
             }
 
             flow-code {
-
                 --flow-code-white-space: pre;
                 --flow-code-font-family: var(--flow-markdown-code-font-family);
                 --flow-code-font-size: var(--flow-markdown-code-font-size);
