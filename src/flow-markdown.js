@@ -1,4 +1,5 @@
 import {BaseElement, html, css, baseUrl, dpc} from './base-element.js';
+import { FlowCode } from './flow-code.js';
 
 export const markerdRenderer = {
 	heading(text, level) {
@@ -12,7 +13,11 @@ export const markerdRenderer = {
 			</a>
 			${text}
 			</h${level}>`;
-	}
+    },
+    
+    code(text, info, escaped) {
+        return `<flow-code lang="${info}"><textarea>${text.replace(/\t/g,'    ')}</textarea></flow-code>`;
+    }
 }
 
 /**
@@ -29,7 +34,8 @@ export class FlowMarkdown extends BaseElement {
 	static get properties() {
 		return {
 			skipTrimming:{type:Boolean},
-			anchorScroll:{type:Boolean}
+            anchorScroll:{type:Boolean},
+            sanitize : {type:Boolean},
 		}
 	}
 
@@ -63,10 +69,38 @@ export class FlowMarkdown extends BaseElement {
                 margin-left: 0px;
             }
 
-            code, table tr td code {
+            td { vertical-align: top; }
+
+            code, table tbody tr td code {
+                display: inline-block;
                 font-family: var(--flow-markdown-code-font-family, monospace);
-                font-size: var(--flow-markdown-code-font-family, 1rem);
+                font-size: var(--flow-markdown-code-font-size, 1rem);
+                background-color: var(--flow-markdown-code-background-color, #f3f3f3);
+                padding: var(--flow-markdown-code-padding, 1px 3px);
+                margin: var(--flow-markdown-code-margin, 1px 1px);
+                border:var(--flow-markdown-code-border, 1px solid #ddd);
             }
+
+            flow-code {
+
+                --flow-code-white-space: pre;
+                --flow-code-font-family: var(--flow-markdown-code-font-family);
+                --flow-code-font-size: var(--flow-markdown-code-font-size);
+                --flow-code-border: 1px solid #ddd;
+                background-color: var(--flow-markdown-code-background-color, #f3f3f3);
+                padding: 16px;
+            }
+
+            a, a:visited { 
+                text-decoration: none; 
+                color: var(--flow-link-color, #202169);
+            }
+
+            a:hover { 
+                text-decoration: underline; 
+                color: var(--flow-link-hover-color, #161649);
+            }
+            
 		`;
 	}
 	render() {
@@ -75,7 +109,8 @@ export class FlowMarkdown extends BaseElement {
 	}
 
 	constructor() {
-		super();
+        super();
+        this.sanitize = false;
     }
     
     firstUpdated() {
@@ -138,7 +173,7 @@ export class FlowMarkdown extends BaseElement {
 	    	
 	    }
     	let html = window.marked(text);
-    	this.outputEl.innerHTML =  DOMPurify.sanitize(html);
+    	this.outputEl.innerHTML =  this.sanitize ? DOMPurify.sanitize(html) : html;
     	if(this.anchorScroll){
     		dpc(100, ()=>{
     			this.scrollToLocationHash();
