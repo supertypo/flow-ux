@@ -1,6 +1,15 @@
 import {BaseElement, html, css, baseUrl, dpc} from './base-element.js';
 import { FlowCode } from './flow-code.js';
 
+const escapeHtml = (unsafe) => {
+    return unsafe
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
+
 export const markerdRenderer = {
 	heading(text, level) {
 		const escapedText = text.toLowerCase().replace(/[^\w]+/g, '-')
@@ -16,7 +25,18 @@ export const markerdRenderer = {
     },
     
     code(text, info, escaped) {
+        console.log('code:',text);
         return `<flow-code lang="${info}"><textarea>${text.replace(/\t/g,'    ')}</textarea></flow-code>`;
+    },
+
+    html(text) {
+        console.log('html:',text);
+        return escapeHtml(text);
+    },
+
+    codespan(text) {
+        console.log('codespan:',text);
+        return `<code>${text}</code>`;
     }
 }
 
@@ -65,7 +85,7 @@ export class FlowMarkdown extends BaseElement {
                 margin-left: 19px;
             }
 
-            #output > h1, #output > h2, #output > h3 {
+            #output > h1, #output > h2, #output > h3, #output > h4, #output > h5 {
                 margin-left: 0px;
             }
 
@@ -133,7 +153,8 @@ export class FlowMarkdown extends BaseElement {
 	    			texts.push(el.textContent)
 	    			return;
 	    		}
-	    		texts.push(el.innerText);
+	    		texts.push(el.innerHTML);
+	    		//texts.push(el.innerText);
 	    	})
 	    	text = texts.join("\n\n");
 	    	let line2 = text.trim().split("\n")[1];
@@ -173,6 +194,7 @@ export class FlowMarkdown extends BaseElement {
 	    	
 	    }
     	let html = window.marked(text);
+    	//let html = window.marked(text);
     	this.outputEl.innerHTML =  this.sanitize ? DOMPurify.sanitize(html) : html;
     	if(this.anchorScroll){
     		dpc(100, ()=>{
