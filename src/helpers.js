@@ -92,7 +92,20 @@ export const getTheme = (defaultTheme=((theme && theme.default) || "light"))=>{
 }
 export {IconMap, FlowIcons, NativeIcons, dpc, isSmallScreen, FlowStates};
 export {baseUrl, debug, FlowIconPath, flow, UID, storage, resolveIcon};
- 
+
+
+export const styleAppendTo = (style, defaultSelector="head")=>selector=>{
+	let p = document.querySelector(selector||defaultSelector);
+	if(!p)
+		p = document.head;
+	if(p.matches("style")){
+		p.innerHTML = style.cssText;
+	}else{
+		let sBar = document.createElement('style');
+		sBar.innerHTML = style.cssText;
+		p.appendChild(sBar);
+	}
+}
 
 const bs58e = (function() {
     var alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
