@@ -8,10 +8,24 @@ import {BaseElement, html, css} from './base-element.js';
 * @property {Boolean} [disabled]
 * @property {String} [btnText]
 * @property {String} [value]
-*
+* @property {Boolean} [opened]
+* @property {String} [parentSelector]
 *
 * @cssvar {font-family} [--flow-font-family="Julius Sans One"]
 * @cssvar {font-weight} [--flow-font-weight=bold]
+* @cssvar {border-radius} [--flow-appdrawer-btn-border-radius=50%]
+* @cssvar {box-shadow} [--flow-appdrawer-btn-box-shadow=0px 0px 3px 1px var(--flow-background-inverse-soft))]
+* @cssvar {padding} [--flow-appdrawer-btn-padding=10px]
+* @cssvar {right} [--flow-appdrawer-btn-right=-10px]
+* @cssvar {top} [--flow-appdrawer-btn-right=10px]
+* @cssvar {background-color} [--flow-appdrawer-btn-bg=var(--flow-background-color)]
+* @cssvar {width} [-flow-appdrawer-btn-width=15px]
+* @cssvar {height} [--flow-appdrawer-btn-height=15px]
+* @cssvar {left} [--flow-appdrawer-btn-left=15px]
+* @cssvar {top} [--flow-appdrawer-btn-top=5px]
+* @cssvar {top} [--flow-appdrawer-wrapper-top=20px]
+* @cssvar {border} [--flow-appdrawer-border=2px solid var(--flow-primary-color]
+
 * @example
 *   <flow-app-drawer></flow-app-drawer>
 *
@@ -40,7 +54,7 @@ export class FlowAppDrawer extends BaseElement {
 				padding:var(--flow-appdrawer-btn-padding, 10px);
 				position:absolute;
 				right:var(--flow-appdrawer-btn-right, -10px);
-				top:var(--flow-appdrawer-btn-top, 5px);
+				top:var(--flow-appdrawer-btn-right, -10px);
 				background-color:var(--flow-appdrawer-btn-bg, var(--flow-background-color));
 				width:var(--flow-appdrawer-btn-width, 15px);
 				height:var(--flow-appdrawer-btn-height, 15px);
