@@ -133,7 +133,8 @@ export class FlowMarkdown extends BaseElement {
             :host([full-height-toc]) .toc-outer,
             :host([full-height-toc]) #output{
                 height:100%;
-                overflow:auto;
+                overflow-y:auto;
+                overflow-x:hidden;
             }
             :host([full-height-toc]) .toc-outer{
                 min-width:var(--flow-markdown-toc-width, 200px);
@@ -151,10 +152,10 @@ export class FlowMarkdown extends BaseElement {
             :host([full-height-toc]) #toc{
                 position:relative;
             }
+
             #toc li{
                 cursor:pointer;
                 padding: 1px;
-
             }
             #toc li:hover{
                 background-color:var(--flow-markdown-toc-li-hover-bg, var(--flow-menu-item-hover-bg, #DDD));
