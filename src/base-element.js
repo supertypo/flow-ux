@@ -3,8 +3,8 @@ import {LitElement, html, css} from 'lit-element';
 export * from 'lit-element';
 export * from 'lit-html/lit-html.js';
 
-import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon, FlowStates} from './helpers.js';
-
+import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon, FlowStates, DeferComponent} from './helpers.js';
+import {styleAppendTo} from "./helpers.js";
 export * from './helpers.js';
 export * from './pagination.js';
 /**
@@ -47,8 +47,12 @@ export class BaseElement extends LitElement{
 	* @param {String} name name of tag i.e. 'my-cool-element'
 	* @since 0.0.1
 	*/
-	static define(name){
-		customElements.define(name, this);
+	static define(name, deps){
+		if(deps) {
+			DeferComponent(this,name,deps);
+		}
+		else
+			customElements.define(name, this);
 	}
 
 	static get svgStyle(){
@@ -150,7 +154,7 @@ export class BaseElement extends LitElement{
 		}
 		return updated;
 	}
-
+ 
 	/**
 	* fire CustomEvent
 	* @param {String} eventName name of event
@@ -339,6 +343,8 @@ export const ScrollbarStyle = css`
     background:var(--flow-scrollbar-thumb-bg, initial);
 }
 `
+
+ScrollbarStyle.appendTo = styleAppendTo(ScrollbarStyle);
 
 let getLocalSetting = BaseElement.getLocalSetting;
 let setLocalSetting = BaseElement.setLocalSetting;

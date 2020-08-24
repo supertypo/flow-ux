@@ -36,7 +36,8 @@ import {BaseElement, html, css} from './base-element.js';
 export class FlowBtn extends BaseElement {
 	static get properties() {
 		return {
-			disabled:{type:Boolean, reflect: true}
+			disabled:{type:Boolean, reflect: true},
+			'on-click':{type:Function}
 		}
 	}
 
@@ -161,17 +162,35 @@ export class FlowBtn extends BaseElement {
 	constructor(){
 		super()
 		this.setAttribute('role', 'button');
+		this.addEventListener("click", ()=>{
+			this.click();
+		})
 	}
 	render() {
 		return html`
-		<div class="wrapper" @click=${this.click}>
+		<div class="wrapper">
 			<slot></slot>
 		</div>
 		`;
 	}
 
 	click() {
+		if(this.disabled)
+			return
 		this.fire("flow-btn-click", {el:this})
+		let clickFn = this['on-click'];
+		if(clickFn){
+			if(typeof clickFn == "string"){
+				try{
+					eval(clickFn);
+				}catch(e){
+
+				}
+			}else if(typeof clickFn == "function"){
+				clickFn();
+			}
+		}
+
 		/*let form = this.form || this.getAttribute("form");
 
 		if(typeof(form) == 'string'){

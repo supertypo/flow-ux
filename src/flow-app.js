@@ -10,7 +10,7 @@ export const FlowAppMixin = (baseClass)=>{
 		constructor(...args) {
 			super(...args)
 			this.uid = UID();
-			this.setTheme(this.getTheme("dark"));
+			this.setTheme(this.getTheme("light"));
 		}
 
 		getTheme(defaultTheme){
@@ -163,7 +163,17 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 			:host([floating-drawer][right-drawer]:not([open-drawer])) .drawer{
 				right:var(--flow-app-drawer-hidden-right, -500px);
 			}
-			.main{flex:1;overflow:var(--flow-app-main-overflow,auto);}
+			.main{
+				flex:1;
+				overflow:var(--flow-app-main-overflow, auto);
+				position:var(--flow-app-main-position, initial);
+				display:var(--flow-app-main-display, initial);
+			}
+			:host([main-v-box]) .main{
+				display:flex;flex-direction:column;
+				align-items:var(--flow-app-main-align-items, stretch);
+				justify-content:var(--flow-app-main-align-justify-content, space-between);
+			}
 			fa-icon{
 				--fa-icon-color:var(--flow-color);
 			}

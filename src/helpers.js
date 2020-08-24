@@ -61,7 +61,7 @@ if(!resolveIcon){
 	}
 }
 
-// console.log("FlowIcons", FlowIcons)
+// console.log("FlowIcons", FlowIcons) 
 
 const dpc = (delay, fn)=>{
 	if(typeof delay == 'function')
@@ -69,17 +69,17 @@ const dpc = (delay, fn)=>{
 	return setTimeout(fn, delay||0);
 }
 export const setTheme = theme=>{
-	const body = document.body;
+	const body = document.body; 
 	[...body.classList]
 	.filter(cls=>cls.startsWith('flow-theme'))
 	.forEach(cls=>body.classList.remove(cls));
 
 	body.classList.add(`flow-theme-${theme}`);
 	localStorage.flowtheme = theme;
-	let ce = new CustomEvent("flow-theme-changed", {detail:{theme}})
-	body.dispatchEvent(ce)
+	let ce = new CustomEvent("flow-theme-changed", {detail:{theme}});
+	body.dispatchEvent(ce);
 }
-export const getTheme = (defaultTheme="dark")=>{
+export const getTheme = (defaultTheme=((theme && theme.default) || "light"))=>{ 
 	if(localStorage.flowtheme)
 		return localStorage.flowtheme;
 	const body = document.body;
@@ -90,9 +90,22 @@ export const getTheme = (defaultTheme="dark")=>{
 
 	return theme.replace("flow-theme-", "");
 }
-export {IconMap, FlowIcons, NativeIcons, dpc, isSmallScreen, FlowStates}
+export {IconMap, FlowIcons, NativeIcons, dpc, isSmallScreen, FlowStates};
 export {baseUrl, debug, FlowIconPath, flow, UID, storage, resolveIcon};
 
+
+export const styleAppendTo = (style, defaultSelector="head")=>selector=>{
+	let p = document.querySelector(selector||defaultSelector);
+	if(!p)
+		p = document.head;
+	if(p.matches("style")){
+		p.innerHTML = style.cssText;
+	}else{
+		let sBar = document.createElement('style');
+		sBar.innerHTML = style.cssText;
+		p.appendChild(sBar);
+	}
+}
 
 const bs58e = (function() {
     var alphabet = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ',
@@ -107,3 +120,63 @@ const bs58e = (function() {
 		return encoded;
 	}
 })();
+
+const resolveConditions = (src) => {
+	src = Object.entries(src).map(([k,v]) => {
+		return eval(k) ? undefined : v;
+	}).filter(v=>v!==undefined);
+	if(!src.length)
+		return null;
+	return src;
+}
+
+export const DeferComponent = (ctor, name, deps) => {
+
+	if(deps && typeof deps == 'object' && !Array.isArray(deps))
+		deps = resolveConditions(deps);
+
+    if(deps && Array.isArray(deps)) {
+		let count = 0;
+		deps = deps.slice();		
+		while(deps.length) {
+			let src = deps.shift();
+
+			switch(typeof src) {
+				case 'function': {
+					src = src();
+					if(!src)
+						continue;
+					if(Array.isArray(src)) {
+						deps = deps.concat(src);
+						continue;
+					}
+				} break;
+				case 'object': {
+					src = resolveConditions(src);
+					if(!src)
+						continue;
+					else
+					if(src.length == 1)
+						src = src.shift();
+					else {
+						deps = deps.concat(src);
+						continue;
+					}
+				} break;
+			}
+
+			console.log('Flow - loading dep:', src);
+            count++;
+            let script = document.createElement("script");
+            script.src = src;
+            document.head.appendChild(script);
+            script.onload = ()=>{
+                count--;
+                if(!count)
+                    ctor.define(name);
+            }        
+        }
+	}
+	else
+		ctor.define(name);
+}
