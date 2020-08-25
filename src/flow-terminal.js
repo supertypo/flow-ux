@@ -386,7 +386,7 @@ export class FlowTerminal extends BaseElement {
 	    	fit : new FitAddon.FitAddon()
 	    };
 
-//	    $(this.terminalHolder).on("keydown", e=>{
+		//$(this.terminalHolder).on("keydown", e=>{
 		this.terminalHolder.addEventListener("keydown", e=>{
 				//this.log("e.key", e.key)
 			if(e.ctrlKey || e.metaKey) {
@@ -611,10 +611,13 @@ export class FlowTerminal extends BaseElement {
 				this.term.write('\b');
 		}
 	}
+	write(text){
+		this.writeln(text)
+	}
 	updateTerminalSize() {
 		let term = this.term;
 		//this.log("updateTerminalSize", this, this.term)
-//		if(!$(this).width() || !term)
+		//if(!$(this).width() || !term)
 		if(!this.offsetWidth || !term)
 			return
 		let charSizeService = term._core._charSizeService
