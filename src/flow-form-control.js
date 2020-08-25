@@ -6,7 +6,16 @@ import {BaseElement, html, css} from './base-element.js';
  * @extends {BaseElement}
  * 
  * @property {String} [icon=light-info] icon to show in left
+ * @property {String}  expandIcon
+ * @property {Boolean} expandable
+ * @property {Boolean} expanded
+
  * @cssvar {fill} [--flow-primary-color=rgba(0,151,115,1)]
+ * @cssvar {width} [--flow-form-control-icon-box-width=24px]
+ * @cssvar {height} [--flow-form-control-icon-box-height=24px]
+ * @cssvar {margin-right} [--flow-form-control-icon-box-margin=8px]
+ * @cssvar {width} [--flow-form-control-input-box-width=100px]
+
  * @example
  * <flow-form-control>
  *   Is Active: 

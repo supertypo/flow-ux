@@ -51,6 +51,7 @@ import {FlowI18nDialog} from './flow-i18n.js';
  * @cssvar {color} [--flow-caption-bar-primary-color=var(--flow-primary-color, rgba(0,151,115,1))]
  * @cssvar {color} [--flow-primary-color=rgba(0,151,115,1)]
  * @cssvar {margin} [--flow-caption-tabs-margin=0px]
+ * @cssvar {background-color} [--flow-caption-logo-bg-color=var(--flow-background-color,#232323)]
  */
 export class FlowCaptionBar extends BaseElement {
 	static get properties() {

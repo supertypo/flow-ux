@@ -7,8 +7,10 @@ import {BaseElement, html, css} from './base-element.js';
 * @example
 *   <flow-btn>Button 1</flow-btn>
 * @property {Boolean} [disabled] 
-* @cssvar {font-family} [--flow-font-family="Julius Sans One"]
-* @cssvar {font-weight} [--flow-font-weight=bold]
+* @cssvar {font-family} [--flow-btn-font-family=var(--flow-font-family, initial)]
+* @cssvar {font-weight} [--flow-btn-font-weight=var(--flow-font-weight, bold)]
+* @cssvar {font-size} [--flow-btn-font-size=initial]
+* @cssvar {line-height} [--flow-btn-line-height=inherit]
 * @cssvar {color} [--flow-border-color=var(--flow-primary-color, rgba(0,151,115,1))]
 * @cssvar {color} [--flow-border-hover-color=var(--flow-primary-color, rgba(0,151,115,1))]
 * @cssvar {color} [--flow-btn-primary-invert-color=var(--flow-primary-invert-color, #FFF)]
@@ -32,6 +34,10 @@ import {BaseElement, html, css} from './base-element.js';
 * @cssvar {border-color} [--flow-btn-hover-success-bg-color=var(--flow-primary-color, rgba(0,151,115,1)))]
 * @cssvar {border-color} [--flow-btn-success-bg-color=var(--flow-primary-color, rgba(0,151,115,1)))]
 * @cssvar {border-radius} [--flow-btn-radius=8px]
+* @cssvar {margin} [--flow-btn-margin=""]
+* @cssvar {margin} [--flow-btn-wrapper-margin=5px];
+* @cssvar {min-width} [--flow-btn-wrapper-min-width=50px];
+* @cssvar {padding} [--flow-btn-padding=5px]
 */
 export class FlowBtn extends BaseElement {
 	static get properties() {

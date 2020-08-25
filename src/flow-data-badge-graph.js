@@ -5,6 +5,19 @@ import {FlowSampler} from './flow-sampler.js';
 /**
 * @class FlowDataBadgeGraph
 * @extends Flowd3Element
+* @prop {Boolean} disabled
+* @prop {String} title
+* @prop {String} prefix
+* @prop {String} suffix
+* @prop {String} align
+* @prop {Number} value
+* @prop {String} sampler
+* @prop {String} type
+* @prop {Number} range
+* @cssvar {font-family} [--flow-data-badge-font-family="Julius Sans One"]
+* @cssvar {font-weight} [--flow-data-badge-font-weight=bold]
+* @cssvar {color} [--flow-data-badge-caption]
+* @cssvar {color} [--flow-data-field-value=#333]
 * @example
 *   <flow-data-badge-canvas title="text">value</flow-data-badge-canvas>
 *

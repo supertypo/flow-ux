@@ -20,7 +20,11 @@ import {BaseElement, html, css} from './base-element.js';
 * @cssvar {color} [--flow-border-invert-color=var(--flow-primary-invert-color, #FFF))]
 * @cssvar {margin-right} [--flow-folder-input-vmr=2px]
 * @cssvar {background-color} [--flow-input-bg=inherit]
-
+* @cssvar {width} [--flow-folder-input-width=100%]
+* @cssvar {min-width} [--flow-folder-input-min-width=100px]
+* @cssvar {max-width} [--flow-folder-input-max-width=100%]
+* @cssvar {border-top-left-radius} [--flow-folder-input-tlbr=4px]
+* @cssvar {border-bottom-left-radius} [--flow-folder-input-blbr=4px);
 * @example
 *   <flow-folder-input></flow-folder-input>
 *

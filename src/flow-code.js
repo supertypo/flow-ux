@@ -5,6 +5,19 @@ if (!window.PR) {
 	document.head.appendChild(prettify);
 }
 
+/**
+ * @export
+ * @class FlowCode
+ * @prop {Boolean} fixindent
+ * @prop {String} lang
+ * @extends {BaseElement}
+ * @cssvar {white-space} [--flow-code-white-space=nowrap]
+ * @cssvar {font-family} [--flow-code-font-family=monospace]
+ * @cssvar {font-size} [--flow-code-font-size=1rem]	
+ * @cssvar {padding} [--flow-code-padding=5px]
+ * @cssvar {margin} [--flow-code-margin=1px]
+ * @cssvar {border} [--flow-code-border=none]
+ */
 export class FlowCode extends BaseElement {
 	static get properties() {
 		return {

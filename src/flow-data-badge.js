@@ -15,6 +15,23 @@ import {FlowSampler} from './flow-sampler.js';
 * @cssvar {font-family} [--flow-data-badge-font-family="Julius Sans One"]
 * @cssvar {font-weight} [--flow-data-badge-font-weight=bold]
 * @cssvar {border} [--flow-primary-color=#333]
+* @cssvar {width} [--flow-data-badge-width]
+* @cssvar {min-width} [--flow-data-badge-min-width]
+* @cssvar {max-width} [--flow-data-badge-max-width]
+* @cssvar {margin} [--flow-data-badge-margin]
+* @cssvar {border} [--flow-data-badge-container-border=2px solid var(--flow-primary-color,#333)]
+* @cssvar {background-color} [--flow-data-badge-bg=inherit]
+* @cssvar {padding} [--flow-data-badge-container-padding=2px 6px]
+* @cssvar {margin} [--flow-data-badge-container-margin=6px]
+* @cssvar {box-shadow} [--flow-data-badge-container-box-shadow=2px 2px 1px rgba(1, 123, 104, 0.1)]
+* @cssvar {border-radius} [--flow-data-badge-container-border-radius=10px]
+* @cssvar {opacity} [--flow-data-badge-title-opacity=1]
+* @cssvar {font-size} [--flow-data-badge-title-font-size=10px] 
+* @cssvar {color} [--flow-data-badge-caption]
+* @cssvar {font-size} [--flow-data-badge-value-font-size=14px]
+* @cssvar {font-family} [--flow-data-badge-value-font-family="Exo 2"]
+* @cssvar {font-weight} [--flow-data-badge-value-font-weight=normal]
+* @cssvar {color} [--flow-data-field-value=#333]
 */
 export class FlowDataBadge extends BaseElement {
 	static get properties() {

@@ -6,6 +6,25 @@ import {FlowFormat} from './flow-format.js';
 /**
 * @class FlowGraph
 * @extends Flowd3Element
+* @prop {Boolean} disabled
+* @prop {String} title 
+* @prop {String} prefix
+* @prop {String} suffix
+* @prop {String} align
+* @prop {Number} value
+* @prop {String} data
+* @prop {String} sampler
+* @prop {Number} range
+* @prop {Boolean} overlay
+* @prop {String} format
+* @prop {Number} precision 
+* @prop {Boolean} axes
+* @prop {Boolean} info
+* @cssvar {font-family} [--flow-data-field-font-family="Julius Sans One"]
+* @cssvar {font-weight} [--flow-data-field-font-weight=bold]
+* @cssvar {background-color} [--flow-background-color]
+* @cssvar {background} [--flow-graph-info-bg=#FFF);
+* @cssvar {border} [--flow-graph-info-border=1px solid #DDD]
 * @example
 *   <flow-graph>overlay content</flow-graph>
 *

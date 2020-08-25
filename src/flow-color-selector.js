@@ -5,6 +5,11 @@ import {FlowCanvasElement} from './flow-canvas.js';
 /**
 * @class FlowColorSlider
 * @extends BaseElement
+* @prop {Number} min
+* @prop {Number} max
+* @prop {Boolean} vertical
+* @prop {Object} color
+* @prop {String} chanel
 * @example
 *   <flow-color-slider></flow-color-slider>
 */
@@ -196,6 +201,13 @@ class ColorMixer {
 	}
 }
 
+/**
+* @class FlowColorSolid
+* @extends BaseElement
+* @prop {Object} color
+* @example
+*   <flow-color-solid></flow-color-solid>
+*/
 export class FlowColorSolid extends BaseElement {
 	static get properties() {
 		return {
@@ -241,7 +253,13 @@ export class FlowColorSolid extends BaseElement {
 
 FlowColorSolid.define('flow-color-solid');
 
-
+/**
+* @class FlowColorSelector
+* @extends BaseElement
+* @prop {String} caption
+* @example
+*   <flow-color-selector></flow-color-selector>
+*/
 
 export class FlowColorSelector extends BaseElement {
 	static get properties() {

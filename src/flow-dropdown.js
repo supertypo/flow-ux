@@ -5,7 +5,29 @@ import {BaseElement, html, css, dpc} from './base-element.js';
  * @class FlowDropdown
  * @extends {BaseElement}
 
-
+ * @prop {Boolean} opened 
+ * @prop {Boolean} disabled
+ * 
+ * @cssvar {color} [--flow-color, #000);
+ * @cssvar {padding} [--flow-dropdown-trigger-padding, 21px 20px 20px);
+ * @cssvar	{min-width} [--flow-dropdown-trigger-width=80px]
+ * @cssvar {font-size} [--flow-dropdown-trigger-font-size=var(--flow-input-font-size, 1rem)]
+ * @cssvar	{font-weight} [--flow-dropdown-trigger-font-weight=var(--flow-input-font-weight, 400)]
+ * @cssvar	{line-height} [--flow-dropdown-trigger-line-height=var(--flow-input-line-height, 1.2)]
+ * @cssvar	{background-color} [--flow-dropdown-trigger-hover-bg=var(--flow-primary-color, #3498DB)]
+ * @cssvar {background-color} [--flow-dropdown-trigger-bg=var(--flow-primary-color, #3498DB)]
+ * @cssvar {color}[--flow-dropdown-trigger-color=#FFF]
+ * @cssvar {box-shadow} [--flow-box-shadow]
+ * @cssvar	{color} [--flow-dropdown-trigger-hover-color=#FFF]
+ * @cssvar	{background-color} [--flow-dropdown-bg=var(--flow-background-color, #FFF)]
+ * @cssvar	{color} [--flow-dropdown-color=var(--flow-color, #000)]
+ * @cssvar	{min-width} [--flow-dropdown-content-min-width=160px]
+ * @cssvar	{box-shadow} [--flow-box-shadow]
+ * @cssvar	{top} [--flow-dropdown-top=0px]
+ * @cssvar	{padding} [--flow-dropdown-content-padding=5px]
+ * @cssvar	{border} [--flow-dropdown-border=none]
+ * @cssvar {padding} [--flow-dropdown-trigger-padding=21px 20px 20px]
+ * @cssvar {min-width} [--flow-dropdown-trigger-width=80px]
  * 
  * @example
  * <flow-dropdown>

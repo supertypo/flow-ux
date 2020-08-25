@@ -13,6 +13,16 @@ import {BaseElement, html, css} from './base-element.js';
  * @cssvar {background-color} [--flow-checkbox-bg=var(--flow-input-bg, inherit))]
  * @cssvar {background|border-color} [--flow-checkbox-checked-color=var(--flow-border-color, var(--flow-primary-color, #3f51b5))]
  * @cssvar {background-color} [--flow-checkbox-bg=var(--flow-input-bg, inherit)]
+ * @cssvar {width} [--flow-checkbox-outer-width=24px]
+ * @cssvar {height} [--flow-checkbox-outer-height=24px]
+ * @cssvar {margin} [--flow-checkbox-outer-margin=0px 10px 0px 0px]
+ * @cssvar {border} [--flow-checkbox-outer-border=2px solid rgba(0,0,0,.54)]
+ * @cssvar {border-color} [--flow-checkbox-color=var(--flow-border-color, rgba(0,0,0,.54))]
+ * @cssvar {background-color} [--flow-checkbox-bg=var(--flow-input-bg, inherit)]
+ * @cssvar {height} [--flow-checkbox-outline-height=100%]
+ * @cssvar {width} [--flow-checkbox-outline-width=100%]
+ * @cssvar {border-color} [--flow-checkbox-checked-color=var(--flow-border-color, var(--flow-primary-color, #3f51b5))]
+ * @cssvar {background-color} [--flow-checkbox-checked-bg=var(--flow-input-bg, inherit)]		 
  *  
  */
 export class FlowCheckbox extends BaseElement {

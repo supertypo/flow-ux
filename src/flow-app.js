@@ -4,7 +4,49 @@ import {FlowSocketIONATS} from './flow-socketio-nats.js';
 
 import {BaseElement, ScrollbarStyle, html, css} from './base-element.js';
 
-
+/**
+* @class FlowApp
+* @extends BaseElement
+* @example <flow-app></flow-app>
+* 
+* @property {String} ["menu-icon"] 
+* @property {Boolean} [floating-drawer]
+* @property {Boolean} [open-drawer]
+* @cssvar {font-family} [--flow-btn-font-family=var(--flow-font-family, initial)]
+* @cssvar {width} [--flow-app-width=100vw]
+* @cssvar {height} [--flow-app-height=100vh]
+* @cssvar {align-items} [--flow-app-header-align-items=center]
+* @cssvar {height} [--flow-app-header-height=60px]
+* @cssvar {background-color} [--flow-app-header-bg=#161926]
+* @cssvar {color} {--flow-app-header-color=#91aec1]
+* @cssvar {padding} [--flow-app-header-padding=0px 100px]
+* @cssvar {padding} [--flow-app-header-link-padding=0px 0px 0px 16px]
+* @cssvar {color} [--flow-app-header-color=#91aec1]
+* @cssvar {background-color} [--flow-app-drawer-bg=var(--flow-background-color, inherit)]
+* @cssvar {color} [--flow-app-drawer-color=var(--flow-color, inherit)]
+* @cssvar {width} [--flow-app-drawer-width=300px]
+* @cssvar {overflow} [--flow-app-drawer-overflow=initial]
+* @cssvar {transition} [--flow-app-drawer-transition=left 0.5s ease]
+* @cssvar {z-index} [--flow-app-drawer-z-index=10001]
+* @cssvar {left} [--flow-app-drawer-hidden-left=-500px]
+* @cssvar {transition} [--flow-app-drawer-transition=right 0.5s ease]
+* @cssvar {right} [--flow-app-drawer-hidden-right=-500px]
+* @cssvar {overflow} [--flow-app-main-overflow=auto]
+* @cssvar {position} [--flow-app-main-position=initial]
+* @cssvar {display} [--flow-app-main-display=initial]
+* @cssvar {align-items} (--flow-app-main-align-items=stretch]
+* @cssvar {justify-content} [--flow-app-main-align-justify-content=space-between);
+* @cssvar {height} [--flow-app-header-height=60px]
+* @cssvar {padding} --flow-app-header-padding=0px 100px]
+* @cssvar {z-index} --flow-app-body-mask-z-index=10000]
+* @cssvar {background-color} [--flow-app-body-mask-bg=initial]
+* @cssvar {padding} [--flow-app-header-sm-padding=0px 15px]
+*/
+	// {--fa-icon-color} [--flow-app-drawer-close-icon-color=var(--flow-color)]
+	// {--fa-icon-color} [--flow-app-menu-icon-color=var(--flow-color)]		
+	// {--flow-dropdown-trigger-bg} [--flow-app-header-bg=#161926]
+	// {--flow-dropdown-trigger-color} [--flow-app-header-color=#91aec1]
+	// {--flow-dropdown-trigger-hover-color} [--flow-app-header-color=#91aec1]
 export const FlowAppMixin = (baseClass)=>{
 	class base extends baseClass{
 		constructor(...args) {
