@@ -296,6 +296,8 @@ export class FlowMarkdown extends BaseElement {
 	    	*/
         }
 
+        text = text.replace(/<!---->/g, '');
+
         const tokens = window.marked.lexer(text);
         this.log("tokens", tokens);
 
