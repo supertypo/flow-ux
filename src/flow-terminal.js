@@ -611,8 +611,8 @@ export class FlowTerminal extends BaseElement {
 				this.term.write('\b');
 		}
 	}
-	write(text){
-		this.writeln(text)
+	write(...args){
+		this.writeln(...args)
 	}
 	updateTerminalSize() {
 		let term = this.term;
