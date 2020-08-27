@@ -1,6 +1,6 @@
 {
   "name": "@aspectron/flow-ux",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "User Interface Framework",
   "main": "flow-ux.js",
   "repository": {
@@ -35,6 +35,9 @@
     "README.md",
     "LICENSE",
     ".jsdoc.js",
-    "resources"
-  ]
+    "resources",
+    "cssvar.js",
+    "category.js"
+  ],
+  "readme": "AXY"
 }
