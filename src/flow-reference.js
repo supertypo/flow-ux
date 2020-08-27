@@ -18,7 +18,8 @@ export class FlowReference extends BaseElement {
 			for : { type : String },
             type : { type : String },
             icon : {type : String},
-            visible : { type : Boolean }
+            visible : { type : Boolean },
+            'right-align-tooltip':{type:Boolean}
 		}
 	}
 
@@ -27,34 +28,6 @@ export class FlowReference extends BaseElement {
 			:host {
 		
             }
-            
-            .tooltip {
-				position: relative; z-index:100000;
-			}
-			
-			.tooltip .tooltiptext {
-				visibility: hidden;
-				display:flex;flex-direction:column;
-				width:200px;
-				font-size: 0.9rem;
-				font-weight:normal;
-				background-color: black;
-				color: #fff;
-				text-align: left;
-				padding: 10px ;
-				border-radius: 5px;
-				position: absolute;
-				z-index:100000;
-				top:100%;
-				left:1%;
-			}
-			
-			.tooltip:hover .tooltiptext {
-				visibility: visible;
-			}
-			
-			.link-tooltip {color:#07b9b9;text-decoration:none;font-weight:bold;}
-		
 			.icon-box{
 				display:inline-block;
 				width:20px;
@@ -71,33 +44,99 @@ export class FlowReference extends BaseElement {
 				/*margin-left: 8px;*/
 				/*fill:var(--flow-primary-color, rgba(0,151,115,1.0));*/
 				fill: #666;
-			}			
+			}
+			.tooltip-content{display:none}			
 		`;
 	}
-
 	constructor() {
         super();
     }
 
-  
-
 	render() {
-
 		let iconSrc = "";
 		if(this.icon != "-")
 			iconSrc = this.iconPath(this.icon || "fal:info-circle");
 		// const iconSrc = this.iconPath(this.icon || "info-circle");
 
 		return html`
-		
 			<slot></slot>
-			<span class="tooltip">
+			<span class="tooltip" @mouseenter="${this.onTooltipMouseEnter}">
 				<div class="icon-box"><svg><use href="${iconSrc}"></use></svg></div>
-				<slot name="tooltip" class="tooltiptext"></slot>
-			</span>	
-			
+				<slot class="tooltip-content" name="tooltip"></slot>
+			</span>
 		`;
+	}
 
+	firstUpdated(){
+		super.firstUpdated();
+		this.tooltipEl = this.renderRoot.querySelector(".tooltip");
+		this.tooltipTextEl = document.createElement("div");
+		this.tooltipTextEl.classList.add("flow-tooltip-text")
+		this.tooltipSlot = this.renderRoot.querySelector(".tooltip-content");
+		this.tooltipSlot.addEventListener('slotchange', e=>{
+			this.updateTooltipContent();
+		});
+		document.body.append(this.tooltipTextEl);
+		this.updateTooltipContent();
+
+		this.tooltipTextEl.addEventListener("mouseenter", ()=>{
+			this.mouseInTooltipContent = true;
+		})
+
+		this.tooltipTextEl.addEventListener("mouseleave", ()=>{
+			this.mouseInTooltipContent = false;
+			this.tooltipTextEl.classList.remove("active")
+			if(this.timeoutId){
+				clearTimeout(this.timeoutId)
+				delete this.timeoutId;
+			}
+		})
+	}
+
+	updateTooltipContent(){
+		let nodes = this.tooltipSlot.assignedNodes();
+		this.tooltipTextEl.innerHTML = "";
+		nodes.forEach(n=>{
+			this.tooltipTextEl.append(n.cloneNode(true));
+		})
+	}
+
+	onTooltipMouseEnter(e){
+		let box = this.tooltipEl.getBoundingClientRect();
+		//console.log("box", box)
+		let cX = box.left + box.width/2;
+		let cY = box.top + box.height/2;
+		let winWidth = window.innerWidth;
+		let winHWidth = winWidth/2;
+		let winHeight = window.innerHeight;
+		let winHHeight = winHeight/2;
+
+		let style = this.tooltipTextEl.style;
+		if(this['top-align-tooltip'] || cY > winHHeight){
+			style.top = 'initial';
+			style.bottom = (winHeight-box.top)+"px";
+		}else{
+			style.bottom = 'initial';
+			style.top = box.bottom+"px";
+		}
+		
+		if(this['right-align-tooltip'] || cX > winHWidth){
+			style.left = 'initial';
+			style.right = (winWidth - box.right)+"px";
+		}else{
+			style.right = 'initial';
+			style.left = box.left+"px";
+		}
+
+		this.tooltipTextEl.classList.add("active")
+		this.checkAndCloseTooltipIfAway();
+	}
+	checkAndCloseTooltipIfAway(e){
+		this.timeoutId = setTimeout(()=>{
+			if(this.mouseInTooltipContent)
+				return this.checkAndCloseTooltipIfAway();
+			this.tooltipTextEl.classList.remove("active")
+		}, 1000)
 	}
 }
 

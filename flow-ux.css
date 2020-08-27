@@ -67,6 +67,9 @@ body{
     --flow-terminal-selection:rgba(0, 0, 0, 0.2);
     /* --flow-input-box-shadow:20px 20px 60px #489dcf, -20px -20px 60px #62d5ff; */
     --flow-markdown-icon: url(resources/icons/svg/link.svg);
+
+    --flow-tooltip-text-bg:#DDD;
+    --flow-tooltip-text-color:var(--flow-color);
 }
 
 body.flow-theme-dark{
@@ -106,6 +109,9 @@ body.flow-theme-dark{
     --flow-app-header-bg:#191818;
 
     --flow-input-box-shadow: 0px 1px 4px #50aee4, 0px -1px 4px #5ac4ff;
+
+    --flow-tooltip-text-bg:#423f3f;
+    --flow-tooltip-text-color:var(--flow-color);
 }
 
 .hide{display:none;}
@@ -192,6 +198,28 @@ flow-doc-boxes{display:flex;flex-wrap:wrap;}
 flow-doc-boxes>flow-doc{margin:10px;min-width:20%;flex:1;width:300px}
 flow-markdown textarea{display:none}
 
+.flow-tooltip-text{
+    display:none;
+    flex-direction:column;
+    width:var(--flow-tooltip-text-width, 200px);
+    font-size:var(--flow-tooltip-text-font-size, 0.9rem);
+    font-weight:normal;
+    background-color:var(--flow-tooltip-text-bg);
+    color: var(--flow-tooltip-text-color);
+    text-align: left;
+    padding: 10px ;
+    border-radius: 5px;
+    position:fixed;
+    z-index:100000;
+}
+.flow-tooltip-text.active{display:inline-block;}
+
+.flow-tooltip-text .link,
+.flow-tooltip-text .link-tooltip{
+    color:var(--flow-link-color, #07b9b9);
+    font-weight:var(--flow-link-font-weight, bold);
+    text-decoration:none;
+}
 
 /* a {
 
