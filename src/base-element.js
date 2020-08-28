@@ -90,6 +90,15 @@ export class BaseElement extends LitElement{
 		this.__cname = name.toLowerCase().replace("flow", "");
 		this._initLog();
 	}
+
+	initPropertiesDefaultValues(props=null){
+		props = props || this.constructor.properties;
+		Object.keys(props).forEach(name=>{
+			if(typeof props[name].value != 'undefined')
+				this[name] = props[name].value
+		})
+	}
+
 	_initLog(forceLog = false){
 		let {localStorage:lS} = window;
 		let {debug} = lS||{};
