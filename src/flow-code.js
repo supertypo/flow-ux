@@ -127,7 +127,7 @@ export class FlowCode extends BaseElement {
 		let code = PR.prettyPrintOne(this.htmlEscape(this.innerHTML_))
 		if (this.code != code) {
 			this.code = code;
-			console.log("updating....")
+			//console.log("updating....")
 			//this.update()
 			pre.innerHTML = code;
 		}

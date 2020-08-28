@@ -30,12 +30,12 @@ export const markerdRenderer = {
     },
     
     code(text, info, escaped) {
-        console.log('code:',text);
+        //console.log('code:',text);
         return `<flow-code lang="${info}"><textarea>${text.replace(/\t/g,'    ')}</textarea></flow-code>`;
     },
 
     html(text) {
-        console.log('html:',text);
+        //console.log('html:',text);
         return escapeHtml(text);
     },
 
