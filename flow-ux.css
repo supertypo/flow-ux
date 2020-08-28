@@ -70,6 +70,7 @@ body{
 
     --flow-tooltip-text-bg:#DDD;
     --flow-tooltip-text-color:var(--flow-color);
+    --flow-range-slider-thumb-background:var(--flow-primary-color);
 }
 
 body.flow-theme-dark{
@@ -112,6 +113,7 @@ body.flow-theme-dark{
 
     --flow-tooltip-text-bg:#423f3f;
     --flow-tooltip-text-color:var(--flow-color);
+    --flow-range-slider-thumb-container-bg:var(--flow-input-bg);
 }
 
 .hide{display:none;}
