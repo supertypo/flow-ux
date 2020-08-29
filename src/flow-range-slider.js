@@ -13,7 +13,8 @@ class FlowRangeSlider extends BaseElement{
 			lTickSize:{type:Number, value:12},
 			mTickSize:{type:Number, value:5},
 			sTickSize:{type:Number, value:3},
-			noSTicks:{type:Boolean}
+			noSTicks:{type:Boolean},
+			minWinSize:{type:Number}
 		}
 	}
 	static get styles(){
@@ -41,13 +42,9 @@ class FlowRangeSlider extends BaseElement{
 				position:absolute;top:0px;left:0px;bottom:0px;
 				background:var(--flow-range-slider-mask-bg, rgba(150,150,150,0.5))
 			}
-			.mask.end{
-				right:0px;
-			}
+			.mask.end{right:0px;}
 			.thumb:not([disabled]){cursor:ew-resize;}
-			.thumb.end{
-				left:100px;
-			}
+			.thumb.end{left:100px;}
 			.thumb-container{cursor:grab}
 			.thumb-container[dragging]:not([disabled]){cursor:grabbing}
 			.ticks{font-size:0.5rem}
@@ -66,7 +63,7 @@ class FlowRangeSlider extends BaseElement{
 	}
 	render(){
 		let {startX=0, endX=0} = this;
-		this.log("startX", this.id, startX, this.startX)
+		//this.log("startX", this.id, startX, this.startX)
 		return html
 		`<div class="thumb-container" ?dragging="${this.windowDragInfo}"
 			@mousedown="${this.onMouseDown}">
@@ -98,6 +95,7 @@ class FlowRangeSlider extends BaseElement{
 		this.largeTicks = [];
 		this.smallTicks = [];
 		this.tickTexts = [];
+		this.minWinSizeX = 20;
 		this.tickFormat = (s)=>{
 			let h   = Math.floor(s / 3600);
 		    let m = Math.floor((s - (h * 3600)) / 60);
@@ -152,8 +150,12 @@ class FlowRangeSlider extends BaseElement{
 			this.end = end;
 			this.startX = this.value2px(start);
 			this.endX = this.value2px(end);
-			this.log("start:updated", this.id, this.startX, this.endX)
+			//this.log("start:updated", this.id, this.startX, this.endX)
 			this.requestUpdate('startX')
+		}
+
+		if(changes.has('minWinSize')){
+			this.minWinSizeX = Math.max(this.minWinSize?this.value2px(this.minWinSize):0, 20);
 		}
 
 		//this.log("changes", changes)
@@ -172,38 +174,13 @@ class FlowRangeSlider extends BaseElement{
 
 	createThumbBox(thumb){
 		let pBox = this.thumbContainerBox;
-		let {left,top,right,bottom,width,height} = this[thumb+'El'].getBoundingClientRect();
-		left = this[thumb+'X'];
-		top = 0;//top-pBox.top;
+		let {top,bottom,width,height} = this[thumb+'El'].getBoundingClientRect();
+		let left = this[thumb+'X'];
 		return {
-			_left:left,
-			_top:top,
-			width, height, thumb,
-			maskEl:this[thumb+'MaskEl'],
-			maskProp:thumb=='start'?'width':'left',
-			get left(){
-				return this._left
-			},
-			get top(){
-				return this._top
-			},
-			set left(value){
-				this._left = value;
-				//this.log("XXXXX 1", thumb, this.left)
-				this.updateMask();
-			},
-			set top(value){
-				this._top = value;
-			},
+			left, top,
+			width, height, thumb, bottom,
 			get right(){
 				return this.left+this.width
-			},
-			get bottom(){
-				return this.top+this.height
-			},
-			updateMask(){
-				//this.log("XXXXX 2", thumb, this.left)
-				//this.maskEl.style[this.maskProp] = this.left+"px";
 			}
 		}
 	}
@@ -268,9 +245,7 @@ class FlowRangeSlider extends BaseElement{
 	createElementBoxes(){
 		this.thumbContainerBox = this.thumbContainer.getBoundingClientRect();
 		this.startThumbBox = this.createThumbBox('start');
-		this.startThumbBox.updateMask();
 		this.endThumbBox = this.createThumbBox('end');
-		this.endThumbBox.updateMask();
 	}
 	onResize(){
 		this.createElementBoxes();
@@ -291,12 +266,11 @@ class FlowRangeSlider extends BaseElement{
 		//if(focusPointX)
 
 		let box = Object.assign({}, this[thumb+'ThumbBox']);
-		let margin = 0;
 		if(thumb == 'start'){
 			box.minLeft = 0;
-			box.maxLeft = this.endX-margin;
+			box.maxLeft = this.endX-this.minWinSizeX;
 		}else{
-			box.minLeft = this.startX+box.width+margin;
+			box.minLeft = this.startX+this.minWinSizeX;
 			box.maxLeft = pBox.width;
 		}
 		return box;
@@ -366,12 +340,17 @@ class FlowRangeSlider extends BaseElement{
 		this.setStartEndDelta(delta, -delta, focusPointX)
 	}
 
-	setStartEndDelta(start=0, end=0, focusPointX=null){
+	setStartEndDelta(startD=0, endD=0, focusPointX=null){
 		//this.log("delta", delta)
+		let start = this.startX+startD;
+		let end = this.endX+endD
+		if( end - start < this.minWinSizeX )
+			return
+		//this.log("end - start", end - start, this.minWinSizeX)
 		let startThumbInfo = this.getThumbInfo("start", focusPointX);
-		this.setThumbLeft(this.startX+start, startThumbInfo);
 		let endThumbInfo = this.getThumbInfo("end", focusPointX);
-		this.setThumbLeft(this.endX+end, endThumbInfo);
+		this.setThumbLeft(end, endThumbInfo);
+		this.setThumbLeft(start, startThumbInfo);
 	}
 
 	setWindowXDelta(delta = 0){
