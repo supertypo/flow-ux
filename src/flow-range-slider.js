@@ -1,5 +1,4 @@
-import {BaseElement, html, css, svg, dpc} from './base-element.js';
-
+import {BaseElement, html, css, svg} from './base-element.js';
 
 class FlowRangeSlider extends BaseElement{
 	static get properties(){
@@ -26,7 +25,7 @@ class FlowRangeSlider extends BaseElement{
 			.thumb-container{
 				background:var(--flow-range-slider-thumb-container-bg, rgba(200,200,200,0.5));
 				font-size:0px;
-				height:var(--flow-range-slider-thumb-container-height, 50px);
+				height:var(--flow-range-slider-thumb-container-height, var(--flow-range-slider-height, 50px));
 				width:100%;overflow:hidden;
 			}
 			.thumb{
@@ -35,7 +34,7 @@ class FlowRangeSlider extends BaseElement{
 				height:var(--flow-range-slider-thumb-height, 20px);
 				background:var(--flow-range-slider-thumb-background, #DDD);
 				border:0px solid #FFF;box-sizing:border-box;
-				top:0px;left:0px;position:absolute;
+				top:5px;left:0px;position:absolute;
 				transform:translateX(-50%)
 			}
 			.mask{
@@ -100,9 +99,15 @@ class FlowRangeSlider extends BaseElement{
 			let h   = Math.floor(s / 3600);
 		    let m = Math.floor((s - (h * 3600)) / 60);
 		    s = s - (h * 3600) - (m * 60);
+		    let c = this.tickTextPadCleanUp;
 
-			return `${h?h+"h":''}${m?m+"m":''}${s?s+"s":''}`;
+			return `${c(h, "h")}${c(m, "m")}${c(s, "s")}`;
 		}
+	}
+
+	tickTextPadCleanUp(str, suffix, pre=2){
+		let v = str.toFixed(pre).replace(".00", "");
+		return (v&&v!="0")?v+suffix:'';
 	}
 
 	firstUpdated(){
@@ -249,6 +254,8 @@ class FlowRangeSlider extends BaseElement{
 	}
 	onResize(){
 		this.createElementBoxes();
+		this.buildTicks();
+		this.requestUpdate('calc');
 	}
 	setActiveThumb(info){
 		this.activeThumb = info;
@@ -381,10 +388,22 @@ class FlowRangeSlider extends BaseElement{
 			left = maxLeft;
 		else if(left<minLeft)
 			left = minLeft;
-		this[thumb] = this.px2value(left);
-		//this.log("left2", {left, minLeft, maxLeft})
-		//this[thumb+'ThumbBox'].left = left;
-		//this[thumb+'El'].style.left = left+"px";
+		let value = this.px2value(left);
+		if(thumb == 'start')
+			this.setStart(value)
+		else
+			this.setEnd(value)
+	}
+
+	setStart(start){
+		this.start = start;
+		this.fire("start-change", {start});
+		this.fire("change", {start:this.start, end:this.end})
+	}
+	setEnd(end){
+		this.end = end;
+		this.fire("end-change", {end});
+		this.fire("change", {start:this.start, end:this.end})
 	}
 
 	connectedCallback(){
