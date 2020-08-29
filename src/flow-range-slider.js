@@ -65,9 +65,10 @@ class FlowRangeSlider extends BaseElement{
 		`;
 	}
 	render(){
+		let {startX=0, endX=0} = this;
+		this.log("startX", this.id, startX, this.startX)
 		return html
 		`<div class="thumb-container" ?dragging="${this.windowDragInfo}"
-			@wheel="${this.onThumbWheel}"
 			@mousedown="${this.onMouseDown}">
 			<div class="ticks">
 			<svg width="100%" height="50">
@@ -82,11 +83,11 @@ class FlowRangeSlider extends BaseElement{
 			}
 			</svg>
 			</div>
-			<div class="mask start"></div>
-			<div class="mask end"></div>
-			<a class="thumb start" data-thumb="start" 
+			<div class="mask start" style="width:${startX+'px'}"></div>
+			<div class="mask end" style="left:${endX+'px'}"></div>
+			<a class="thumb start" data-thumb="start" style="left:${startX+'px'}" 
 				@mousedown="${this.onThumbMouseDown}"></a>
-			<a class="thumb end" data-thumb="end"
+			<a class="thumb end" data-thumb="end" style="left:${endX+'px'}"
 				@mousedown="${this.onThumbMouseDown}"></a>
 		</div>`
 	}
@@ -113,47 +114,71 @@ class FlowRangeSlider extends BaseElement{
 		this.endEl = this.renderRoot.querySelector(".thumb.end");
 		this.startMaskEl = this.renderRoot.querySelector(".mask.start");
 		this.endMaskEl = this.renderRoot.querySelector(".mask.end");
-		let {start, end, valueDomain:domain} = this;
-		if(start > end){
-			let _end = end;
-			end = start;
-			start = _end;
-		}
+		this.thumbContainer.addEventListener('wheel', (e)=>{
+			this.onThumbWheel(e)
+		});//, {passive:true})
 
-		if(start < domain[0] || start > domain[1])
-			start = 0;
-		if(end < domain[0] || end > domain[1])
-			end = domain[1];
-
-
-		let startLeft = this.value2px(start);
-		let endLeft = this.value2px(end);
-		console.log("startLeft", startLeft)
+		/*
+		let startX = this.value2px(this.start);
+		let endX = this.value2px(this.end);
+		this.log("start:startX",{ 
+			start:this.start,
+			startX,
+			boxWidth: this.thumbContainerBox.width,
+			domainRange: this.valueDomain[1] - this.valueDomain[0]
+		})
+		*/
 		this.createElementBoxes();
 		this.buildTicks();
-		this.setThumbLeft(startLeft, this.getThumbInfo('start'));
-		this.setThumbLeft(endLeft, this.getThumbInfo('end'))
+		this.requestUpdate('calc');
+	}
 
+	updated(changes){
+		if(changes.has('start') || changes.has('end') || changes.has('valueDomain') ||
+			changes.has('calc') ){
+			let {start, end, valueDomain:domain} = this;
+			if(start > end){
+				let _end = end;
+				end = start;
+				start = _end;
+			}
+
+			if(start < domain[0] || start > domain[1])
+				start = 0;
+			if(end < domain[0] || end > domain[1])
+				end = domain[1];
+
+			this.start = start;
+			this.end = end;
+			this.startX = this.value2px(start);
+			this.endX = this.value2px(end);
+			this.log("start:updated", this.id, this.startX, this.endX)
+			this.requestUpdate('startX')
+		}
+
+		//this.log("changes", changes)
+
+		super.updated(changes);
 	}
 
 	value2px(value){
 		let domain = this.valueDomain[1] - this.valueDomain[0];
-		return (this.thumbContainerBox.width/domain) * value;
+		return (this.thumbContainerBox.width/domain) * (value - this.valueDomain[0])
 	}
 	px2value(px){
 		let domain = this.valueDomain[1] - this.valueDomain[0];
-		return (domain/this.thumbContainerBox.width)*px;
+		return (domain/this.thumbContainerBox.width)*px + this.valueDomain[0];
 	}
 
 	createThumbBox(thumb){
 		let pBox = this.thumbContainerBox;
 		let {left,top,right,bottom,width,height} = this[thumb+'El'].getBoundingClientRect();
-		left = left-pBox.left + width/2
+		left = this[thumb+'X'];
 		top = 0;//top-pBox.top;
 		return {
 			_left:left,
 			_top:top,
-			width, height, thumb, hWidth:width/2,
+			width, height, thumb,
 			maskEl:this[thumb+'MaskEl'],
 			maskProp:thumb=='start'?'width':'left',
 			get left(){
@@ -176,15 +201,9 @@ class FlowRangeSlider extends BaseElement{
 			get bottom(){
 				return this.top+this.height
 			},
-			get cX(){
-				return this.left+this.width/2;
-			},
-			get cY(){
-				return this.top+this.height/2;
-			},
 			updateMask(){
 				//this.log("XXXXX 2", thumb, this.left)
-				this.maskEl.style[this.maskProp] = this.left+"px";
+				//this.maskEl.style[this.maskProp] = this.left+"px";
 			}
 		}
 	}
@@ -272,12 +291,12 @@ class FlowRangeSlider extends BaseElement{
 		//if(focusPointX)
 
 		let box = Object.assign({}, this[thumb+'ThumbBox']);
-		let margin = 5;
+		let margin = 0;
 		if(thumb == 'start'){
 			box.minLeft = 0;
-			box.maxLeft = this.endThumbBox.left-box.width-margin;
+			box.maxLeft = this.endX-margin;
 		}else{
-			box.minLeft = this.startThumbBox.right+margin;
+			box.minLeft = this.startX+box.width+margin;
 			box.maxLeft = pBox.width;
 		}
 		return box;
@@ -299,8 +318,7 @@ class FlowRangeSlider extends BaseElement{
 			return
 		let pBox = this.thumbContainerBox;
 		let thumbInfo = this.activeThumb;
-		let x = e.pageX-pBox.left;
-		let left = x-thumbInfo.width/2;
+		let left = e.pageX-pBox.left;
 		this.setThumbLeft(left);
 	}
 	onMouseMove(e){
@@ -351,9 +369,9 @@ class FlowRangeSlider extends BaseElement{
 	setStartEndDelta(start=0, end=0, focusPointX=null){
 		//this.log("delta", delta)
 		let startThumbInfo = this.getThumbInfo("start", focusPointX);
-		this.setThumbLeft(startThumbInfo.left+start, startThumbInfo);
+		this.setThumbLeft(this.startX+start, startThumbInfo);
 		let endThumbInfo = this.getThumbInfo("end", focusPointX);
-		this.setThumbLeft(endThumbInfo.left+end, endThumbInfo);
+		this.setThumbLeft(this.endX+end, endThumbInfo);
 	}
 
 	setWindowXDelta(delta = 0){
@@ -363,15 +381,15 @@ class FlowRangeSlider extends BaseElement{
 		let startThumbInfo = this.getThumbInfo("start");
 		let endThumbInfo = this.getThumbInfo("end");
 		if(delta>0){
-			if(endThumbInfo.left+delta > endThumbInfo.maxLeft)
+			if(this.endX+delta > endThumbInfo.maxLeft)
 				return
 		}else{
-			if(startThumbInfo.left+delta < startThumbInfo.minLeft)
+			if(this.startX+delta < startThumbInfo.minLeft)
 				return
 		}
 
-		this.setThumbLeft(startThumbInfo.left+delta, startThumbInfo);
-		this.setThumbLeft(endThumbInfo.left+delta, endThumbInfo);
+		this.setThumbLeft(this.startX+delta, startThumbInfo);
+		this.setThumbLeft(this.endX+delta, endThumbInfo);
 	}
 
 	setThumbLeft(left, thumbInfo){
@@ -384,9 +402,10 @@ class FlowRangeSlider extends BaseElement{
 			left = maxLeft;
 		else if(left<minLeft)
 			left = minLeft;
+		this[thumb] = this.px2value(left);
 		//this.log("left2", {left, minLeft, maxLeft})
-		this[thumb+'ThumbBox'].left = left;
-		this[thumb+'El'].style.left = left+"px";
+		//this[thumb+'ThumbBox'].left = left;
+		//this[thumb+'El'].style.left = left+"px";
 	}
 
 	connectedCallback(){
