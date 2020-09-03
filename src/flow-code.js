@@ -85,15 +85,19 @@ export class FlowCode extends BaseElement {
 					count++;
 					c = line2[i++];
 				}
-				let regExp = `^[\t]{1,${count}}`;
-				regExp = new RegExp(regExp)
-				v = v.map(v => {
-					//console.log("v1", v)
-					// why was this here? this [\t ]* is breaking code...
-					v = v.replace(regExp, "")
-					console.log("v2", v)
-					return v;
-				}).join("\n");
+				if(count>0){
+					let regExp = `^[\t]{1,${count}}`;
+					regExp = new RegExp(regExp)
+					v = v.map(v => {
+						//console.log("v1", v)
+						// why was this here? this [\t ]* is breaking code...
+						v = v.replace(regExp, "")
+						console.log("v2", v)
+						return v;
+					}).join("\n");
+				}else{
+					v = v.join("\n");
+				}
 			}
 			this.innerHTML_ = v;
 		}
