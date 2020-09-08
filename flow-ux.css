@@ -71,6 +71,7 @@ body{
     --flow-tooltip-text-bg:#DDD;
     --flow-tooltip-text-color:var(--flow-color);
     --flow-range-slider-thumb-background:var(--flow-primary-color);
+    --fa-icon-color:var(--flow-color, #000);
 }
 
 body.flow-theme-dark{
@@ -84,6 +85,7 @@ body.flow-theme-dark{
     --flow-background-color: #232323;
     color: #b1b1b1;
     --flow-color: #b1b1b1;
+    --fa-icon-color:var(--flow-color);
     /*--flow-primary-color: #b1b1b1;*/
     --flow-primary-color:  #0382a8;
     --flow-primary-invert-color: #FFF;

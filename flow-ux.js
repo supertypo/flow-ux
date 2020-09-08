@@ -51,4 +51,5 @@ export * from './src/flow-clock-widget.js';
 export * from './src/flow-theme-select.js';
 export * from './src/flow-dropzone-field.js';
 export * from './src/flow-markdown.js';
+export * from './src/flow-toolbar.js';
 
