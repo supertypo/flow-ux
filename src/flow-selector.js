@@ -64,6 +64,16 @@ class FlowSelector extends FlowSelect{
         }).filter(item=>!!item)
     }
 
+    get selectedNodes(){
+        let map = new Map();
+        this.list.forEach(item=>{
+            map.set(item.getAttribute(this.valueAttr), item)
+        })
+        return this._selected.map(value=>{
+            return map.get(value)
+        }).filter(item=>!!item)
+    }
+
     mergeNobeProperties(clone, org){
         let props = [];
         if(this.mergeProps){
