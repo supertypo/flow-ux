@@ -133,30 +133,13 @@ class FlowRangeSlider extends BaseElement{
 		*/
 		this.createElementBoxes();
 		this.buildTicks();
-		this.requestUpdate('calc');
+		this.calculateStartEnd();
 	}
 
 	updated(changes){
 		if(changes.has('start') || changes.has('end') || changes.has('valueDomain') ||
 			changes.has('calc') ){
-			let {start, end, valueDomain:domain} = this;
-			if(start > end){
-				let _end = end;
-				end = start;
-				start = _end;
-			}
-
-			if(start < domain[0] || start > domain[1])
-				start = 0;
-			if(end < domain[0] || end > domain[1])
-				end = domain[1];
-
-			this.start = start;
-			this.end = end;
-			this.startX = this.value2px(start);
-			this.endX = this.value2px(end);
-			//this.log("start:updated", this.id, this.startX, this.endX)
-			this.requestUpdate('startX')
+			this.calculateStartEnd();
 		}
 
 		if(changes.has('minWinSize')){
@@ -166,6 +149,27 @@ class FlowRangeSlider extends BaseElement{
 		//this.log("changes", changes)
 
 		super.updated(changes);
+	}
+
+	calculateStartEnd(){
+		let {start, end, valueDomain:domain} = this;
+		if(start > end){
+			let _end = end;
+			end = start;
+			start = _end;
+		}
+
+		if(start < domain[0] || start > domain[1])
+			start = 0;
+		if(end < domain[0] || end > domain[1])
+			end = domain[1];
+
+		this.start = start;
+		this.end = end;
+		this.startX = this.value2px(start);
+		this.endX = this.value2px(end);
+		this.log("start:updated", this.id, this.startX, this.endX)
+		this.requestUpdate('startX')
 	}
 
 	value2px(value){
@@ -195,7 +199,7 @@ class FlowRangeSlider extends BaseElement{
 	buildSmallTicks(x){
 		let i = 0;
 		let ticks = [];
-		let s = Math.max(Math.floor(this.largeTickSpacing/10), 0);
+		let s = Math.max(Math.floor(this._largeTickSpacing/10), 0);
 		while(i++<9){
 			ticks.push(this.buildTickMark(x + s*i, i==5?this.mTickSize:this.sTickSize))
 		}
@@ -204,12 +208,18 @@ class FlowRangeSlider extends BaseElement{
 	}
 	buildTicks(){
 		let {width} = this.thumbContainerBox;
+		let {valueDomain} = this;
+
+		let scale = d3.scaleLinear().domain([0, 33]).range([0, width]).nice()
+		this.log("scalescale", scale.ticks())
+
 		let lTickS = this.largeTickSpacing;
+		this._largeTickSpacing = lTickS;
 		let largeTickCount = Math.max(Math.floor(width/lTickS)-1, 0);
 		if( (largeTickCount+1)*lTickS != width ){
 			//console.log("xxxxx", width, (largeTickCount+1)*lTickS)
 			lTickS = width/(largeTickCount+1);
-			this.largeTickSpacing = lTickS;
+			this._largeTickSpacing = lTickS;
 		}
 		let largeTicks = [];
 		let smallTicks = [];
@@ -218,7 +228,7 @@ class FlowRangeSlider extends BaseElement{
 		let domainStart = this.valueDomain[0]
 		let domain = this.valueDomain[1] - domainStart;
 		let tickScale = domain/(largeTickCount+1);
-		console.log("largeTickCount", largeTickCount, width)
+		//console.log("largeTickCount", largeTickCount, width)
 		let dx = -2;
 		while(i++ <largeTickCount){
 			lX = lTickS * i;
@@ -255,7 +265,7 @@ class FlowRangeSlider extends BaseElement{
 	onResize(){
 		this.createElementBoxes();
 		this.buildTicks();
-		this.requestUpdate('calc');
+		this.calculateStartEnd();
 	}
 	setActiveThumb(info){
 		this.activeThumb = info;
