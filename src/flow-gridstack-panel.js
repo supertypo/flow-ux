@@ -11,21 +11,31 @@ import {BaseElement, html, css} from './base-element.js';
 export class FlowGridStackPanel extends BaseElement {
 	static get properties() {
 		return {
-			//draggable:{type:String, value:"true", reflect:true}
+			heading:{type:String, value:"Hello"},
+			opened:{type:Boolean, value:false, reflect:true}
 		}
 	}
 
 	static get styles() {
 		return css`
 			:host {
-				display:flex;align-items:center;
-				justify-content:center;
+				display:flex;flex-direction:column;
+				align-items:stretch;
+				justify-content:start;
 				background-color:#1EAAFC;
 				color:#fff;
 				border-radius:4px;
 				border:1px solid #171717;
 				box-sizing:border-box;
-				padding:20px;overflow:auto;
+			}
+			.heading{
+				text-overflow:elipsis;overflow:hidden;
+				padding:var(--flow-gridstack-panel-heading-padding, 5px);
+				background-color:var(--flow-gridstack-panel-heading-bg, var(--flow-primary-color));
+			}
+			.body{overflow:auto;flex:1}
+			:host(:not([opened])) .body{
+				display:none;
 			}
 		`;
 	}
@@ -36,7 +46,24 @@ export class FlowGridStackPanel extends BaseElement {
 	}
 
 	render() {
-		return html`${Math.random()*10000} <slot></slot>`;
+		return html` 
+			<div class="heading" @click="${this.onHeadingClick}">${this.heading}</div>
+			<div class="body">${Math.random()*10000} <slot></slot></div>`;
+	}
+
+	onHeadingClick(){
+		this.opened = !this.opened;
+	}
+
+	getGridstackState(){
+		let {opened, heading} = this;
+		return {opened, heading};
+	}
+	setGridstackState(state){
+		let {heading, opened} = state||{};
+		if(heading)
+			this.heading = heading;
+		this.opened = !!opened;
 	}
 }
 

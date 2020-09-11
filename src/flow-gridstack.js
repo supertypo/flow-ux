@@ -39,7 +39,7 @@ export class FlowGridStack extends BaseElement {
 		this.initPropertiesDefaultValues();
 		this.uid = 'flow-gs-'+(Math.random()*10000).toFixed(0);
 		this.style.display = 'block';
-		this.style.height = '1000px';
+		//this.style.height = '1000px';
 	}
 
 	createRenderRoot(){
@@ -57,11 +57,11 @@ export class FlowGridStack extends BaseElement {
 			<flow-btn @click="${this.loadGrid}">Load</flow-btn>
 		</div>
 		<div class="grid-stack ${uid} hide-w-opacity" style_="height:500px">
-		  <div class="grid-stack-item" data-id="a1" data-gs-x="0" data-gs-y="0" data-gs-width="4" data-gs-height="2">
-		    <flow-gridstack-panel class="grid-stack-item-content">my first widget</flow-gridstack-panel>
+		  <div class="grid-stack-item" data-gs-id="a1" data-gs-x="0" data-gs-y="0" data-gs-width="4" data-gs-height="2">
+		    <flow-gridstack-panel class="grid-stack-item-content" heading="Panel 2">my first widget</flow-gridstack-panel>
 		  </div>
-		  <div class="grid-stack-item" data-id="a2" data-gs-x="4" data-gs-y="0" data-gs-width="4" data-gs-height="1">
-		    <flow-gridstack-panel class="grid-stack-item-content">another widget!</flow-gridstack-panel>
+		  <div class="grid-stack-item" data-gs-id="a2" data-gs-x="4" data-gs-y="0" data-gs-width="4" data-gs-height="1">
+		    <flow-gridstack-panel class="grid-stack-item-content" heading="Test">another widget!</flow-gridstack-panel>
 		  </div>
 		</div>
 		<slot></slot>`;
@@ -73,7 +73,7 @@ export class FlowGridStack extends BaseElement {
 		this.debugEl = this.renderRoot.querySelector(`textarea[data-uid="${uid}"]`);
 		this.styleEl.textContent = `
 			.${uid} .grid-stack{height:500px}
-			.${uid} .grid-stack-item-content{display:block}
+			/*.${uid} .grid-stack-item-content{display:block}*/
 			.${uid}.grid-stack.hide-w-opacity{opacity:0}
 		`
 		let options = {
@@ -90,7 +90,7 @@ export class FlowGridStack extends BaseElement {
 			this.grid.on('added removed change', (e, items)=>{
 				let str = '';
 				items.forEach(o=>{
-					str += `${o.el.dataset.id} => x: ${o.x}, y: ${o.y}, w: ${o.width}, h: ${o.height}\n`;
+					str += `${o.id} => x: ${o.x}, y: ${o.y}, w: ${o.width}, h: ${o.height}\n`;
 				});
 				console.log(`${e.type} ${items.length} items\n${str}` );
 			});
@@ -100,13 +100,22 @@ export class FlowGridStack extends BaseElement {
 	saveGrid(){
 		let data = [];
 		this.grid.engine.nodes.forEach(node=>{
+			let state = null, nodeName = 'div';
+			let el = node.el.querySelector(".grid-stack-item-content");
+			if(el){
+				nodeName = el.nodeName;
+				if(el.getGridstackState)
+					state = el.getGridstackState();
+			}
+
 			data.push({
 				x: node.x,
 				y: node.y,
 				width: node.width,
 				height: node.height,
-				id: node.el.dataset.id,
-				custom: 'save anything here'
+				id: node.id,
+				nodeName,
+				state
 			});
 		});
 		this.debugEl.value = JSON.stringify(data, null, '  ');
@@ -136,10 +145,11 @@ export class FlowGridStack extends BaseElement {
 			console.log("items", items)
 			// else update existing nodes (instead of calling grid.removeAll())
 			items.forEach(item=>{
-				let node = grid.engine.nodes.find(n=>n.el.dataset.id == item.id);
-				console.log("node", node)
+				let node = grid.engine.nodes.find(n=>n.id == item.id);
+				console.log("node", node, item)
 				if(node){
 					grid.update(node.el, item.x, item.y, item.width, item.height);
+					this._updatePanelEl(node.el, item.state);
 				}else{
 					this.addWidget(item)
 				}
@@ -149,8 +159,18 @@ export class FlowGridStack extends BaseElement {
 		grid.commit();
 	}
 	addWidget(item){
-		this.grid.addWidget(`<div data-id="${item.id}">
-			<flow-gridstack-panel class="grid-stack-item-content"></flow-gridstack-panel></div>`, item)
+		let nodeName = item.nodeName || 'div';
+		let el = this.grid.addWidget(`<div data-gs-id="${item.id}">
+			<${nodeName} class="grid-stack-item-content"></${nodeName}></div>`, item);
+		this._updatePanelEl(el, item.state);
+	}
+	_updatePanelEl(el, state){
+		if(!state)
+			return
+		el = el.querySelector(".grid-stack-item-content")
+		if(!el || !el.setGridstackState)
+			return
+		el.setGridstackState(state);
 	}
 	clearGrid(){
 		this.grid.removeAll();
