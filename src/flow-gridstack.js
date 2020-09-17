@@ -1,6 +1,18 @@
 import {BaseElement, html, css, baseUrl, dpc} from './base-element.js';
 import {FlowGridStackPanel} from './flow-gridstack-panel.js';
 
+
+export class FlowGridStackTest extends BaseElement{
+	render(){
+		return html`
+			<h1 slot="title">GridStack in SHADOW DOM</h1>
+			<flow-gridstack class="gs"></flow-gridstack>`;
+	}
+}
+
+FlowGridStackTest.define("flow-gridstack-test");
+
+
 /**
 * @class FlowGridStack
 * @extends BaseElement
