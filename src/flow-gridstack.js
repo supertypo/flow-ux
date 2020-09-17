@@ -1,109 +1,5 @@
 import {BaseElement, html, css, baseUrl, dpc} from './base-element.js';
 import {FlowGridStackPanel} from './flow-gridstack-panel.js';
-/*
-let gs = import(baseUrl+'resources/extern/gridstack/gridstack.all.js').then(e=>{
-	console.log("gs", gs, e, e.GridStack)
-})
-*
-
-class GridStackDDJQueryUI{
-    constructor(grid) {
-        this.grid = grid;
-    }
-    resizable(el, opts, key, value) {
-        let $el = $(el);
-        if (opts === 'disable' || opts === 'enable') {
-            $el.resizable(opts);
-        }
-        else if (opts === 'destroy') {
-            if ($el.data('ui-resizable')) { // error to call destroy if not there
-                $el.resizable(opts);
-            }
-        }
-        else if (opts === 'option') {
-            $el.resizable(opts, key, value);
-        }
-        else {
-            let handles = $el.data('gs-resize-handles') ? $el.data('gs-resize-handles') : this.grid.opts.resizable.handles;
-            $el.resizable(Object.assign({}, this.grid.opts.resizable, { handles: handles }, {
-                start: opts.start,
-                stop: opts.stop,
-                resize: opts.resize // || function() {}
-            }));
-        }
-        return this;
-    }
-    draggable(el, opts, key, value) {
-        let $el = $(el);
-        if (opts === 'disable' || opts === 'enable') {
-            $el.draggable(opts);
-        }
-        else if (opts === 'destroy') {
-            if ($el.data('ui-draggable')) { // error to call destroy if not there
-                $el.draggable(opts);
-            }
-        }
-        else if (opts === 'option') {
-            $el.draggable(opts, key, value);
-        }
-        else {
-        	let {handleCmp, handle} = this.grid.opts.draggable;
-        	console.log("optsoptsopts", opts, this.grid.opts.draggable, handleCmp)
-        	let el = $el[0];
-        	if(el && handleCmp){
-        		let cmp = el.querySelector(handleCmp);
-        		if(cmp && cmp.getGridstackDragHandle)
-        			handle = cmp.getGridstackDragHandle() || handle;
-
-        		//console.log("handle", handle)
-        	}
-            $el.draggable(Object.assign({}, this.grid.opts.draggable, {
-                containment: (this.grid.opts._isNested && !this.grid.opts.dragOut) ?
-                    $(this.grid.el).parent() : (this.grid.opts.draggable.containment || null),
-                handle,
-                start: opts.start,
-                stop: opts.stop,
-                drag: opts.drag // || function() {}
-            }));
-        }
-        return this;
-    }
-    dragIn(el, opts) {
-        let $el = $(el); // workaround Type 'string' is not assignable to type 'PlainObject<any>' - see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/29312
-        $el.draggable(opts);
-        return this;
-    }
-    droppable(el, opts, key, value) {
-        let $el = $(el);
-        if (typeof opts.accept === 'function' && !opts._accept) {
-            // convert jquery event to generic element
-            opts._accept = opts.accept;
-            opts.accept = ($el) => opts._accept($el.get(0));
-        }
-        $el.droppable(opts, key, value);
-        return this;
-    }
-    isDroppable(el) {
-        let $el = $(el);
-        return Boolean($el.data('ui-droppable'));
-    }
-    isDraggable(el) {
-        let $el = $(el); // workaround Type 'string' is not assignable to type 'PlainObject<any>' - see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/29312
-        return Boolean($el.data('ui-draggable'));
-    }
-    on(el, name, callback) {
-        let $el = $(el);
-        $el.on(name, (event, ui) => { callback(event, ui.draggable ? ui.draggable[0] : event.target, ui.helper ? ui.helper[0] : null); });
-        return this;
-    }
-    off(el, name) {
-        let $el = $(el);
-        $el.off(name);
-        return this;
-    }
-}
-*/
-
 
 /**
 * @class FlowGridStack
@@ -126,29 +22,16 @@ export class FlowGridStack extends BaseElement {
 		}
 	}
 
-	static get styles() {
-		return css`
-			:host{
-				display:block;
-				margin:20px;
-			}
-			.grid-stack{
-				height:500px;
-			}
-			.grid-stack-item-content{background:#DDD}
-		`;
-	}
-
 	static define(name, deps){
 		if(deps){
 			BaseElement.define.call(this, name, deps)
 		}else{
-			this.overrideGridStack();
+			this.addGridStackHelpers();
 			BaseElement.define.call(this, name);
 		}
 	}
 
-	static overrideGridStack(){
+	static addGridStackHelpers(){
 
 		$.ui.draggable.prototype._getHandle = function( event ) {
 			let {handle, handleFn} = this.options;
@@ -156,48 +39,12 @@ export class FlowGridStack extends BaseElement {
 			if(gridEl && gridEl.gridstack){
 				handleFn = gridEl.gridstack.opts.draggable.handleFn;
 			}
-			console.log("handleFn", handleFn, this)
-			console.dir(gridEl)
 			if(typeof handleFn == 'function')
 				return handleFn(event, this);
 
 			return handle?!!$(event.target)
 				.closest(this.element.find(handle)).length:true;
 		}
-
-		/*
-		if(this._overrideGS)
-			return
-
-		console.dir(GridStackDD)
-		this._overrideGS = true;
-		//let proto = GridStack.prototype;
-
-		GridStack.prototype.getElement = function(els = '.grid-stack-item') {
-			console.log("elsxxxxxx111111", els)
-	        return (typeof els === 'string' ?
-	            (document.querySelector(els) || document.querySelector('#' + els) || document.querySelector('.' + els)) : els);
-	    }
-	    GridStack.prototype.getElements = function(els = '.grid-stack-item') {
-	    	console.log("elsxxxxxx", els)
-	        if (typeof els === 'string') {
-	            let list = document.querySelectorAll(els);
-	            if (!list.length) {
-	                list = document.querySelectorAll('.' + els);
-	            }
-	            if (!list.length) {
-	                list = document.querySelectorAll('#' + els);
-	            }
-	            return Array.from(list);
-	        }
-	        return [els];
-	    }
-	    GridStack.prototype.getGridItems = function() {
-	    	console.log("getGridItems", this.el.children)
-	        return Array.from(this.el.children)
-	            .filter((el) => el.matches('.' + this.opts.itemClass) && !el.matches('.' + this.opts.placeholderClass));
-	    }
-	    */
 	}
 
 	constructor() {
@@ -274,22 +121,6 @@ export class FlowGridStack extends BaseElement {
 			}
 		};
 		dpc(()=>{
-			//FlowGridStack.overrideGridStack();
-			/*let self = this;
-			/*
-			$.ui.draggable.prototype._getHandle = function( event ) {
-				let {handle, handlePanel, dragMode} = this.options;
-				console.log("handle2", this.element[0], dragMode, handlePanel, this)
-				if(self.dragMode=="panel" && handlePanel){
-					handle = handlePanel;
-				}else if(handle instanceof HTMLElement){
-					//console.log("event.target", event.originalEvent, handle, this.element.find( handle ))
-					return event.originalEvent.path.includes(handle);
-				}
-				return handle?!!$(event.target)
-					.closest(this.element.find(handle)).length:true;
-			}
-			*/
 			this.grid = GridStack.init(options, this.gridEl);
 			this.gridEl.classList.remove("hide-w-opacity");
 			this.grid.on('added removed change', (e, items)=>{
@@ -332,6 +163,7 @@ export class FlowGridStack extends BaseElement {
 			data = JSON.parse(this.debugEl.value);
 		}catch(e){
 			//data;
+			this.log("JSON.parse:error", e)
 		}
 
 		this.loadData(data);
