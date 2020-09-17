@@ -119,6 +119,7 @@ class GridStack {
             this.opts.ddPlugin = gridstack_dd_1.GridStackDD.get();
         }
         this.dd = new this.opts.ddPlugin(this);
+        console.log("this.ddthis.dd", this.dd)
         if (this.opts.rtl === 'auto') {
             this.opts.rtl = el.style.direction === 'rtl';
         }

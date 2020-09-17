@@ -225,6 +225,10 @@ flow-markdown textarea{display:none}
     text-decoration:none;
 }
 
+flow-gridstack[dragmode="panel"] .grid-stack-item{
+    cursor:move;
+}
+
 /* a {
 
     color:var(--flow-link-color, red);
