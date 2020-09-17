@@ -64,10 +64,11 @@ export class FlowGridStack extends BaseElement {
 		return html`
 		<link rel="stylesheet" href="${baseUrl}resources/extern/gridstack/gridstack.min.css">
 		<style data-uid="${uid}"></style>
-		<textarea data-uid="${uid}"></textarea>
-		<div>
+		<textarea class="grid-stack-json" data-uid="${uid}"></textarea>
+		<div class="buttons">
 			<flow-btn @click="${this.saveGrid}">Save</flow-btn>
 			<flow-btn @click="${this.loadGrid}">Load</flow-btn>
+			<flow-btn @click="${this.toggleDragMode}">ToggleDragMode : ${this.dragMode}</flow-btn>
 		</div>
 		<div class="grid-stack ${uid} hide-w-opacity" style_="height:500px">
 		  <div class="grid-stack-item" data-gs-id="a1" data-gs-x="0" data-gs-y="0" data-gs-width="4" data-gs-height="2">
