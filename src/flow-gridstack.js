@@ -1,5 +1,5 @@
 import {BaseElement, html, css, baseUrl, dpc} from './base-element.js';
-import {FlowGridStackPanel} from './flow-gridstack-panel.js';
+export * from './flow-gridstack-panel.js';
 
 
 export class FlowGridStackTest extends BaseElement{
@@ -13,24 +13,18 @@ export class FlowGridStackTest extends BaseElement{
 FlowGridStackTest.define("flow-gridstack-test");
 
 
-/**
-* @class FlowGridStack
-* @extends BaseElement
-* @property {Number} [cols]
-* @property {Number} [rows]
-* @example
-*   <flow-gridstack></flow-gridstack>
-*
-*/
 
-export class FlowGridStack extends BaseElement {
+
+export const FlowGridStackMixin = (base)=>{
+class FlowGridStackKlass extends base{
 	static get properties() {
 		return {
 			cols:{type:Number, value:10},
 			rows:{type:Number, value:10},
 			resizableHandles:{type:String, value:'e, s, w'},
 			cellHeight:{type:Number, value:100},
-			dragMode:{type:String, value:'header', reflect:true}
+			dragMode:{type:String, value:'header', reflect:true},
+			items:{type:Array, value:[]}
 		}
 	}
 
@@ -82,13 +76,13 @@ export class FlowGridStack extends BaseElement {
 			<flow-btn @click="${this.loadGrid}">Load</flow-btn>
 			<flow-btn @click="${this.toggleDragMode}">ToggleDragMode : ${this.dragMode}</flow-btn>
 		</div>
-		<div class="grid-stack ${uid} hide-w-opacity" style_="height:500px">
-		  <div class="grid-stack-item" data-gs-id="a1" data-gs-x="0" data-gs-y="0" data-gs-width="4" data-gs-height="2">
+		<div class="grid-stack ${uid} hide-w-opacity">
+		  <!--div class="grid-stack-item" data-gs-id="a1" data-gs-x="0" data-gs-y="0" data-gs-width="4" data-gs-height="2">
 		    <flow-gridstack-panel class="grid-stack-item-content" heading="Panel 2">my first widget</flow-gridstack-panel>
 		  </div>
 		  <div class="grid-stack-item" data-gs-id="a2" data-gs-x="4" data-gs-y="0" data-gs-width="4" data-gs-height="1">
 		    <flow-gridstack-panel class="grid-stack-item-content" heading="Test">another widget!</flow-gridstack-panel>
-		  </div>
+		  </div-->
 		</div>
 		<slot></slot>`;
 	}
@@ -144,6 +138,7 @@ export class FlowGridStack extends BaseElement {
 				this.log(`${e.type} ${items.length} items\n${str}` );
 			});
 			//console.log("GridStack.prototype.getElement", GridStack.prototype.getElement)
+			this.initItems();
 		}, 100)
 	}
 
@@ -169,6 +164,7 @@ export class FlowGridStack extends BaseElement {
 			});
 		});
 		this.debugEl.value = JSON.stringify(data, null, '  ');
+		return data;
 	}
 	loadGrid(){
 		let data = [];
@@ -179,11 +175,23 @@ export class FlowGridStack extends BaseElement {
 			this.log("JSON.parse:error", e)
 		}
 
-		this.loadData(data);
+		this.loadItems(data);
 	}
-	loadData(data){
+
+	updated(changes){
+		if(changes.has('items'))
+			this.loadItems(this.items||[]);
+	}
+	initItems(){
+		let {items} = this;
+		if(items && items.length)
+			this.loadItems(items);
+	}
+	loadItems(data){
 		let items = GridStack.Utils.sort(data);
 		let {grid} = this;
+		if(!grid)
+			return
 
 		grid.batchUpdate();
 
@@ -281,5 +289,18 @@ export class FlowGridStack extends BaseElement {
 		this.resizeObserver.disconnect();
 	}
 }
+return FlowGridStackKlass;
+}
+
+/**
+* @class FlowGridStack
+* @extends BaseElement
+* @property {Number} [cols]
+* @property {Number} [rows]
+* @example
+*   <flow-gridstack></flow-gridstack>
+*
+*/
+export const FlowGridStack = FlowGridStackMixin(BaseElement);
 
 FlowGridStack.define('flow-gridstack',[baseUrl+'resources/extern/gridstack/gridstack.all.js']);

@@ -7,8 +7,8 @@ import {BaseElement, html, css} from './base-element.js';
 *   <flow-gridstack-panel></flow-gridstack-panel>
 *
 */
-
-export class FlowGridStackPanel extends BaseElement {
+export const FlowGridStackPanelMixin = (base)=>{
+class FlowGridStackPanelKlass extends base {
 	static get properties() {
 		return {
 			heading:{type:String, value:"Hello"},
@@ -103,5 +103,10 @@ export class FlowGridStackPanel extends BaseElement {
 		return this.renderRoot.querySelector('.heading .head')
 	}
 }
+
+return FlowGridStackPanelKlass
+}
+
+export const FlowGridStackPanel = FlowGridStackPanelMixin(BaseElement);
 
 FlowGridStackPanel.define('flow-gridstack-panel');
