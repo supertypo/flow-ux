@@ -225,13 +225,13 @@ flow-markdown textarea{display:none}
     text-decoration:none;
 }
 
-/* a {
-
-    color:var(--flow-link-color, red);
-
-    
+flow-gridstack[dragmode="panel"] .grid-stack-item{
+    cursor:move;
 }
+flow-gridstack div.grid-stack-item-content{background:#DDD}
+flow-gridstack textarea.grid-stack-json{width:90%;height:100px;}
 
+/* a {color:var(--flow-link-color, red);}
 a:hover {
     border-bottom: 1px solid var(--flow-link-hover-color);
 } */
