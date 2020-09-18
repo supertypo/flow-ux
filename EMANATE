@@ -114,6 +114,7 @@ await E.mkdirp(DIST);
 const FLOW_UX_STATIC_FILENAME = `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`;
 const FLOW_UX_STATIC = path.join(ROOT, FLOW_UX_STATIC_FILENAME);
 const FLOW_UX_ARCHIVE = path.join(DIST,`${FLOW_UX_STATIC_FILENAME}.zip`);
+const FLOW_UX_ARCHIVE_LATEST = path.join(DIST,`flow-ux-static-latest${E.flags.minify?'-min':''}.zip`);
 console.log('target:',FLOW_UX_STATIC.brightCyan);
 //let FLOW_UX_STATIC = `flow-ux-static${E.flags['no-version']?'':'-'+E.manifest.version}${E.flags.minify?'-min':''}`;
 
@@ -248,12 +249,16 @@ E.task('static', ['node_modules', 'flow-src', 'cleanup'], async () => {
 		const cwd = ROOT;
 		const target = FLOW_UX_STATIC_FILENAME;
 		const archive = FLOW_UX_ARCHIVE;
+		const latest = FLOW_UX_ARCHIVE_LATEST;
 		// console.log("FOLDER:", FOLDER);
 		// console.log("ARCHIVE:",ARCHIVE);
 		if(fs.existsSync(archive))
 			await E.remove(archive);
 		E.log(`creating dist archive for:`, target);
 		await E.zip(target,archive,{ cwd });
+		if(fs.existsSync(latest))
+			await E.remove(latest);
+		await E.copy(archive,latest);
 	}
 
 });
