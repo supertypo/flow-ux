@@ -88,12 +88,16 @@ class FlowGridStackPanelKlass extends base {
 		this.opened = !this.opened;
 	}
 
-	getGridstackState(){
+	serialize(){
 		let {opened, heading} = this;
-		return {opened, heading};
+		let data = Object.extend({}, super.deserialize(), {
+			opened, heading
+		});
+		return data;
 	}
-	setGridstackState(state){
-		let {heading, opened} = state||{};
+	deserialize(data){
+		super.deserialize(data);
+		let {heading, opened} = data||{};
 		if(heading)
 			this.heading = heading;
 		this.opened = !!opened;
