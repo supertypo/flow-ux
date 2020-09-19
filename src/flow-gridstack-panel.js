@@ -1,4 +1,5 @@
 import {BaseElement, html, css} from './base-element.js';
+import {FlowContextListenerMixin} from './flow-context.js';
 
 /**
 * @class FlowGridStackPanel
@@ -109,6 +110,7 @@ class FlowGridStackPanelKlass extends base {
 return FlowGridStackPanelKlass
 }
 
-export const FlowGridStackPanel = FlowGridStackPanelMixin(BaseElement);
+export const FlowGridStackPanelImpl = FlowGridStackPanelMixin(BaseElement);
+export const FlowGridStackPanel = FlowContextListenerMixin(FlowGridStackPanelImpl);
 
 FlowGridStackPanel.define('flow-gridstack-panel');

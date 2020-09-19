@@ -1,5 +1,6 @@
 import {BaseElement, html, css, baseUrl, dpc} from './base-element.js';
 export * from './flow-gridstack-panel.js';
+import {FlowContextListenerMixin} from './flow-context.js';
 
 
 export class FlowGridStackTest extends BaseElement{
@@ -314,6 +315,7 @@ return FlowGridStackKlass;
 *
 */
 
-export const FlowGridStack = FlowGridStackMixin(BaseElement);
+export const FlowGridStackImp = FlowGridStackMixin(BaseElement);
+export const FlowGridStack = FlowContextListenerMixin(FlowGridStackImp);
 
 FlowGridStack.define('flow-gridstack',[baseUrl+'resources/extern/gridstack/gridstack.all.js']);
