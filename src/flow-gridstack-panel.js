@@ -90,7 +90,7 @@ class FlowGridStackPanelKlass extends base {
 
 	serialize(){
 		let {opened, heading} = this;
-		let data = Object.extend({}, super.deserialize(), {
+		let data = Object.assign({}, super.deserialize(), {
 			opened, heading
 		});
 		return data;
