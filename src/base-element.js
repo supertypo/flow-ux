@@ -332,6 +332,14 @@ export class BaseElement extends LitElement{
 	isSignedin(){
 		return this.__signedin;
 	}
+	serialize(){
+		return {
+			nodeName: this.nodeName
+		}
+	}
+	deserialize(){
+		//
+	}
 }
 
 export const ScrollbarStyle = css`
