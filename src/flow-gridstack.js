@@ -232,7 +232,7 @@ class FlowGridStackKlass extends base{
 		this.sendSerializeData2Panel(el, item.serializedData);
 	}
 	sendSerializeData2Panel(el, serializedData){
-		if(!serializeData)
+		if(!serializedData)
 			return
 		el = el.querySelector(".grid-stack-item-content")
 		if(!el || typeof el.deserialize!='function')
