@@ -13,25 +13,6 @@ export class FlowGridStackTest extends BaseElement{
 FlowGridStackTest.define("flow-gridstack-test");
 
 
-export const FlowGridSerializationMixin = FlowGridStackBase=>{
-	class FlowGridStack extends FlowGridStackBase{
-		serialize(){
-			let items = this.getGridItemsConfig();
-			return {
-				items
-			}
-		}
-
-		deserialize(config){
-			let {items} = config;
-			this.setGridItemsConfig(items);
-		}
-	}
-
-	return FlowGridStack;
-}
-
-
 export const FlowGridStackMixin = (base)=>{
 class FlowGridStackKlass extends base{
 	static get properties() {
@@ -216,7 +197,6 @@ class FlowGridStackKlass extends base{
 			return
 
 		grid.batchUpdate();
-
 		if (grid.engine.nodes.length === 0) {
 			// load from empty
 			items.forEach(item=>{
@@ -237,15 +217,12 @@ class FlowGridStackKlass extends base{
 					this.addWidget(item)
 				}
 			});
-
 			let nodes = [...grid.engine.nodes];
 			nodes.forEach(node=>{
 				if(!itemsIdMap.get(node.id))
 					this.grid.removeWidget(node.el, true, true)
 			})
-
 		}
-
 		grid.commit();
 	}
 	addWidget(item){
@@ -297,6 +274,18 @@ class FlowGridStackKlass extends base{
     	return false
     }
 
+    serialize(){
+    	let config = super.serialize()
+		config.items = this.getGridItemsConfig();
+		return config;
+	}
+
+	deserialize(config){
+		super.deserialize(config)
+		let {items} = config;
+		this.setGridItemsConfig(items);
+	}
+
     connectedCallback(){
 		super.connectedCallback();
 		if(!this.resizeObserver){
@@ -324,8 +313,7 @@ return FlowGridStackKlass;
 *   <flow-gridstack></flow-gridstack>
 *
 */
-export const FlowGridStackBase = FlowGridStackMixin(BaseElement);
 
-export const FlowGridStack = FlowGridSerializationMixin(FlowGridStackBase);
+export const FlowGridStack = FlowGridStackMixin(BaseElement);
 
 FlowGridStack.define('flow-gridstack',[baseUrl+'resources/extern/gridstack/gridstack.all.js']);
