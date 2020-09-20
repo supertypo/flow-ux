@@ -173,9 +173,11 @@ export class BaseElement extends LitElement{
 	* @return {boolean} The return value is false if event is cancelable and at least one of the event handlers which handled this event called Event.preventDefault(). Otherwise it returns true.
 	* @since 0.0.1
 	*/
-	fire(eventName, detail={}, options={}, el=null){
+	fire(eventName, detail={}, options={}, el=null, returnEvent=false){
 		let ev = new CustomEvent(eventName, Object.assign({}, options, {detail}));
-		return (el || this).dispatchEvent(ev);
+		let result = (el || this).dispatchEvent(ev);
+		return returnEvent?ev:result
+
 	}
 
 	/**
@@ -331,6 +333,14 @@ export class BaseElement extends LitElement{
 	}
 	isSignedin(){
 		return this.__signedin;
+	}
+	serialize(){
+		return {
+			nodeName: this.nodeName
+		}
+	}
+	deserialize(){
+		//
 	}
 }
 

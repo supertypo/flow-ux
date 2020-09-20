@@ -1,5 +1,6 @@
 import {BaseElement, html, css, baseUrl, dpc} from './base-element.js';
 export * from './flow-gridstack-panel.js';
+import {FlowContextListenerMixin} from './flow-context.js';
 
 
 export class FlowGridStackTest extends BaseElement{
@@ -11,8 +12,6 @@ export class FlowGridStackTest extends BaseElement{
 }
 
 FlowGridStackTest.define("flow-gridstack-test");
-
-
 
 
 export const FlowGridStackMixin = (base)=>{
@@ -143,26 +142,7 @@ class FlowGridStackKlass extends base{
 	}
 
 	saveGrid(){
-		let data = [];
-		this.grid.engine.nodes.forEach(node=>{
-			let state = null, nodeName = 'div';
-			let el = node.el.querySelector(".grid-stack-item-content");
-			if(el){
-				nodeName = el.nodeName;
-				if(el.getGridstackState)
-					state = el.getGridstackState();
-			}
-
-			data.push({
-				x: node.x,
-				y: node.y,
-				width: node.width,
-				height: node.height,
-				id: node.id,
-				nodeName,
-				state
-			});
-		});
+		let data = this.getGridItemsConfig();
 		this.debugEl.value = JSON.stringify(data, null, '  ');
 		return data;
 	}
@@ -175,26 +155,49 @@ class FlowGridStackKlass extends base{
 			this.log("JSON.parse:error", e)
 		}
 
-		this.loadItems(data);
+		this.setGridItemsConfig(data);
 	}
 
 	updated(changes){
 		if(changes.has('items'))
-			this.loadItems(this.items||[]);
+			this.setGridItemsConfig(this.items||[]);
 	}
 	initItems(){
 		let {items} = this;
 		if(items && items.length)
-			this.loadItems(items);
+			this.setGridItemsConfig(items);
 	}
-	loadItems(data){
-		let items = GridStack.Utils.sort(data);
+    getGridItemsConfig(){
+    	let data = [];
+		this.grid.engine.nodes.forEach(node=>{
+			let serializedData = null, nodeName = 'div';
+			let el = node.el.querySelector(".grid-stack-item-content");
+			if(el){
+				nodeName = el.nodeName;
+				if(typeof el.serialize == 'function')
+					serializedData = el.serialize();
+			}
+
+			data.push({
+				x: node.x,
+				y: node.y,
+				width: node.width,
+				height: node.height,
+				id: node.id,
+				nodeName,
+				serializedData
+			});
+		});
+
+		return data;
+    }
+	setGridItemsConfig(itemsConfig){
+		let items = GridStack.Utils.sort(itemsConfig);
 		let {grid} = this;
 		if(!grid)
 			return
 
 		grid.batchUpdate();
-
 		if (grid.engine.nodes.length === 0) {
 			// load from empty
 			items.forEach(item=>{
@@ -203,33 +206,39 @@ class FlowGridStackKlass extends base{
 		} else {
 			console.log("items", items)
 			// else update existing nodes (instead of calling grid.removeAll())
+			let itemsIdMap = new Map();
 			items.forEach(item=>{
+				itemsIdMap.set(item.id, item);
 				let node = grid.engine.nodes.find(n=>n.id == item.id);
 				console.log("node", node, item)
 				if(node){
 					grid.update(node.el, item.x, item.y, item.width, item.height);
-					this._updatePanelEl(node.el, item.state);
+					this.sendSerializeData2Panel(node.el, item.serializeData);
 				}else{
 					this.addWidget(item)
 				}
+			});
+			let nodes = [...grid.engine.nodes];
+			nodes.forEach(node=>{
+				if(!itemsIdMap.get(node.id))
+					this.grid.removeWidget(node.el, true, true)
 			})
 		}
-
 		grid.commit();
 	}
 	addWidget(item){
 		let nodeName = item.nodeName || 'div';
 		let el = this.grid.addWidget(`<div data-gs-id="${item.id}">
 			<${nodeName} class="grid-stack-item-content"></${nodeName}></div>`, item);
-		this._updatePanelEl(el, item.state);
+		this.sendSerializeData2Panel(el, item.serializedData);
 	}
-	_updatePanelEl(el, state){
-		if(!state)
+	sendSerializeData2Panel(el, serializedData){
+		if(!serializedData)
 			return
 		el = el.querySelector(".grid-stack-item-content")
-		if(!el || !el.setGridstackState)
+		if(!el || typeof el.deserialize!='function')
 			return
-		el.setGridstackState(state);
+		el.deserialize(serializedData);
 	}
 	clearGrid(){
 		this.grid.removeAll();
@@ -265,15 +274,19 @@ class FlowGridStackKlass extends base{
 
     	return false
     }
-    /*
-    addCSSRule(selector, block){
-    	let {sheet} = this.styleEl;
-    	console.log("sheet.rules", sheet, sheet.rules);
-    	[...sheet.rules].forEach((rule, i)=>{
-    		console.log("rule, i", rule.selectorText, rule.style.cssText, i)
-    	})
-    }
-    */
+
+    serialize(){
+    	let config = super.serialize()
+		config.items = this.getGridItemsConfig();
+		return config;
+	}
+
+	deserialize(config){
+		super.deserialize(config)
+		let {items} = config;
+		this.setGridItemsConfig(items);
+	}
+
     connectedCallback(){
 		super.connectedCallback();
 		if(!this.resizeObserver){
@@ -301,6 +314,8 @@ return FlowGridStackKlass;
 *   <flow-gridstack></flow-gridstack>
 *
 */
-export const FlowGridStack = FlowGridStackMixin(BaseElement);
+
+export const FlowGridStackImp = FlowGridStackMixin(BaseElement);
+export const FlowGridStack = FlowContextListenerMixin(FlowGridStackImp);
 
 FlowGridStack.define('flow-gridstack',[baseUrl+'resources/extern/gridstack/gridstack.all.js']);

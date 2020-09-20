@@ -1,4 +1,5 @@
 import {BaseElement, html, css} from './base-element.js';
+import {FlowContextListenerMixin} from './flow-context.js';
 
 /**
 * @class FlowGridStackPanel
@@ -88,14 +89,16 @@ class FlowGridStackPanelKlass extends base {
 		this.opened = !this.opened;
 	}
 
-	getGridstackState(){
-		let {opened, heading} = this;
-		return {opened, heading};
+	serialize(){
+		let {opened} = this;
+		let data = Object.assign({}, super.serialize(), {
+			opened
+		});
+		return data;
 	}
-	setGridstackState(state){
-		let {heading, opened} = state||{};
-		if(heading)
-			this.heading = heading;
+	deserialize(data){
+		super.deserialize(data);
+		let {opened} = data||{};
 		this.opened = !!opened;
 	}
 
@@ -107,6 +110,7 @@ class FlowGridStackPanelKlass extends base {
 return FlowGridStackPanelKlass
 }
 
-export const FlowGridStackPanel = FlowGridStackPanelMixin(BaseElement);
+export const FlowGridStackPanelImpl = FlowGridStackPanelMixin(BaseElement);
+export const FlowGridStackPanel = FlowContextListenerMixin(FlowGridStackPanelImpl);
 
 FlowGridStackPanel.define('flow-gridstack-panel');
