@@ -175,6 +175,9 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 			.header ::slotted(.logo){
 				max-height:80%;
 			}
+			.logo ::slotted(.logo){
+				max-height:80%;
+			}
 			.header ::slotted(a.link){
 				padding:var(--flow-app-header-link-padding, 0px 0px 0px 16px);
 				color:var(--flow-app-header-color, #91aec1);
@@ -262,7 +265,7 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 	}
 	render(){
 		return html`
-		<div class="header"><slot name="header"></slot></div>
+		<div class="header"><slot name="logo"></slot><slot name="header"></slot></div>
 		<div class="header header-sm"><fa-icon class="menu-icon"
 			icon="${this['menu-icon'] || 'bars'}" 
 			@click="${this.toggleFloatingDrawer}"></fa-icon><slot 
