@@ -76,12 +76,12 @@ export class FlowBtn extends BaseElement {
 			:host(:not([disabled])){
 				cursor:pointer;
 				background-color:var(--flow-btn-bg-color, inherit);
-				border-color:var(--flow-btn-bg-color, inherit);
+				border-color:var(--flow-border-color, inherit);
 				color:var(--flow-btn-color, inherit);
 			}
 			:host(:not([disabled]):hover){
 				background-color:var(--flow-btn-hover-bg-color, inherit);
-				border-color:var(--flow-btn-hover-bg-color, inherit);
+				border-color:var(--flow-border-hover-color, inherit);
 				color:var(--flow-btn-hover-color, inherit);
 			}
 			:host([primary]),
