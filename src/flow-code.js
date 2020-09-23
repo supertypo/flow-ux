@@ -41,14 +41,14 @@ export class FlowCode extends BaseElement {
 			li.L1,li.L3,li.L5,li.L7,li.L9{background:#eee}
 
 			pre{
-				margin:0px;
+				margin:0px;overflow:auto;
 				white-space:var(--flow-code-white-space, nowrap);
 				font-family:var(--flow-code-font-family, monospace);
 				font-size:var(--flow-code-font-size, 1rem);
 			}
 
 			:host{
-				display:inline-block;
+				display:inline-block;max-width:100%;
 				padding:var(--flow-code-padding, 5px);
 				margin:var(--flow-code-margin, 1px);
 				border:var(--flow-code-border, none);
