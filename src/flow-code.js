@@ -45,10 +45,11 @@ export class FlowCode extends BaseElement {
 				white-space:var(--flow-code-white-space, nowrap);
 				font-family:var(--flow-code-font-family, monospace);
 				font-size:var(--flow-code-font-size, 1rem);
+				padding:var(--flow-code-pre-padding, 0px 0px 16px);
 			}
 
 			:host{
-				display:inline-block;max-width:100%;
+				display:inline-block;max-width:100%;box-sizing: border-box;
 				padding:var(--flow-code-padding, 5px);
 				margin:var(--flow-code-margin, 1px);
 				border:var(--flow-code-border, none);
