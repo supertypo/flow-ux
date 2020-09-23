@@ -43,6 +43,10 @@ export const markerdRenderer = {
         console.log('codespan:',text);
         text = text.replace(/&amp;lt;/g, "&lt;").replace(/&amp;gt;/g, "&gt;");
         return `<code>${text}</code>`;
+    },
+
+    link(href, title, text) {
+        return`<flow-link href="${href}" ${title?`title="${title}"`:''}>${text}</flow-link>`;
     }
 }
 
