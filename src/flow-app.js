@@ -173,6 +173,7 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 			}
 			.header-sm{display:none}
 			.header ::slotted(.logo){
+				height:100%;
 				max-height:80%;
 			}
 			.logo ::slotted(.logo){
