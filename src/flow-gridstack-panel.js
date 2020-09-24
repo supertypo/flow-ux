@@ -4,6 +4,22 @@ import {FlowContextListenerMixin} from './flow-context.js';
 /**
 * @class FlowGridStackPanel
 * @extends BaseElement
+* @prop {String} heading
+* @prop {Boolean} opened
+*
+* @cssvar {background-color} [--flow-gridstack-panel-bg=#FFF]
+* @cssvar {color} [--flow-gridstack-panel-color=var(--flow-color)]
+* @cssvar {border-radius} [--flow-gridstack-panel-border-radius=4px]
+* @cssvar {border} [--flow-gridstack-panel-border=1px solid var(--flow-primary-color)]
+* @cssvar {padding} [--flow-gridstack-panel-heading-padding=5px]
+* @cssvar {background-color} [--flow-gridstack-panel-heading-bg=var(--flow-primary-color)]
+* @cssvar {color} [--flow-gridstack-panel-head-color=var(--flow-primary-invert-color)]
+* @cssvar {align-items} [--flow-gridstack-panel-heading-align-items=center]
+* @cssvar {overflow} [-flow-gridstack-panel-heading-overflow=hidden]
+* @cssvar {text-overflow} [--flow-gridstack-panel-heading-text-overflow=ellipses]
+* @cssvar {--fa-icon-color} [--flow-gridstack-panel-head-color=var(--flow-primary-invert-color)]
+* @cssvar {flex} [--flow-gridstack-panel-head-flex=1]
+* @cssvar {align-items} [--flow-gridstack-panel-head-align-items=center]
 * @example
 *   <flow-gridstack-panel></flow-gridstack-panel>
 *

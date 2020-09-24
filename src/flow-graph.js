@@ -34,16 +34,12 @@ export class FlowGraph extends Flowd3Element {
 		return {
 			disabled:{type:Boolean, reflect:true},
 			title:{type:String},
-			prefix : { type : String },
+			prefix:{type:String },
 			suffix:{type:String},
 			align:{type:String},
-			//lineColor:{type:String},
-			//fillColor:{type:String},	
 			value:{type:Number},
 			data:{type:String},  // sampler: 'kaspad.kd0.info.
 			sampler:{type:String},
-			//strokeColor:{type:String},
-			//fill:{type:String},
 			range:{type:Number},
 			overlay:{type:Boolean},
 			format:{type:String},
@@ -72,21 +68,17 @@ export class FlowGraph extends Flowd3Element {
 			:host(.has-colon) .colon{display:inline;}
 			.container{
 				white-space: nowrap;
-		/*		border-radius: 10px;*/
 				padding:2px 6px 6px 6px;
 				height: 100%;
 			}
 			
 			.container>div{padding:2px;}
-			/* --- */
 			.title{flex:1; text-align:left; opacity:1;xmargin-top:7px; font-size: 10px; color: var(--flow-data-badge-caption); xtext-shadow: 0px 0px 0px var(--flow-data-badge-caption-shadow, #fff); }
-			.value{text-align:right; opacity:1;font-size:14px;font-family:"Exo 2";font-weight:normal;
-		background-color: var(--flow-background-color:);
-			}
-			.prefix{opacity:0.9;margin-right:3px;margin-top:3px; font-size: 10px; }
-			.suffix{opacity:0.9;margin-left:3px;margin-top:3px; font-size: 10px; }
-			.col { display: flex; flex-direction: column; align-items: left;  }
-			.row { display: flex; flex-direction: row; flex:0; }
+			.value{text-align:right; opacity:1;font-size:14px;font-family:"Exo 2";font-weight:normal;background-color: var(--flow-background-color:);}
+			.prefix{opacity:0.9;margin-right:3px;margin-top:3px; font-size: 10px;}
+			.suffix{opacity:0.9;margin-left:3px;margin-top:3px; font-size: 10px;}
+			.col{display: flex; flex-direction: column; align-items: left;}
+			.row{display: flex; flex-direction: row; flex:0;}
 
 			.wrapper {
 				/*width:100%;height:100%;*/

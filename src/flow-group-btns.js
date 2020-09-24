@@ -4,11 +4,6 @@ import {BaseElement, html, css} from './base-element.js';
 /**
 * @class FlowGroupBtns
 * @extends BaseElement
-* @example
-*   <flow-group-btns selected="1">
-*		<flow-btn data-value="1">Button 1</flow-btn>
-*		<flow-btn data-value="2">Button 2</flow-btn>
-*	</flow-group-btns>
 * @property {Boolean} [disabled]
 * @property {Boolean} [toggleable] 
 * @property {String} [selected=""] 
@@ -16,6 +11,22 @@ import {BaseElement, html, css} from './base-element.js';
 * @cssvar {font-family} [--flow-font-family="Julius Sans One"]
 * @cssvar {font-weight} [--flow-font-weight=bold]
 * @cssvar {border-radius} [--flow-btn-radius=8px]
+* @cssvar {margin} [--flow-group-btns-margin]
+* @cssvar {border-color} [--flow-group-btns-border-color=var(--flow-primary-color, rgba(0,151,115,1))]
+* @cssvar {border-width} [--flow-group-btns-border-width=1px]
+* @cssvar {font-size} [--flow-group-btns-font-size=initial]
+* @cssvar {line-height} [--flow-group-btns-line-height=inherit]
+* @cssvar {--flow-btn-bg-color} [--flow-group-btns-active-bg-color=var(--flow-primary-color)]
+* @cssvar {--flow-btn-color} [--flow-group-btns-active-color=var(--flow-primary-invert-color)]
+* @cssvar {--flow-btn-hover-color} [--flow-group-btns-active-color=var(--flow-primary-invert-color)]
+* @cssvar {align-items} [--flow-group-btns-align-items=stretch]
+* @cssvar {min-width} [--flow-group-btns-wrapper-min-width=50px]
+* @cssvar {justify-content} [--flow-group-btns-wrapper-justify=initial]
+* @example
+*   <flow-group-btns selected="1">
+*		<flow-btn data-value="1">Button 1</flow-btn>
+*		<flow-btn data-value="2">Button 2</flow-btn>
+*	</flow-group-btns>
 */
 export class FlowGroupBtns extends BaseElement {
 	static get properties() {
