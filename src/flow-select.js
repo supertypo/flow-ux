@@ -71,7 +71,7 @@ export class FlowSelect extends FlowMenu {
 				align-items:stretch;
 				min-width:50px;
 				text-align:center;
-				justify-content:center;
+				/*justify-content:center;*/
 			    margin-top:-0.5rem;
 			}
 			label{
