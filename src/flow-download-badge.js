@@ -46,20 +46,21 @@ export class FlowDownloadBadge extends BaseElement {
 			a:not([disable]):hover{
 				color: var(--flow-link-hover-color, #017b68);
 			}
+			[hide]{display:none}
 		`;
 	}
 
 	render() {
 		return html`
-        	<a class="file-link" href="${this.file}">
+        	<div class="file-link" href="${this.file}">
             	<div class="icon" style="background-image:url(${this.icon})"></div>
             	<div class="title">${this.title}</div>
             	<div class="descr">${this.descr}</div>
             	<slot></slot>
-        	</a>
-        	<a class="sha-link" href="${this.sha1}" ?disable="${!this.sha1}">
+        	</div>
+        	<div class="sha-link" href="${this.sha1}" ?hide="${!this.sha1}">
         		<div class="sha">SHA1</div>
-        	</a>
+        	</div>
     	</div>`;
 	}
 }

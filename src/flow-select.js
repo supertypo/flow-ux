@@ -142,7 +142,7 @@ export class FlowSelect extends FlowMenu {
 				position:absolute;left:10px;
 			}
 
-			::slotted([flow-select-filtred]){display:none}
+			.dd ::slotted([flow-select-filtred]){display:none}
 		`];
 	}
 	constructor(){
@@ -163,7 +163,7 @@ export class FlowSelect extends FlowMenu {
 					<slot name="sufix"></slot>
 				</div>
 				
-			</div><div>
+			</div><div class="dd">
 				<div class="filter-box" ?hidden=${this.hidefilter}>
 					<svg class="icon">
 						<use href="${iconSrc}"></use>
@@ -244,6 +244,7 @@ export class FlowSelect extends FlowMenu {
 				item.removeAttribute('flow-select-filtred')
 			}else{
 				item.setAttribute('flow-select-filtred', true)
+
 			}
 		})
 	}
