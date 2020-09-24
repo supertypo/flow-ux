@@ -53,4 +53,5 @@ export * from './src/flow-dropzone-field.js';
 export * from './src/flow-markdown.js';
 export * from './src/flow-toolbar.js';
 export * from './src/flow-gridstack.js';
+export * from './src/flow-download-badge.js';
 
