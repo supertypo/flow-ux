@@ -114,7 +114,8 @@ export class FlowMarkdown extends BaseElement {
                 --flow-code-font-size: var(--flow-markdown-code-font-size);
                 --flow-code-border: var(--flow-markdown-code-border,1px solid #ddd);
                 /*color: var(--flow-markdown-code-color, --flow-code-color, --flow-background-inverse);*/
-                background-color: var(--flow-markdown-code-background-color, #f3f3f3);
+                /*background-color: var(--flow-markdown-code-background-color, #f3f3f3);
+                color: var(--flow-markdown-code-color, #000);*/
                 padding: 16px;
             }
 

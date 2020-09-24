@@ -72,6 +72,23 @@ body{
     --flow-tooltip-text-color:var(--flow-color);
     --flow-range-slider-thumb-background:var(--flow-primary-color);
     --fa-icon-color:var(--flow-color, #000);
+
+    --flow-code-pre-bg:#ffffff;
+    --flow-code-pln: #4d4d4c;
+    --flow-code-str: #718c00;
+    --flow-code-kwd: #8959a8;
+    --flow-code-com: #8e908c;
+    --flow-code-typ: #4271ae;
+    --flow-code-lit: #f5871f;
+    --flow-code-pun: #4d4d4c;
+    --flow-code-opn: #4d4d4c;
+    --flow-code-clo: #4d4d4c;
+    --flow-code-tag: #c82829;
+    --flow-code-atn: #f5871f;
+    --flow-code-atv: #3e999f;
+    --flow-code-dec: #f5871f;
+    --flow-code-var: #c82829;
+    --flow-code-fun: #4271ae;
 }
 
 body.flow-theme-dark{
@@ -116,6 +133,23 @@ body.flow-theme-dark{
     --flow-tooltip-text-bg:#423f3f;
     --flow-tooltip-text-color:var(--flow-color);
     --flow-range-slider-thumb-container-bg:var(--flow-input-bg);
+
+    --flow-code-pre-bg: #1d1f21;
+    --flow-code-pln: #c5c8c6;
+    --flow-code-str: #b5bd68;
+    --flow-code-kwd: #b294bb;
+    --flow-code-com: #969896;
+    --flow-code-typ: #81a2be;
+    --flow-code-lit: #de935f;
+    --flow-code-pun: #de935f;
+    --flow-code-opn: #c5c8c6;
+    --flow-code-clo: #c5c8c6;
+    --flow-code-tag: #cc6666;
+    --flow-code-atn: #de935f;
+    --flow-code-atv: #8abeb7;
+    --flow-code-dec: #de935f;
+    --flow-code-var: #cc6666;
+    --flow-code-fun: #81a2be;
 }
 
 .hide{display:none;}
