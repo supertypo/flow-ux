@@ -73,7 +73,7 @@ body{
     --flow-range-slider-thumb-background:var(--flow-primary-color);
     --fa-icon-color:var(--flow-color, #000);
 
-    --flow-code-pre-bg:#ffffff;
+    --flow-code-pre-bg:#f3f3f3;
     --flow-code-pln: #4d4d4c;
     --flow-code-str: #718c00;
     --flow-code-kwd: #8959a8;
