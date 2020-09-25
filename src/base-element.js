@@ -92,11 +92,18 @@ export class BaseElement extends LitElement{
 	}
 
 	initPropertiesDefaultValues(props=null){
-		props = props || this.constructor.properties;
-		Object.keys(props).forEach(name=>{
-			if(typeof props[name].value != 'undefined')
-				this[name] = props[name].value
+		this.constructor._classProperties.forEach((v, key)=>{
+			//console.log("key, v", key, v)
+			let type = typeof v.value;
+			if(!['undefined', 'function'].includes(type))
+				this[key] = v.value;
 		})
+		if(props){
+			Object.keys(props).forEach(name=>{
+				if(typeof props[name].value != 'undefined')
+					this[name] = props[name].value
+			})
+		}
 	}
 
 	_initLog(forceLog = false){
