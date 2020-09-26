@@ -66,6 +66,18 @@ export class BaseElement extends LitElement{
 		`
 	}
 
+	static createElement(name, attr={}, props={}){
+		let el = document.createElement(name);
+		Object.keys(attr).forEach(k=>{
+			el.setAttribute(k, attr[k])
+		})
+		Object.keys(props).forEach(k=>{
+			el[k] = props[k];
+		})
+
+		return el;
+	}
+
 	static setLocalSetting(name, value){
 		if(!window.localStorage)
 			return

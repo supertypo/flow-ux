@@ -57,7 +57,7 @@ class FlowGridStackPanelKlass extends base {
 				--fa-icon-color:var(--flow-gridstack-panel-head-color, var(--flow-primary-invert-color));
 			}
 			.head{
-				display:flex;flex-direction:row;
+				display:flex;flex-direction:row;height:100%;
 				flex:var(--flow-gridstack-panel-head-flex, 1);
 				align-items:var(--flow-gridstack-panel-head-align-items, center);
 			}
@@ -66,6 +66,7 @@ class FlowGridStackPanelKlass extends base {
 			:host(:not([opened])) .body{
 				display:none;
 			}
+			.heading fa-icon:not(.disabled){cursor:pointer}
 		`;
 	}
 	constructor(){
@@ -88,17 +89,33 @@ class FlowGridStackPanelKlass extends base {
 		return html `<fa-icon icon="window-maximize"></fa-icon>`
 	}
 	renderHeadSuffix(){
-		return html `<fa-icon icon="times"></fa-icon>`
+		return html `
+		<fa-icon @click="${this.openContextManager}" icon="link"></fa-icon><fa-icon icon="times"></fa-icon>`
 	}
 	renderHead(){
 		return this.heading || ''
 	}
 	renderBody(){
-		return Math.random()*10000;
+		return html`
+		<div>
+			PANEL : ${Math.random()*10000} 
+			<div>contextgroup:${this.contextgroup}</div>
+			<div>contexts:${JSON.stringify(this.contexts||[])}</div>
+		</div>
+			
+		`
 	}
 
 	onHeadingClick(){
 		
+	}
+
+	acceptContext(ctx){
+		return super.acceptContext(ctx)
+	}
+
+	onContextsUpdate(){
+
 	}
 
 	onHeadClick(){
@@ -127,6 +144,6 @@ return FlowGridStackPanelKlass
 }
 
 export const FlowGridStackPanelImpl = FlowGridStackPanelMixin(BaseElement);
-export const FlowGridStackPanel = FlowContextListenerMixin(FlowGridStackPanelImpl);
+export class FlowGridStackPanel extends FlowContextListenerMixin(FlowGridStackPanelImpl){};
 
 FlowGridStackPanel.define('flow-gridstack-panel');

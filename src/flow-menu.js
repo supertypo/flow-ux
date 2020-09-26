@@ -100,12 +100,14 @@ export class FlowMenu extends BaseElement {
 
 		let slot = this.renderRoot.querySelector('slot');
 		this.listSlot = slot;
-		slot.addEventListener('slotchange', (e)=>{
-			//let items = slot.assignedElements();
-			//this.items = items
-			//TODO update selection 
-			this.updateList();
-		});
+		if(slot){
+			slot.addEventListener('slotchange', (e)=>{
+				//let items = slot.assignedElements();
+				//this.items = items
+				//TODO update selection 
+				this.updateList();
+			});
+		}
 	}
 	updated(changes){
 		//this.log("changes", changes)

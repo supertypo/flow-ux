@@ -1,7 +1,7 @@
-import {BaseElement, html, css, baseUrl, dpc} from './base-element.js';
+import {BaseElement, html, css, baseUrl, dpc, getLocalSetting, setLocalSetting} from './base-element.js';
 export * from './flow-gridstack-panel.js';
-import {FlowContextListenerMixin} from './flow-context.js';
-
+export * from './flow-context-selectors.js';
+export * from './flow-context.js';
 
 export class FlowGridStackTest extends BaseElement{
 	render(){
@@ -69,20 +69,15 @@ class FlowGridStackKlass extends base{
 		return html`
 		<link rel="stylesheet" href="${baseUrl}resources/extern/gridstack/gridstack.min.css">
 		<style data-uid="${uid}"></style>
-		<textarea class="grid-stack-json" data-uid="${uid}"></textarea>
+		<textarea class="gridstack-json" data-uid="${uid}"></textarea>
 		<div class="buttons">
 			<flow-btn @click="${this.saveGrid}">Save</flow-btn>
 			<flow-btn @click="${this.loadGrid}">Load</flow-btn>
+			<flow-btn @click="${this.saveGridLS}">Save to LStorage</flow-btn>
+			<flow-btn @click="${this.loadGridLS}">Load from LStorage</flow-btn>
 			<flow-btn @click="${this.toggleDragMode}">ToggleDragMode : ${this.dragMode}</flow-btn>
 		</div>
-		<div class="grid-stack ${uid} hide-w-opacity">
-		  <!--div class="grid-stack-item" data-gs-id="a1" data-gs-x="0" data-gs-y="0" data-gs-width="4" data-gs-height="2">
-		    <flow-gridstack-panel class="grid-stack-item-content" heading="Panel 2">my first widget</flow-gridstack-panel>
-		  </div>
-		  <div class="grid-stack-item" data-gs-id="a2" data-gs-x="4" data-gs-y="0" data-gs-width="4" data-gs-height="1">
-		    <flow-gridstack-panel class="grid-stack-item-content" heading="Test">another widget!</flow-gridstack-panel>
-		  </div-->
-		</div>
+		<div class="grid-stack ${uid} hide-w-opacity"></div>
 		<slot></slot>`;
 	}
 	firstUpdated(){
@@ -94,6 +89,7 @@ class FlowGridStackKlass extends base{
 			/*.${uid} .grid-stack-item-content{display:block}*/
 			.${uid}.grid-stack.hide-w-opacity{opacity:0}
 		`
+		console.log("this.resizableHandles", this.resizableHandles)
 		let options = {
 			alwaysShowResizeHandle:false,// /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
 			//ddPlugin:GridStackDDJQueryUI,
@@ -141,6 +137,30 @@ class FlowGridStackKlass extends base{
 		}, 100)
 	}
 
+	setLocalSetting(name, value){
+		if(typeof value != 'string')
+			value = JSON.stringify(value);
+		setLocalSetting('gridstack-${this.id || this.uid)}-${name}', value);
+	}
+
+	getLocalSetting(name, defaults){
+		let value = getLocalSetting('gridstack-${this.id || this.uid)}-${name}');
+		if(typeof value == 'undefined')
+			return defaults;
+
+		return value;
+	}
+
+	saveGridLS(){
+		this.setLocalSetting('grid', this.saveGrid())
+	}
+	loadGridLS(){
+		let grid = this.getLocalSetting('grid', '[]');
+		this.debugEl.value = grid;
+		grid = JSON.parse(grid);
+		this.setGridItemsConfig(grid);
+	}
+
 	saveGrid(){
 		let data = this.getGridItemsConfig();
 		this.debugEl.value = JSON.stringify(data, null, '  ');
@@ -154,6 +174,8 @@ class FlowGridStackKlass extends base{
 			//data;
 			this.log("JSON.parse:error", e)
 		}
+
+		console.log("loadGrid", this.debugEl.value, data)
 
 		this.setGridItemsConfig(data);
 	}
@@ -212,8 +234,10 @@ class FlowGridStackKlass extends base{
 				let node = grid.engine.nodes.find(n=>n.id == item.id);
 				console.log("node", node, item)
 				if(node){
+					//console.log("sending serializedData00", node.el, item.serializedData)
 					grid.update(node.el, item.x, item.y, item.width, item.height);
-					this.sendSerializeData2Panel(node.el, item.serializeData);
+					//console.log("sending serializedData11", node.el, item.serializedData)
+					this.sendSerializeDataToPanel(node.el, item.serializedData);
 				}else{
 					this.addWidget(item)
 				}
@@ -230,14 +254,16 @@ class FlowGridStackKlass extends base{
 		let nodeName = item.nodeName || 'div';
 		let el = this.grid.addWidget(`<div data-gs-id="${item.id}">
 			<${nodeName} class="grid-stack-item-content"></${nodeName}></div>`, item);
-		this.sendSerializeData2Panel(el, item.serializedData);
+		this.sendSerializeDataToPanel(el, item.serializedData);
 	}
-	sendSerializeData2Panel(el, serializedData){
+	sendSerializeDataToPanel(el, serializedData){
 		if(!serializedData)
 			return
 		el = el.querySelector(".grid-stack-item-content")
 		if(!el || typeof el.deserialize!='function')
-			return
+			return console.log("el.deserialize is missing", el&&el.deserialize)
+
+		//console.log("sending serializedData", el, serializedData)
 		el.deserialize(serializedData);
 	}
 	clearGrid(){
@@ -316,6 +342,6 @@ return FlowGridStackKlass;
 */
 
 export const FlowGridStackImp = FlowGridStackMixin(BaseElement);
-export const FlowGridStack = FlowContextListenerMixin(FlowGridStackImp);
+export class FlowGridStack extends FlowGridStackImp{}
 
 FlowGridStack.define('flow-gridstack',[baseUrl+'resources/extern/gridstack/gridstack.all.js']);
