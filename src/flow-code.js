@@ -85,7 +85,7 @@ export class FlowCode extends BaseElement {
 			}
 
 			pre{
-				margin:0px;overflow:auto;
+				margin:0px;
 				white-space:var(--flow-code-white-space, nowrap);
 				font-family:var(--flow-code-font-family, monospace);
 				font-size:var(--flow-code-font-size, 1rem);
@@ -94,6 +94,7 @@ export class FlowCode extends BaseElement {
 
 			:host{
 				display:inline-block;max-width:100%;box-sizing: border-box;
+				overflow:auto;
 				padding:var(--flow-code-padding, 5px);
 				margin:var(--flow-code-margin, 1px);
 				border:var(--flow-code-border, none);

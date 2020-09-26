@@ -215,9 +215,10 @@ flow-dialog.flow-menu ul.menu>li:last-child{border-bottom:0px;}
 
 
 flow-doc{
-    display:inline-block;margin:5px 0px;padding:0px 0px 10px;
+    display:inline-block;margin:5px 0px;padding:10px 0px 10px;
     width:fit-content;border-radius:5px;
     border:2px solid var(--flow-primary-color);
+    overflow:hidden;
 }
 flow-doc>h4:first-child{
     margin:0px 0px 5px;padding:8px;background-color:var(--flow-border-color);
@@ -227,11 +228,13 @@ flow-doc>h4:first-child{
 flow-doc>*{margin-left:10px;margin-right:10px;}
 flow-doc flow-code{
     --flow-code-padding:10px;
-    background-color:#EEE;
+    border:0px;
     border-top:1px solid var(--flow-border-color);
     border-bottom:1px solid var(--flow-border-color);
     margin:10px 0px 15px;
 }
+flow-doc flow-code:last-child{margin-bottom:0px;}
+flow-code[block]{display:block;width:100%;box-sizing:border-box;}
 flow-doc-boxes{display:flex;flex-wrap:wrap;}
 flow-doc-boxes>flow-doc{margin:10px;min-width:20%;flex:1;width:300px}
 flow-markdown textarea{display:none}
