@@ -361,6 +361,7 @@ export const ScrollbarStyle = css`
 *::-webkit-scrollbar,
 :host::-webkit-scrollbar{
 	width:var(--flow-scrollbar-width, initial);
+	height:var(--flow-scrollbar-width, initial);
 	background:var(--flow-scrollbar-bg, initial);
 }
 *::-webkit-scrollbar-thumb,
