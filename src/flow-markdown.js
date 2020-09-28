@@ -95,13 +95,16 @@ export const markerdRenderer = {
 * @cssvar {font-size} [--flow-markdown-toc-level6-font-size=0.66rem]
 * @cssvar {padding-left} [--flow-markdown-toc-level7-padding=90px]
 * @cssvar {font-size} [--flow-markdown-toc-level7-font-size=0.625rem]
-* @cssvar {--flow-code-font-family} [--flow-markdown-code-font-family]
-* @cssvar {--flow-code-font-size} [--flow-markdown-code-font-size]
-* @cssvar {--flow-code-border} [--flow-markdown-code-border=1px solid #ddd]
 * @example
 *   <flow-markdown>fn()</flow-markdown>
 *
 *
+*/
+
+/*
+... @ cssvar {--flow-code-font-family} [--flow-markdown-code-font-family]
+... @ cssvar {--flow-code-font-size} [--flow-markdown-code-font-size]
+... @ cssvar {--flow-code-border} [--flow-markdown-code-border=1px solid #ddd]
 */
 
 export class FlowMarkdown extends BaseElement {
