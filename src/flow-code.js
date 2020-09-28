@@ -251,7 +251,7 @@ export class FlowCode extends BaseElement {
 						spaces = false;
 				}
 				if(count>0){
-					let regExp = `^[\t|    ]{1,${count}}`;
+					let regExp = `^(\t|    ){1,${count}}`;
 					regExp = new RegExp(regExp)
 					v = v.map(l => {
 						l = l.replace(regExp, "");
