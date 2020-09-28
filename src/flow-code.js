@@ -242,12 +242,25 @@ export class FlowCode extends BaseElement {
 				let line2 = v[0];
 				let i=0;
 				let c = line2[i++];
-				while(c == "\t"){
-					count++;
-					c = line2[i++];
+				let spaces = true;
+				while(spaces) {
+					if(c == "\t") {
+						count++;
+						i++;
+						c = line2[i];
+					} else if(c == "    ") {
+						count++;
+						i+=4;
+						c = line2[i];
+					} else 
+						spaces = false;
 				}
+				// while(c == "\t"){
+				// 	count++;
+				// 	c = line2[i++];
+				// }
 				if(count>0){
-					let regExp = `^[\t]{1,${count}}`;
+					let regExp = `^[\t|    ]{1,${count}}`;
 					regExp = new RegExp(regExp)
 					v = v.map(v => {
 						//console.log("v1", v)
