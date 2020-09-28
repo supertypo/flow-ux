@@ -248,7 +248,7 @@ export class FlowCode extends BaseElement {
 						count++;
 						i++;
 						c = line2[i];
-					} else if(c == "    ") {
+					} else if(/^    /.test(c)) {
 						count++;
 						i+=4;
 						c = line2[i];
