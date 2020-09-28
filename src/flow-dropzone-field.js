@@ -32,6 +32,7 @@ import '../resources/extern/dz/min/dropzone.min.js';
 * @cssvar {background-color} [--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1))]
 * @cssvar {background-color} [--flow-border-hover-color, var(--flow-primary-color, rgba(0,151,115,1))]
 * @cssvar {background-color} [--flow-input-bg=inherit]
+* @cssvar {background-color} [--flow-input-bg=inherit]
 * @cssvar {border} [--flow-input-label-border=2px solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)))]
 * @cssvar {border} [--flow-input-border=2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1))]
 * @cssvar {border-top-left-radius} [--flow-input-btn-tlbr=0px]
@@ -41,14 +42,13 @@ import '../resources/extern/dz/min/dropzone.min.js';
 * @cssvar {color} [--flow-input-color=inherit]
 * @cssvar {color} [--flow-input-placeholder=#888]
 * @cssvar {color} [--flow-input-invalid-color=red]
+* @cssvar {color} [--flow-dz-field-remove-icon-color=var(--flow-color,#000)]
 * @cssvar {padding} [--flow-input-label-padding=2px 5px]
 * @cssvar {margin} [--flow-input-margin=5px 0px]
 * @cssvar {margin-top} [--flow-input-wrapper-margin-top=-0.5rem]
 * @cssvar {margin-left} [--flow-input-label-margin-left=10px]
 * @cssvar {z-index} [--flow-input-label-z-index=1]
 * @cssvar {position} [--flow-input-label-position=relative]
-* @cssvar {background-color} [--flow-input-bg=inherit]
-* @cssvar {color} [--flow-dz-field-remove-icon-color=var(--flow-color,#000)]
 * @cssvar {background} [--flow-dz-field-remove-icon-bg=#FFF]
 * @cssvar {box-shadow} [--flow-dz-field-remove-icon-box-shadow=0px 0px 4px #ccc]
 * @example
@@ -194,8 +194,8 @@ export class FlowDropzoneField extends BaseElement {
 			    font-size:27px;
 			    cursor: pointer;
 			    color:var(--flow-dz-field-remove-icon-color, var(--flow-color,#000));
-			    z-index:1;
 			    background:var(--flow-dz-field-remove-icon-bg, #FFF);
+			    z-index:1;
 			    box-shadow:var(--flow-dz-field-remove-icon-box-shadow, 0px 0px 4px #ccc);
 			    padding: 5px;
 			    border-radius:50%;

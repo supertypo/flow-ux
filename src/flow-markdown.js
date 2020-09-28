@@ -53,7 +53,51 @@ export const markerdRenderer = {
 /**
 * @class FlowMarkdown
 * @extends BaseElement
-* @property {String} [type]
+* @property {Boolean} [skipTrimming]
+* @property {Boolean} [achorScroll]
+* @property {Boolean} [sanitize]
+* @property {Boolean} [toc]
+* @property {Boolean} [full_height_toc]
+* @cssvar {font-size} [--flow-markdown-anchor-icon-font-size=1rem]
+* @cssvar {display} [--flow-markdown-anchor-icon-display=inline-block]
+* @cssvar {width} [--flow-markdown-anchor-icon-width=15px]
+* @cssvar {height} [--flow-markdown-anchor-icon-height=15px]
+* @cssvar {margin} [--flow-markdown-anchor-icon-margin=0px 2px]
+* @cssvar {opacity} [--flow-markdown-anchor-icon-opacity=0]
+* @cssvar {opacity} [--flow-markdown-anchor-icon-opacity-hover=1]
+* @cssvar {background-image} [--flow-markdown-icon]
+* @cssvar {font-family} [--flow-markdown-code-font-family=monospace]
+* @cssvar {font-size} [--flow-markdown-code-font-size=1rem]
+* @cssvar {background-color} [--flow-markdown-code-background-color=#f3f3f3]
+* @cssvar {padding} [--flow-markdown-code-padding=1px 3px]
+* @cssvar {margin} [--flow-markdown-code-margin=1px 1px]
+* @cssvar {border} [--flow-markdown-code-border=1px solid #ddd]
+* @cssvar {min-width} [--flow-markdown-toc-width=200px]
+* @cssvar {width} [--flow-markdown-toc-width=200px]
+* @cssvar {top} [--flow-markdown-toc-top=0]
+* @cssvar {padding} [--flow-markdown-toc-padding=10px]
+* @cssvar {background-color} [--flow-markdown-toc-li-hover-bg=var(--flow-menu-item-hover-bg, #DDD)]
+* @cssvar {color} [--flow-markdown-toc-li-hover-color=var(--flow-menu-item-hover-color, #000)]
+* @cssvar {padding-left} [--flow-markdown-toc-level0-padding=4px]
+* @cssvar {font-size} [--flow-markdown-toc-level0-font-size=0.96rem]
+* @cssvar {font-weight} [--flow-markdown-toc-level0-font-weight=bold]
+* @cssvar {padding-left} [--flow-markdown-toc-level1-padding=4px]
+* @cssvar {font-size} [--flow-markdown-toc-level1-font-size=0.92rem]
+* @cssvar {padding-left} [--flow-markdown-toc-level2-padding=18px]
+* @cssvar {font-size} [--flow-markdown-toc-level2-font-size=0.86rem]
+* @cssvar {padding-left} [--flow-markdown-toc-level3-padding=30px]
+* @cssvar {font-size} [--flow-markdown-toc-level3-font-size=0.82rem]
+* @cssvar {padding-left} [--flow-markdown-toc-level4-padding=45px]
+* @cssvar {font-size} [--flow-markdown-toc-level4-font-size=0.76rem]
+* @cssvar {padding-left} [--flow-markdown-toc-level5-padding=60px]
+* @cssvar {font-size} [--flow-markdown-toc-level5-font-size=0.72rem]
+* @cssvar {padding-left} [--flow-markdown-toc-level6-padding=75px]
+* @cssvar {font-size} [--flow-markdown-toc-level6-font-size=0.66rem]
+* @cssvar {padding-left} [--flow-markdown-toc-level7-padding=90px]
+* @cssvar {font-size} [--flow-markdown-toc-level7-font-size=0.625rem]
+* @cssvar {--flow-code-font-family} [--flow-markdown-code-font-family]
+* @cssvar {--flow-code-font-size} [--flow-markdown-code-font-size]
+* @cssvar {--flow-code-border} [--flow-markdown-code-border=1px solid #ddd]
 * @example
 *   <flow-markdown>fn()</flow-markdown>
 *
@@ -66,7 +110,7 @@ export class FlowMarkdown extends BaseElement {
 			skipTrimming:{type:Boolean},
             anchorScroll:{type:Boolean},
             sanitize : {type:Boolean},
-            toc :{type:Boolean},
+            toc : {type:Boolean},
             'full-height-toc':{type:Boolean, reflect:true}
 		}
 	}
@@ -114,7 +158,8 @@ export class FlowMarkdown extends BaseElement {
                 --flow-code-font-size: var(--flow-markdown-code-font-size);
                 --flow-code-border: var(--flow-markdown-code-border,1px solid #ddd);
                 /*color: var(--flow-markdown-code-color, --flow-code-color, --flow-background-inverse);*/
-                background-color: var(--flow-markdown-code-background-color, #f3f3f3);
+                /*background-color: var(--flow-markdown-code-background-color, #f3f3f3);
+                color: var(--flow-markdown-code-color, #000);*/
                 padding: 16px;
             }
 

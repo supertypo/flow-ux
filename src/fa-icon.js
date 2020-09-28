@@ -28,6 +28,8 @@ export class FaIcon extends BaseElement {
 			display: inline-block;
 			padding: 0;
 			margin: 0;
+			width: var(--fa-icon-size);
+			height: var(--fa-icon-size);
 		}
 		svg{
 			width: var(--fa-icon-size);

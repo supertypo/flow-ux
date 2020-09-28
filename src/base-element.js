@@ -66,6 +66,18 @@ export class BaseElement extends LitElement{
 		`
 	}
 
+	static createElement(name, attr={}, props={}){
+		let el = document.createElement(name);
+		Object.keys(attr).forEach(k=>{
+			el.setAttribute(k, attr[k])
+		})
+		Object.keys(props).forEach(k=>{
+			el[k] = props[k];
+		})
+
+		return el;
+	}
+
 	static setLocalSetting(name, value){
 		if(!window.localStorage)
 			return
@@ -92,11 +104,18 @@ export class BaseElement extends LitElement{
 	}
 
 	initPropertiesDefaultValues(props=null){
-		props = props || this.constructor.properties;
-		Object.keys(props).forEach(name=>{
-			if(typeof props[name].value != 'undefined')
-				this[name] = props[name].value
+		this.constructor._classProperties.forEach((v, key)=>{
+			//console.log("key, v", key, v)
+			let type = typeof v.value;
+			if(!['undefined', 'function'].includes(type))
+				this[key] = v.value;
 		})
+		if(props){
+			Object.keys(props).forEach(name=>{
+				if(typeof props[name].value != 'undefined')
+					this[name] = props[name].value
+			})
+		}
 	}
 
 	_initLog(forceLog = false){
@@ -354,6 +373,7 @@ export const ScrollbarStyle = css`
 *::-webkit-scrollbar,
 :host::-webkit-scrollbar{
 	width:var(--flow-scrollbar-width, initial);
+	height:var(--flow-scrollbar-width, initial);
 	background:var(--flow-scrollbar-bg, initial);
 }
 *::-webkit-scrollbar-thumb,

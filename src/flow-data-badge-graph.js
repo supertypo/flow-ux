@@ -30,14 +30,9 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 			prefix : { type : String },
 			suffix:{type:String},
 			align:{type:String},
-			//lineColor:{type:String},
-			//fillColor:{type:String},	
 			value:{type:Number},
 			sampler:{type:String},  // sampler: 'kaspad.kd0.info.
 			type:{type:String},
-			
-			//strokeColor:{type:String},
-			//fill:{type:String},
 			range:{type:Number},
 		}
 	}

@@ -17,6 +17,7 @@ import {BaseElement, html, css} from './base-element.js';
 *
 * @cssvar {font-family} [--flow-font-family="Julius Sans One"]
 * @cssvar {font-weight} [--flow-font-weight=bold]
+* @cssvar {font-size} [--flow-link-font-size=1rem]
 * @cssvar {color} [--flow-link-color=#017b68]
 * @cssvar {color} [--flow-link-hover-color=#017b68]
 * @cssvar {fill} [--flow-primary-color=017b68]

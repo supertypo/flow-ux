@@ -4,6 +4,22 @@ import {FlowContextListenerMixin} from './flow-context.js';
 /**
 * @class FlowGridStackPanel
 * @extends BaseElement
+* @prop {String} heading
+* @prop {Boolean} opened
+*
+* @cssvar {background-color} [--flow-gridstack-panel-bg=#FFF]
+* @cssvar {color} [--flow-gridstack-panel-color=var(--flow-color)]
+* @cssvar {border-radius} [--flow-gridstack-panel-border-radius=4px]
+* @cssvar {border} [--flow-gridstack-panel-border=1px solid var(--flow-primary-color)]
+* @cssvar {padding} [--flow-gridstack-panel-heading-padding=5px]
+* @cssvar {background-color} [--flow-gridstack-panel-heading-bg=var(--flow-primary-color)]
+* @cssvar {color} [--flow-gridstack-panel-head-color=var(--flow-primary-invert-color)]
+* @cssvar {align-items} [--flow-gridstack-panel-heading-align-items=center]
+* @cssvar {overflow} [-flow-gridstack-panel-heading-overflow=hidden]
+* @cssvar {text-overflow} [--flow-gridstack-panel-heading-text-overflow=ellipses]
+* @cssvar {--fa-icon-color} [--flow-gridstack-panel-head-color=var(--flow-primary-invert-color)]
+* @cssvar {flex} [--flow-gridstack-panel-head-flex=1]
+* @cssvar {align-items} [--flow-gridstack-panel-head-align-items=center]
 * @example
 *   <flow-gridstack-panel></flow-gridstack-panel>
 *
@@ -41,7 +57,7 @@ class FlowGridStackPanelKlass extends base {
 				--fa-icon-color:var(--flow-gridstack-panel-head-color, var(--flow-primary-invert-color));
 			}
 			.head{
-				display:flex;flex-direction:row;
+				display:flex;flex-direction:row;height:100%;
 				flex:var(--flow-gridstack-panel-head-flex, 1);
 				align-items:var(--flow-gridstack-panel-head-align-items, center);
 			}
@@ -50,6 +66,7 @@ class FlowGridStackPanelKlass extends base {
 			:host(:not([opened])) .body{
 				display:none;
 			}
+			.heading fa-icon:not(.disabled){cursor:pointer}
 		`;
 	}
 	constructor(){
@@ -72,17 +89,33 @@ class FlowGridStackPanelKlass extends base {
 		return html `<fa-icon icon="window-maximize"></fa-icon>`
 	}
 	renderHeadSuffix(){
-		return html `<fa-icon icon="times"></fa-icon>`
+		return html `
+		<fa-icon @click="${this.openContextManager}" icon="link"></fa-icon><fa-icon icon="times"></fa-icon>`
 	}
 	renderHead(){
 		return this.heading || ''
 	}
 	renderBody(){
-		return Math.random()*10000;
+		return html`
+		<div>
+			PANEL : ${Math.random()*10000} 
+			<div>contextgroup:${this.contextgroup}</div>
+			<div>contexts:${JSON.stringify(this.contexts||[])}</div>
+		</div>
+			
+		`
 	}
 
 	onHeadingClick(){
 		
+	}
+
+	acceptContext(ctx){
+		return super.acceptContext(ctx)
+	}
+
+	onContextsUpdate(){
+
 	}
 
 	onHeadClick(){
@@ -111,6 +144,6 @@ return FlowGridStackPanelKlass
 }
 
 export const FlowGridStackPanelImpl = FlowGridStackPanelMixin(BaseElement);
-export const FlowGridStackPanel = FlowContextListenerMixin(FlowGridStackPanelImpl);
+export class FlowGridStackPanel extends FlowContextListenerMixin(FlowGridStackPanelImpl){};
 
 FlowGridStackPanel.define('flow-gridstack-panel');
