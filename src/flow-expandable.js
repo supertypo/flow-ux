@@ -22,7 +22,8 @@ export class FlowExpandable extends BaseElement {
 		return {
 			icon:{type: String},
 			expand:{type:Boolean, reflect:true},
-			'no-info':{type:Boolean, reflect:true}
+			'no-info':{type:Boolean, reflect:true},
+			caption:{type:String}
 		}
 	}
 
@@ -101,27 +102,27 @@ export class FlowExpandable extends BaseElement {
 		if(this.icon != "-")
 			iconSrc = this.iconPath(this.icon || "caret-right");
 		return html`
-			<div class="icon-box" data-flow-expandable="toggle"><svg><use href="${iconSrc}"></use></svg></div>
+			<div class="icon-box" data-flow-expandable="toggle" @click=${this.toggle}><svg><use href="${iconSrc}"></use></svg></div>
 			<div class="content-box">
-				<label class="title-box" data-flow-expandable="toggle"><slot name="title"></slot></label>
+				<label class="title-box" data-flow-expandable="toggle" @click=${this.toggle}><slot name="title"></slot>${this.caption||''}</label>
 				<div class="content"><slot></slot></div>
 			</div>
 			<div class="info-box"><slot name="info"></slot></div>
 		`;
 	}
-	firstUpdated(){
-		this.renderRoot.addEventListener("click", this._onClick.bind(this));
-	}
+//	firstUpdated(){
+//		this.renderRoot.addEventListener("click", this._onClick.bind(this));
+//	}
 
-	_onClick(e){
-		let target = e.target.closest("[data-flow-expandable]")
-		if(!target)
-			return
-		let action = target.getAttribute("data-flow-expandable") || 'toggle';
+	// _onClick(e){
+	// 	let target = e.target.closest("[data-flow-expandable]")
+	// 	if(!target)
+	// 		return
+	// 	let action = target.getAttribute("data-flow-expandable") || 'toggle';
 
-		if(["toggle", "open", "close"].includes(action))
-			this[action]();
-	}
+	// 	if(["toggle", "open", "close"].includes(action))
+	// 		this[action]();
+	// }
 
 	open(){
 		this.expand = true;
