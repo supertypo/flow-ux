@@ -17,13 +17,19 @@ import {FlowContextListenerMixin} from './flow-context.js';
 * @cssvar {align-items} [--flow-gridstack-panel-heading-align-items=center]
 * @cssvar {overflow} [-flow-gridstack-panel-heading-overflow=hidden]
 * @cssvar {text-overflow} [--flow-gridstack-panel-heading-text-overflow=ellipses]
-* @cssvar {--fa-icon-color} [--flow-gridstack-panel-head-color=var(--flow-primary-invert-color)]
 * @cssvar {flex} [--flow-gridstack-panel-head-flex=1]
 * @cssvar {align-items} [--flow-gridstack-panel-head-align-items=center]
 * @example
 *   <flow-gridstack-panel></flow-gridstack-panel>
 *
 */
+
+/*
+the following causes jsdoc to fail:
+... @ cssvar {--fa-icon-color} [--flow-gridstack-panel-head-color=var(--flow-primary-invert-color)]
+
+*/
+
 export const FlowGridStackPanelMixin = (base)=>{
 class FlowGridStackPanelKlass extends base {
 	static get properties() {
