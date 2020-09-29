@@ -157,7 +157,13 @@ class FlowGridStackKlass extends base{
 	loadGridLS(){
 		let grid = this.getLocalSetting('grid', '[]');
 		this.debugEl.value = grid;
-		grid = JSON.parse(grid);
+		try{
+			grid = JSON.parse(grid);
+			if(grid)
+				this.debugEl.value = JSON.stringify(grid, null, '  ');
+		}catch(e){
+			grid = [];
+		}
 		this.setGridItemsConfig(grid);
 	}
 

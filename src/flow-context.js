@@ -1,14 +1,31 @@
 import {BaseElement, html, css} from './base-element.js';
 
+export const objectToProperties = config=>{
+	let props = {};
+	for (const [key, value] of Object.entries(config)) {
+		if(value.value !== undefined && value.type){
+			props[key] = value;
+			continue;
+		}
+		let type = String;
+		if(key == "groups"){
+			type = Array;
+		}
+		props[key] = {type, value};
+	}
+
+	return props;
+}
+
 export const ContextGroups = new Map();
 
-export class FlowContext extends BaseElement{
+export class FlowContextElement extends BaseElement{
 	static get properties(){
 		return {
 			name:{type:String, value:""},
 			type:{type:String, value:""},
 			code:{type:String, value:""},
-			group:{type:String, value:""}
+			groups:{type:Array, value:[]}
 		}
 	}
 	static get styles(){
@@ -17,15 +34,18 @@ export class FlowContext extends BaseElement{
 		`
 	}
 	static init(){
-		let {group, code} = this.properties;
-		group = group&&group.value;
+		let {groups, code} = this.properties;
+		groups = groups&&groups.value;
 		code = code&&code.value;
-		console.log("FlowContext.init(): group && code", group, code, this.properties)
-		if(group && code){
-			let groupClass = ContextGroups.get(group);
-			if(!groupClass)
-				return false;
-			groupClass.addContext(code, this);
+		//console.log("FlowContext.init(): groups && code", groups, code, this.properties)
+		if(groups && groups.length && code){
+			groups.forEach(group=>{
+				let groupClass = ContextGroups.get(group);
+				if(!groupClass)
+					return false;
+				groupClass.addContext(code, this);
+			})
+			
 		}
 	}
 
@@ -46,11 +66,11 @@ export class FlowContext extends BaseElement{
 	}
 }
 
-export class FlowContextGroup extends BaseElement{
+export class FlowContextGroupElement extends BaseElement{
 	static get properties(){
 		return {
 			name:{type:String, value:""},
-			group:{type:String, value:""}
+			code:{type:String, value:""}
 		}
 	}
 	static get contexts(){
@@ -65,14 +85,21 @@ export class FlowContextGroup extends BaseElement{
 		}
 	}
 	static init(){
-		let {group} = this.properties;
-		group = group&&group.value;
-		if(group){
-			if(!ContextGroups.has(group)){
-				ContextGroups.set(group, this);
-				this.define(`flow-ctxgroup-${group}`)
+		let {code} = this.properties;
+		code = code&&code.value;
+		if(code){
+			if(!ContextGroups.has(code)){
+				ContextGroups.set(code, this);
+				this.define(`flow-ctxgroup-${code}`)
 			}
 		}
+	}
+	static get info(){
+		let info = {};
+		Object.keys(this.properties).forEach(key=>{
+			info[key] = this.properties[key].value;
+		});
+		return info;
 	}
 	static get styles(){
 		return css`
@@ -87,19 +114,29 @@ export class FlowContextGroup extends BaseElement{
 		return this.createElement(`flow-ctxgroup-${group}`, attr, props);
 	}
 
-	static renderSelectionMenu(selected=[], cmp){
+	static renderSelectionMenu(selected=[], cmp, options){
+		let {multiple} = options||{};
 		let contexts = this.contexts;
-		console.log("contexts", contexts)
-		return html`
-		<flow-menu selected="${selected}">
-		${[...contexts.keys()].filter(code=>{
+		console.log("renderSelectionMenu:contexts", contexts, selected)
+		let filteredCtxs = [...contexts.keys()].filter(code=>{
 			let ctxClass = contexts.get(code);
-			console.log("ctxClass.info", ctxClass.info)
+			//console.log("ctxClass.info", ctxClass.info)
 			return ctxClass && cmp.acceptContext(ctxClass.info);
-		}).map(code=>{
-			return this.createContextNode(code, {"class":"menu-item", value:code});
-		})}
-		</flow-menu>
+		});
+		let info = this.info;
+		return html`
+		<div class="group">
+			<div class="group-head">${info.name||""}</div>
+			<flow-menu class="ctx-selection-menu" .selected="${selected}" 
+				?multiple=${multiple}>
+				${filteredCtxs.map(code=>{
+					return this.createContextNode(code, {
+						"class":"menu-item",
+						value:code
+					});
+				})}
+			</flow-menu>
+		</div>
 		`
 	}
 
@@ -115,15 +152,35 @@ export class FlowContextGroup extends BaseElement{
 		super();
 		this.initPropertiesDefaultValues();
 	}
+}
 
-	
+export const FlowContext = (config, base)=>{
+	let props = objectToProperties(config);
+	class klass extends (base||FlowContextElement){
+		static get properties(){
+			return props;
+		}
+	}
+
+	klass.init();
+}
+
+export const FlowContextGroup = (config, base)=>{
+	let props = objectToProperties(config);
+	class klass extends (base||FlowContextGroupElement){
+		static get properties(){
+			return props;
+		}
+	}
+
+	klass.init();
 }
 
 export const FlowContextListenerMixin = base=>{
 	class FlowContextListener extends base{
 		static get properties(){
 			return {
-				contextgroup:{type:String, value:""},
+				contextgroups:{type:Array, value:[]},
 				contexts:{type:Array, value:[]}
 			}
 		}
@@ -135,7 +192,7 @@ export const FlowContextListenerMixin = base=>{
 		}
 		getContextManagerConfig(){
 			return {
-				group:this.contextgroup,
+				groups:this.contextgroups,
 				contexts:this.contexts||[]
 			}
 		}
@@ -150,16 +207,16 @@ export const FlowContextListenerMixin = base=>{
 		}
 
 		serialize(){
-			let {contextgroup, contexts} = this;
+			let {contextgroups, contexts} = this;
 			return Object.assign({}, super.serialize(), {
-				contextgroup, contexts
+				contextgroups, contexts
 			});
 		}
 		deserialize(data){
 			super.deserialize(data);
-			let {contextgroup, contexts=[]} = data||{};
-			console.log("got contextgroup", contextgroup, data)
-			this.contextgroup = contextgroup;
+			let {contextgroups, contexts=[]} = data||{};
+			console.log("got contextgroups", contextgroups, data)
+			this.contextgroups = contextgroups;
 			this.contexts = contexts;
 		}
 	}
@@ -200,39 +257,6 @@ export class FlowContextManager extends BaseElement{
 		`;
 	}
 
-	render(){
-		let cmp = this.getHostComponent();
-		let contexts = [], GroupClass, group;
-		let selected = [];
-		if(cmp){
-			let {contexts:selectedCtx=[], group:groupCode} = cmp.getContextManagerConfig();
-			console.log("groupCode", groupCode)
-			selected = selectedCtx;
-			GroupClass = ContextGroups.get(groupCode);
-			if(GroupClass){
-				contexts = GroupClass.contexts;
-				group = groupCode;
-			}
-		}
-		return html`
-		<dialog @close=${this.onDialogClose}>
-			<div class="head">
-				<span class="head-text">${this.heading||'Context Manager'}</span>
-				<fa-icon class="close-icon" @click="${this.close}" icon="times"></fa-icon>
-			</div>
-			<div class="body">
-				${GroupClass?GroupClass.renderSelectionMenu(selected, cmp):''}
-			</div>
-		</dialog>`;
-	}
-
-	firstUpdated(){
-		this.dialog = this.renderRoot.querySelector('dialog');
-		console.log("this.dialog", this.parentNode, this._show)
-		if(this._show)
-			this[this._show]();
-	}
-
 	static get _tagName(){
 		return 'flow-context-manager';
 	}
@@ -249,6 +273,65 @@ export class FlowContextManager extends BaseElement{
 	static open(cmp){
 		let ctxManger = this.getContextManager();
 		ctxManger.showModal(cmp)
+	}
+
+	render(){
+		return html`
+		<dialog @close=${this.onDialogClose}>
+			<div class="head">
+				<span class="head-text">${this.heading||'Context Manager'}</span>
+				<fa-icon class="close-icon" @click="${this.close}" icon="times"></fa-icon>
+			</div>
+			<div class="body" @select="${this.onCtxSelectionChange}">
+				${this.renderSelectionMenus()}
+			</div>
+		</dialog>`;
+	}
+
+	renderSelectionMenus(){
+		let cmp = this.getHostComponent();
+		if(!cmp)
+			return '';
+		let items = [], options, GroupClass;
+		let {contexts:selected=[], groups, groupOptions} = cmp.getContextManagerConfig();
+		if(!groupOptions)
+			groupOptions = new Map();
+		groups.forEach(groupCode=>{
+			GroupClass = ContextGroups.get(groupCode);
+			if(GroupClass){
+				options = groupOptions.get(groupCode);
+				console.log("selected", selected)
+				items.push(GroupClass.renderSelectionMenu(selected, cmp, options));
+			}
+		});
+
+		return items;
+	}
+
+	firstUpdated(){
+		this.dialog = this.renderRoot.querySelector('dialog');
+		if(this._show)
+			this[this._show]();
+	}
+
+	onCtxSelectionChange(){
+		let menus = this.renderRoot.querySelectorAll('.ctx-selection-menu');
+		let contexts = [];
+		menus.forEach(menu=>{
+			let context = menu.value;
+			if(!context)
+				return
+			if(Array.isArray(context))
+				contexts.push(...context)
+			else
+				contexts.push(context);
+		});
+
+		console.log("contexts", contexts)
+		let cmp = this.getHostComponent();
+		if(!cmp)
+			return
+		cmp.setContextManagerConfig({contexts})
 	}
 
 	onDialogClose(e){
