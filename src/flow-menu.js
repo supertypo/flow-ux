@@ -122,10 +122,14 @@ export class FlowMenu extends BaseElement {
 
 	parseSelected(){
 		let {selected} = this;
-		//this.log("changes", changes, "selected:"+JSON.stringify(selected))
+		this.log("parseSelected:selected:"+JSON.stringify(selected), selected)
 		if(this.multiple){
 			if(!Array.isArray(selected)){
-				selected = JSON.parse(selected);
+				try{
+					selected = JSON.parse(selected);
+				}catch(e){
+					selected = undefined;
+				}
 				if(selected !== undefined)
 					selected = [selected];
 				else
@@ -190,7 +194,7 @@ export class FlowMenu extends BaseElement {
 		let selected = this._selected.slice(0)
 		if(!this.multiple)
 			selected = selected[0];
-		this.fire("select", {selected})
+		this.fire("select", {selected}, {bubbles:true})
 	}
 	get value(){
 		if(!this.multiple)

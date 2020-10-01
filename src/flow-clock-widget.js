@@ -1,4 +1,14 @@
 import {BaseElement, html, css} from './base-element.js';
+let Defaults = [
+	'America/Los_Angeles:San_Francisco',
+	'America/New_York',
+	'Europe/London',
+	'Europe/Moscow',
+	'Asia/Dubai',
+	'Asia/Hong_Kong',
+	'Asia/Tokyo',
+	'Asia/Tel_Aviv'
+]
 
 export class FlowClockWidget extends BaseElement {
 
@@ -9,17 +19,6 @@ export class FlowClockWidget extends BaseElement {
 			city:{type:String}
 		}
 	}
-
-	static Defaults = [
-		'America/Los_Angeles:San_Francisco',
-		'America/New_York',
-		'Europe/London',
-		'Europe/Moscow',
-		'Asia/Dubai',
-		'Asia/Hong_Kong',
-		'Asia/Tokyo',
-		'Asia/Tel_Aviv'
-	]
 
 	static get styles() {
 		return css`
@@ -97,5 +96,14 @@ export class FlowClockWidget extends BaseElement {
 		`;
 	}  
 }
+
+FlowClockWidget.Defaults = Defaults;
+
+/*
+class FlowClockWidgetChild extends FlowClockWidget{}
+class FlowClockWidgetChild2 extends FlowClockWidget{}
+FlowClockWidgetChild2.Defaults = [];
+console.log("FlowClockWidgetChild.Defaults", FlowClockWidgetChild.Defaults, FlowClockWidgetChild2.Defaults)
+*/
 
 FlowClockWidget.define('flow-clock-widget');
