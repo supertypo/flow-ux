@@ -16,7 +16,9 @@ export class FlowDialog extends BaseElement {
 			disabled:{type:Boolean, reflect:true},
 			heading:{type:String},
 			btns:{type:Array},
-			body:{type:Object}
+			body:{type:Object},
+			hideCloseBtn:{type:Boolean},
+			compact:{type:Boolean}
 		}
 	}
 
@@ -54,7 +56,7 @@ export class FlowDialog extends BaseElement {
 
 	static _show(args){
 
-		let {btns, body, title, modal, cls} = args;
+		let {btns, body, title, modal, cls, hideCloseBtn, compact} = args;
 		let dg = document.createElement("flow-dialog");
 		let promise = new Promise((resolve, reject)=>{
 			let resolved = false;
@@ -86,6 +88,10 @@ export class FlowDialog extends BaseElement {
 				dg.body = body;
 			if(title)
 				dg.heading = title;
+			if(hideCloseBtn)
+				dg.hideCloseBtn = true;
+			if(compact)
+				dg.compact = true;
 
 			document.body.append(dg)
 			setTimeout(()=>{
@@ -120,9 +126,9 @@ export class FlowDialog extends BaseElement {
 
 	render() {
 		return html
-		`<dialog @close=${this.onDialogClose}>
+		`<dialog @close=${this.onDialogClose} ?compact=${this.compact}>
 			<div class="heading" ?hide=${!this.heading}>${this.heading}</div>
-			<span class="close-btn" title="Close" 
+			<span class="close-btn" title="Close" ?hide=${this.hideCloseBtn}
 				@click="${this.onCloseClick}">&times;</span>
 			<div class="body">
 				${this.renderBody()}
@@ -211,7 +217,7 @@ export class FlowDialog extends BaseElement {
 		let btn = btnEl.getAttribute("value");
 		if(!btn)
 			return
-		let inputs = [...this.renderRoot.querySelectorAll(".input, flow-checkbox, input, textarea, select")];
+		let inputs = [...this.renderRoot.querySelectorAll(".input, flow-checkbox, input, textarea, select,flow-menu")];
 		let values = {};
 		inputs.forEach(input=>{
 			name = input.name||input.getAttribute("name")||input.getAttribute("data-name");

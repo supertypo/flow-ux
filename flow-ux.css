@@ -165,7 +165,7 @@ flow-dialog dialog{
     border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 }
 flow-dialog dialog .heading{padding:10px 10px 20px 10px;font-size:1.25rem;}
-flow-dialog dialog .body{padding:15px;}
+flow-dialog dialog .body{padding:15px;max-height:calc(100vh - 100px);overflow:auto}
 flow-dialog dialog .buttons{
     margin:10px;flex-wrap:wrap;justify-content:flex-end;
 }
@@ -177,6 +177,7 @@ flow-dialog dialog>.close-btn{
     font-size:var(--flow-dialog-close-btn-font-size, 1.5rem);
     cursor:pointer;
 }
+flow-dialog dialog>.close-btn[hide],
 flow-dialog[hide-close-btn] dialog>.close-btn,
 flow-dialog.hide-close-btn dialog>.close-btn{display:none;}
 flow-dialog dialog .buttons:not([hide]){display:flex;}
@@ -212,6 +213,25 @@ flow-dialog.flow-menu ul.menu>li.active{
     cursor:default;
 }
 flow-dialog.flow-menu ul.menu>li:last-child{border-bottom:0px;}
+
+flow-dialog dialog[compact] .body{padding:0px;}
+flow-dialog dialog[compact] .buttons{margin:10px 0px 0px}
+flow-dialog dialog[compact] .buttons flow-btn:last-child{margin-right:0px;}
+flow-dialog dialog[compact] .buttons flow-btn:first-child{margin-left:0px;}
+
+flow-dialog dialog *::-webkit-scrollbar-track{
+    box-shadow:var(--flow-scrollbar-track-box-shadow, initial);
+    background:var(--flow-scrollbar-track-bg, initial);
+}
+flow-dialog dialog *::-webkit-scrollbar{
+    width:var(--flow-scrollbar-width, initial);
+    height:var(--flow-scrollbar-width, initial);
+    background:var(--flow-scrollbar-bg, initial);
+}
+flow-dialog dialog *::-webkit-scrollbar-thumb{
+    box-shadow:var(--flow-scrollbar-thumb-box-shadow, initial);
+    background:var(--flow-scrollbar-thumb-bg, initial);
+}
 
 
 flow-doc{

@@ -104,9 +104,8 @@ class FlowGridStackPanelKlass extends base {
 	renderBody(){
 		return html`
 		<div>
-			PANEL : ${Math.random()*10000} 
-			<div>contextgroup:${this.contextgroup}</div>
-			<div>contexts:${JSON.stringify(this.contexts||[])}</div>
+			PANEL : ${Math.random()*10000}
+			<div>contexts:${JSON.stringify(this.ctxworkspaces||[])}</div>
 		</div>
 			
 		`

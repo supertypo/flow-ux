@@ -7,7 +7,9 @@ class FlowSelector extends FlowSelect{
     
     static get properties(){
         return {
-            mergeProps:{type:String}
+            mergeProps:{type:String},
+            mergeAttributes:{type:String},
+            mergeInnerHTML:{type:Boolean}
         }
     }
 
@@ -38,7 +40,7 @@ class FlowSelector extends FlowSelect{
                 line-height:var(--flow-selector-item-line-height, 1.1);
             }
             :host([multiple]) .selected .item{
-                margin:var(--flow-selector-multiple-item-margin, 0px 5px);
+                margin:var(--flow-selector-multiple-item-margin, 0px 5px 5px 0px);
             }
         `]
     }
@@ -57,7 +59,8 @@ class FlowSelector extends FlowSelect{
             let item = map.get(value)
             if(!item)
                 return
-            let clone = item.cloneNode();
+            let clone = item.cloneNode(this.mergeInnerHTML||false);
+            clone.removeAttribute('flow-select-filtred')
             clone.classList.remove("menu-item", "selected");
             clone.classList.add("item")
             return this.mergeNobeProperties(clone, item);
@@ -84,6 +87,14 @@ class FlowSelector extends FlowSelect{
         props.forEach(p=>{
             clone[p] = org[p];
         })
+        if(this.mergeAttributes){
+            let attributes = this.mergeAttributes.split(",");
+            attributes.forEach(name=>{
+                if(!name)
+                    return
+                clone.setAttribute(name, org.getAttribute(name));
+            })
+        }
         return clone;
     }
 }

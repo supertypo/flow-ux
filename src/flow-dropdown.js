@@ -1,4 +1,4 @@
-import {BaseElement, html, css, dpc} from './base-element.js';
+import {BaseElement, html, css, dpc, ScrollbarStyle} from './base-element.js';
 
 /**
  * @export
@@ -47,7 +47,7 @@ export class FlowDropdown extends BaseElement {
 	}
 
 	static get styles() {
-		return css`
+		return [ScrollbarStyle, css`
 		:host{
 			display:inline-block;margin:5px 0px;
 			vertical-align:middle;
@@ -87,7 +87,7 @@ export class FlowDropdown extends BaseElement {
 			border:var(--flow-dropdown-border, none);
 		}
 		:host([opened]) .dropdown-content{display:block;}
-		`;
+		`];
 	}
 	render() {
 		return html`
