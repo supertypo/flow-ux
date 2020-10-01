@@ -261,6 +261,7 @@ export class FlowContextWorkspaceElement extends BaseElement{
 	constructor(){
 		super();
 		this.initPropertiesDefaultValues();
+		this.saveState()
 	}
 
 	updated(changes){
@@ -279,8 +280,27 @@ export class FlowContextWorkspaceElement extends BaseElement{
 			}
 			props[key].value = this[key];
 		});
-
+		this.fireUpdateNotification();
+	}
+	buildNotificationArgs(){
+		let {code, name, contexts} = this;
+		return {code, name, contexts};
+	}
+	fireUpdateNotification(){
+		let props = this.buildNotificationArgs();
+		if(!this.validateNotificationHash(props))
+			return
 		this.fire("workspace-updated", {props, el:this}, {bubbles:true})
+	}
+	validateNotificationHash(props){
+		let hash = JSON.stringify(props);
+		if(this._hash == hash)
+			return false;
+		this._hash = hash;
+		return true;
+	}
+	saveState(){
+		this._hash = JSON.stringify(this.buildNotificationArgs());
 	}
 }
 
@@ -314,8 +334,21 @@ export const FlowContextListenerMixin = base=>{
 				multiWorkspace:{type:Boolean}
 			}
 		}
+
+		constructor(){
+			super();
+			this.registerListener("flow-ctxworkspace-updated", this.onContextUpdate.bind(this));
+		}
+
 		acceptContext(context){
 			return !!context.type;
+		}
+		onContextUpdate(e){
+			let {props} = e.detail;
+			console.log("onContextUpdate:props", props, e)
+			let workspaces = this.ctxworkspaces||[];
+			if(workspaces.includes(props.code))
+				this.requestUpdate("ctxworkspaces", null)
 		}
 		contextsUpdate(){
 			//
@@ -538,6 +571,7 @@ export class FlowContextManager extends BaseElement{
 	onWorkspaceUpdate(e){
 		let {props} = e.detail;
 		this.saveWorkspace(props);
+		this.fire("flow-ctxworkspace-updated", {props}, {}, window);
 	}
 
 	onCreateWorkspaceClick(){
