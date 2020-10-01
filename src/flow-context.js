@@ -26,7 +26,8 @@ let workspaceCount = 0;
 export class FlowContextWorkspaceItem extends BaseElement{
 	static get properties(){
 		return {
-			data:{type:Object}
+			data:{type:Object},
+			multi:{type:Boolean, reflect:true}
 		}
 	}
 	static get styles(){
@@ -34,7 +35,7 @@ export class FlowContextWorkspaceItem extends BaseElement{
 			:host{
 				display:flex;align-items:center;
 			}
-			:host(.item){
+			:host([multi].item){
 				padding:5px;margin:0px 2px 2px 0px;
 				border-radius:3px;
 				border:1px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
@@ -172,8 +173,8 @@ export class FlowContextWorkspaceElement extends BaseElement{
 		return html`
 		<div class="head">
 			<span class="name">
-				<flow-input label="Workspace Name" 
-					class="name-input" .value="${this.name}">
+				<flow-input label="Workspace Name" @changed="${this.onNameChange}"
+					class="name-input" .value="${this.name}" pattern="^.{3,20}$">
 				</flow-input>
 			</span>
 			<fa-icon icon="plus-circle" ?disabled=${!hasAddable} 
@@ -193,9 +194,18 @@ export class FlowContextWorkspaceElement extends BaseElement{
 	buildConfig(){
 		let {name, code} = this; 
 		let config = {name, code};
-		let contexts = this.renderRoot.querySelectorAll(".flow-context");
-		config.contexts = [...contexts].map(ctx=>ctx.buildConfig());
+		config.contexts = this.buildContextConfig();
 		return config;
+	}
+	buildContextConfig(){
+		let contexts = this.renderRoot.querySelectorAll(".flow-context");
+		return [...contexts].map(ctx=>ctx.buildConfig());
+	}
+
+	onNameChange(e){
+		if(e.detail.value.length < 3)
+			return
+		this.name = e.detail.value;
 	}
 
 	onRemoveContext(e){
@@ -252,6 +262,24 @@ export class FlowContextWorkspaceElement extends BaseElement{
 		super();
 		this.initPropertiesDefaultValues();
 	}
+
+	updated(changes){
+		super.updated(changes)
+		this.updateStaticValues();
+	}
+	updateStaticValues(){
+		this.updatePropValues(["name", "contexts"]);
+	}
+	updatePropValues(keys){
+		let props = this.constructor.properties;
+		keys.forEach(key=>{
+			if(key == "contexts"){
+				props[key].value = this.buildContextConfig();
+				return
+			}
+			props[key].value = this[key];
+		})
+	}
 }
 
 export const FlowContext = (config, base)=>{
@@ -292,7 +320,7 @@ export const FlowContextListenerMixin = base=>{
 		getContextManagerConfig(){
 			return {
 				workspaces:this.ctxworkspaces||[],
-				multiWorkspace:true
+				//multiWorkspace:true
 			}
 		}
 		setContextManagerConfig(config){
@@ -400,9 +428,7 @@ export class FlowContextManager extends BaseElement{
 				</flow-btn>
 			</div>
 			<div class="body">
-				<div @select="${this.onCtxSelectionChange}">
 				${this.renderWorkspaces()}
-				</div>
 			</div>
 			<div class="buttons">
 				<flow-btn @click="${this.onCloseClick}">Close</flow-btn>
@@ -423,10 +449,14 @@ export class FlowContextManager extends BaseElement{
 			?multiple=${this.multiWorkspace} .selected="${this.selected.slice(0)}"
 			@select="${this.onWorkspacesSelectionChange}">
 			${workspaces.map(w=>{
-				return html`<flow-context-workspace-item value="${w.code}"
-					class="menu-item" data-text="${w.name}" .data="${w}"></flow-context-workspace-item>`
+				return this.renderWorkspaceItem(w);
 			})}
 		</flow-selector>`
+	}
+	renderWorkspaceItem(w){
+		return html`<flow-context-workspace-item 
+					value="${w.code}" ?multi=${this.multiWorkspace}
+					class="menu-item" data-text="${w.name}" .data="${w}"></flow-context-workspace-item>`
 	}
 
 	renderWorkspaces(){
@@ -437,40 +467,57 @@ export class FlowContextManager extends BaseElement{
 		return nodes;
 	}
 
-	onCreateWorkspaceClick(){
-		let code = `workspace-${++workspaceCount}`;
-		FlowContextWorkspace({
-			name:`Workspace ${workspaceCount}`,
-			code,
+	buildNewWorkspaceConfig(){
+		return {
+			name:`Workspace ${++workspaceCount}`,
+			code:`workspace${(Math.random()*10000).toFixed(0)}`,
 			contexts:[]
-		});
+		}
+	}
+
+	createNewWorkspace(baseClass){
+		let config = this.buildNewWorkspaceConfig();
+		FlowContextWorkspace(config, baseClass);
+		return config;
+	}
+
+	onCreateWorkspaceClick(){
+		let config = this.createNewWorkspace();
 		if(this.multiWorkspace){
-			this.selected.push(code);
+			this.selected.push(config.code);
 			this.requestUpdate("workspaces", null)
 		}else{
-			this.selected = [code]
+			this.selected = [config.code]
 		}
 		console.log("onCreateWorkspaceClick", FlowContextWorkspaces, this.selected)
 	}
 
 	onWorkspacesSelectionChange(e){
 		let {selected} = e.detail;
+		if(!Array.isArray(selected)){
+			if(selected)
+				selected = [selected]
+			else
+				selected = [];
+		}
 		this.selected = selected;
 		console.log("Workspaces:selected", selected)
 	}
 	getWorkspacesConfig(){
 		let config = [];
-		let {workspacesMap} = this;
+		//let {workspacesMap} = this;
 		this.selected.map(wCode=>{
 			let workspace = (FlowContextWorkspaces.get(wCode)||{}).info;
 			if(!workspace)
 				return
+			/*
 			let workspaceConfig = workspacesMap.get(wCode);
 			if(workspaceConfig){
 				console.log("workspaceConfig", workspaceConfig)
 				config.push(workspaceConfig);
 				return
 			}
+			*/
 			workspace = Object.assign({}, workspace);
 			workspace.contexts = workspace.contexts.map(ctx=>{
 				ctx = (FlowContexts.get(ctx.code||ctx)||{}).info;
@@ -488,10 +535,6 @@ export class FlowContextManager extends BaseElement{
 		this.dialog = this.renderRoot.querySelector('dialog');
 		if(this._show)
 			this[this._show]();
-	}
-
-	onCtxSelectionChange(){
-		
 	}
 
 	onDialogClose(e){
@@ -532,7 +575,7 @@ export class FlowContextManager extends BaseElement{
 		this._cmp = cmp;
 		if(cmp){
 			let {workspaces, multiWorkspace} = cmp.getContextManagerConfig();
-			this.selected = workspaces.map(workspace=>workspace.code);
+			this.selected = workspaces.map(w=>w.code||w);
 			this.workspaces = workspaces;
 			this.multiWorkspace = !!multiWorkspace;
 		}else{
@@ -541,6 +584,7 @@ export class FlowContextManager extends BaseElement{
 			this.multiWorkspace = false;
 		}
 
+		/*
 		let {workspaces=[]} = this;
 		this.workspacesMap = new Map();
 		workspaces.forEach(workspace=>{
@@ -551,8 +595,8 @@ export class FlowContextManager extends BaseElement{
 			contexts.map(ctx=>{
 				workspace.contexts.set(ctx.code, ctx);
 			})
-			*/
-		})
+			* /
+		})*/
 	}
 	getHostComponent(){
 		return this._cmp;
@@ -564,7 +608,8 @@ export class FlowContextManager extends BaseElement{
 
 	buildConfig(){
 		let workspaces = this.renderRoot.querySelectorAll(".flow-workspace");
-		return [...workspaces].map(w=>w.buildConfig());
+		//return [...workspaces].map(w=>w.buildConfig());
+		return [...workspaces].map(w=>w.code);
 	}
 
 	onDoneClick(){
