@@ -65,7 +65,6 @@ FlowContextE.init();
 FlowContextWorkspace({
 	name:"Workspace A",
 	code:"group1",
-	color:'#0F0',
 	contexts:[{
 		code:"ctxa"
 	},{

@@ -278,7 +278,9 @@ export class FlowContextWorkspaceElement extends BaseElement{
 				return
 			}
 			props[key].value = this[key];
-		})
+		});
+
+		this.fire("workspace-updated", {props, el:this}, {bubbles:true})
 	}
 }
 
@@ -308,29 +310,30 @@ export const FlowContextListenerMixin = base=>{
 	class FlowContextListener extends base{
 		static get properties(){
 			return {
-				ctxworkspaces:{type:Array, value:[]}
+				ctxworkspaces:{type:Array, value:[]},
+				multiWorkspace:{type:Boolean}
 			}
 		}
 		acceptContext(context){
 			return !!context.type;
 		}
-		onContextsUpdate(){
+		contextsUpdate(){
 			//
 		}
 		getContextManagerConfig(){
 			return {
 				workspaces:this.ctxworkspaces||[],
-				//multiWorkspace:true
+				multiWorkspace:!!this.multiWorkspace
 			}
 		}
 		setContextManagerConfig(config){
 			let {workspaces} = config;
 			this.ctxworkspaces = workspaces;
-			this.onContextsUpdate();
+			this.contextsUpdate();
 		}
 
 		openContextManager(){
-			FlowContextManager.open(this);
+			(FlowContextListenerMixin.Manager||FlowContextManager).open(this);
 		}
 
 		serialize(){
@@ -353,7 +356,8 @@ export const FlowContextListenerMixin = base=>{
 export class FlowContextManager extends BaseElement{
 	static get properties(){
 		return {
-			selected:{type:Array, value:[]}
+			selected:{type:Array, value:[]},
+			isLoading:{type:Boolean}
 		}
 	}
 
@@ -393,6 +397,11 @@ export class FlowContextManager extends BaseElement{
 			.buttons flow-btn{margin:0px 5px;align-items:center;display:flex;}
 			.buttons flow-btn:last-child{margin-right:0px;}
 			.buttons flow-btn:first-child{margin-left:0px;}
+			dialog[loading]:after{
+				content:"";z-index:10000;
+				position:absolute;left:0px;top:0px;width:100%;height:100%;
+				background-color:var(--flow-context-manager-loading-mask-bg, rgba(0,0,0, 0.5))
+			}
 		`];
 	}
 
@@ -416,7 +425,7 @@ export class FlowContextManager extends BaseElement{
 
 	render(){
 		return html`
-		<dialog @close=${this.onDialogClose}>
+		<dialog @close=${this.onDialogClose} ?loading=${this.isLoading}>
 			<div class="head">
 				<span class="head-text">${this.heading||'Context Manager'}</span>
 				<fa-icon class="close-icon" @click="${this.onCloseClick}" icon="times"></fa-icon>
@@ -427,7 +436,7 @@ export class FlowContextManager extends BaseElement{
 					<fa-icon class="add-icon" icon="plus"></fa-icon>
 				</flow-btn>
 			</div>
-			<div class="body">
+			<div class="body" @workspace-updated="${this.onWorkspaceUpdate}">
 				${this.renderWorkspaces()}
 			</div>
 			<div class="buttons">
@@ -439,6 +448,7 @@ export class FlowContextManager extends BaseElement{
 
 	constructor(){
 		super();
+		this.restoreWorkspaces();
 		this.initPropertiesDefaultValues();
 	}
 
@@ -479,6 +489,55 @@ export class FlowContextManager extends BaseElement{
 		let config = this.buildNewWorkspaceConfig();
 		FlowContextWorkspace(config, baseClass);
 		return config;
+	}
+
+	saveWorkspace(props){
+		let workspaces = [];
+		FlowContextWorkspaces.forEach(klass=>{
+			let info = Object.assign({}, klass.info);
+			workspaces.push(info);
+		});
+		this.saveWorkspacesConfig(workspaces);
+	}
+
+	saveWorkspacesConfig(workspaces){
+		this.constructor.setLocalSetting("ctxworkspaces", JSON.stringify(workspaces))
+	}
+
+	fetchWorkspacesConfig(){
+		return new Promise((resolve, reject)=>{
+			let data = JSON.parse(this.constructor.getLocalSetting("ctxworkspaces", "[]"))
+			//just to test delay in loading
+			setTimeout(()=>{
+				resolve(data)
+			}, 1000);
+		})
+	}
+	restoreWorkspaces(){
+		this.isLoading = true;
+		let p = this.fetchWorkspacesConfig();
+		p.then(workspaces=>{
+			this.loadWorkspacesConfig(workspaces)
+		},err=>{
+
+		}).catch((e)=>{
+
+		}).finally(()=>{
+			this.isLoading = false;
+		})
+		
+	}
+	loadWorkspacesConfig(workspaces){
+		console.log("loadWorkspacesConfig:workspaces", workspaces)
+		workspaces.forEach(workspace=>{
+			FlowContextWorkspace(workspace)
+		});
+		this.requestUpdate("_workspace", null)
+	}
+
+	onWorkspaceUpdate(e){
+		let {props} = e.detail;
+		this.saveWorkspace(props);
 	}
 
 	onCreateWorkspaceClick(){
