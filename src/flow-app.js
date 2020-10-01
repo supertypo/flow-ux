@@ -184,7 +184,18 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 				color:var(--flow-app-header-color, #91aec1);
 				text-decoration:none;
 			}
-			.body{flex:1;display:flex;flex-direction:row;overflow:hidden;}
+			.footer-offset {
+				height: var(--flow-app-footer-height, 0px);
+			}
+			.footer {
+				height: var(--flow-app-footer-height, 0px);
+				color:var(--flow-app-footer-color, #000);
+				background:var(--flow-app-footer-bg, #91aec1);				
+			}
+			
+			.body{
+				flex:1;display:flex;flex-direction:row;overflow:hidden;
+			}
 			.drawer{
 				background-color:var(--flow-app-drawer-bg, var(--flow-background-color, inherit));
 				color:var(--flow-app-drawer-color, var(--flow-color, inherit));
@@ -214,6 +225,12 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 				overflow:var(--flow-app-main-overflow, auto);
 				position:var(--flow-app-main-position, initial);
 				display:var(--flow-app-main-display, initial);
+			}
+
+			.wrapper {
+				min-height: 100%;
+				margin-bottom: calc(-1 * var(--flow-app-footer-height,0px));
+
 			}
 			:host([main-v-box]) .main{
 				display:flex;flex-direction:column;
@@ -279,9 +296,20 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 				@click="${this.toggleFloatingDrawer}"></fa-icon>
 			</div>
 			<slot name="drawer"></slot></div>
-			<div class="main sbar"><slot name="main"></slot><div 
-				class="main-mask" @click="${this.toggleFloatingDrawer}"></div></div>
-		</div>`
+			<div class="main sbar">
+				<div class="wrapper">
+					<slot name="main"></slot><div 
+					class="main-mask" @click="${this.toggleFloatingDrawer}"></div>
+				
+					<div class='footer-offset'></div>
+				</div>
+
+				<div class="footer">
+					<slot name="footer"></slot>
+				</div>
+			</div>
+		</div>
+		`
 	}
 	firstUpdated(){
 		this.setLoading(false);
