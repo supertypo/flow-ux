@@ -1,6 +1,6 @@
 import {BaseElement, html, css, baseUrl, dpc, getLocalSetting, setLocalSetting} from './base-element.js';
 export * from './flow-gridstack-panel.js';
-export * from './flow-context-selectors.js';
+//export * from './flow-context-test.js';
 export * from './flow-context.js';
 
 export class FlowGridStackTest extends BaseElement{

@@ -149,14 +149,6 @@ return FlowGridStackPanelKlass
 }
 
 export const FlowGridStackPanelImpl = FlowGridStackPanelMixin(BaseElement);
-export class FlowGridStackPanel extends FlowContextListenerMixin(FlowGridStackPanelImpl){
-
-	getContextManagerConfig(){
-		let config = super.getContextManagerConfig();
-		config.groupOptions = new Map();
-		config.groupOptions.set('group1', {multiple:true});
-		return config;
-	}
-};
+export class FlowGridStackPanel extends FlowContextListenerMixin(FlowGridStackPanelImpl){};
 
 FlowGridStackPanel.define('flow-gridstack-panel');
