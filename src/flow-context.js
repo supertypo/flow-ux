@@ -136,7 +136,8 @@ export class FlowContextWorkspaceElement extends BaseElement{
 		return {
 			name:{type:String, value:""},
 			code:{type:String, value:""},
-			contexts:{type:Array, value:[]}
+			contexts:{type:Array, value:[]},
+			readonly:{type:Boolean, value:false}
 		}
 	}
 	static init(){
@@ -173,13 +174,13 @@ export class FlowContextWorkspaceElement extends BaseElement{
 
 	render(){
 		let contexts = this.contexts;
-		console.log("contexts", contexts)
+		this.log("render:contexts", contexts)
 		let hasAddable = this.getAddableContexts().length
 		return html`
 		<div class="head">
 			${this.renderHeadPrefix()}
 			<span class="name">
-				<flow-input label="Workspace Name" @changed="${this.onNameChange}"
+				<flow-input ?readonly=${this.readonly} label="Workspace Name" @changed="${this.onNameChange}"
 					class="name-input" .value="${this.name}" pattern="^.{3,20}$">
 				</flow-input>
 			</span>
@@ -190,7 +191,7 @@ export class FlowContextWorkspaceElement extends BaseElement{
 		${contexts.map(ctx=>{
 			let el = this.constructor.createContextNode(ctx.code);
 			if(ctx.config)
-				el.setConfig(ctx.config);
+				el.setConfig(Object.assign({}, ctx.config));
 			return el;
 		})}
 		</div>`
@@ -216,7 +217,9 @@ export class FlowContextWorkspaceElement extends BaseElement{
 	}
 	buildContextConfig(){
 		let contexts = this.renderRoot.querySelectorAll(".flow-context");
-		return [...contexts].map(ctx=>ctx.buildConfig());
+		contexts = [...contexts].map(ctx=>ctx.buildConfig());
+		this.log("buildContextConfig:contexts", contexts)
+		return contexts;
 	}
 
 	onNameChange(e){
@@ -295,20 +298,29 @@ export class FlowContextWorkspaceElement extends BaseElement{
 		this.updatePropValues(this.getPropsKeys());
 	}
 	updatePropValues(keys){
-		let props = this.constructor.properties;
+		let props = this.constructor._classProperties;
 		keys.forEach(key=>{
 			if(key == "contexts"){
-				props[key].value = this.buildContextConfig();
+				props.get(key).value = this.buildContextConfig();
 				return
 			}
-			props[key].value = this[key];
+			if(!props.has(key)){
+				this.log("perperty/key is missing", key)
+				return
+			}
+			props.get(key).value = this[key];
 		});
 		this.fireUpdateNotification();
 	}
 	buildNotificationArgs(){
 		let {code} = this;
 		let args = {code};
+		let props = this.constructor._classProperties;
 		this.getPropsKeys().forEach(key=>{
+			if(key == "contexts"){
+				args[key] = props.get(key).value;
+				return
+			}
 			args[key] = this[key];
 		})
 		return args;
@@ -321,8 +333,10 @@ export class FlowContextWorkspaceElement extends BaseElement{
 	}
 	validateNotificationHash(props){
 		let hash = JSON.stringify(props);
-		if(this._hash == hash)
+		if(this._hash == hash){
+			//this.log("this._hash == hash\n"+this._hash+"\n--------\n"+hash)
 			return false;
+		}
 		this._hash = hash;
 		return true;
 	}
@@ -347,6 +361,9 @@ export const CreateFlowContextWorkspace = (config, base)=>{
 	class klass extends (base||FlowContextWorkspaceElement){
 		static get properties(){
 			return props;
+		}
+		_initLog(forceLog){
+			super._initLog(forceLog, 'FlowContextWorkspace');
 		}
 	}
 
@@ -394,6 +411,13 @@ export const FlowContextListenerMixin = base=>{
 
 		openContextManager(){
 			Manager.open(this);
+		}
+
+		getContextWorkspaces(){
+			let workspaces = this.ctxworkspaces||[];
+			return workspaces.map(code=>{
+				return (FlowContextWorkspaces.get(code)||{}).info;
+			}).filter(w=>w);
 		}
 
 		serialize(){
