@@ -406,6 +406,7 @@ export class FlowContextManager extends BaseElement{
 			    min-width:var(--flow-context-manager-dialog-min-width, 300px);
 			    min-height:var(--flow-context-manager-dialog-min-height, 200px);
 			}
+			dialog:not([open]){display:none}
 			.head,.header{
 				display:flex;align-items:center;justify-content:center;
 				padding:var(--flow-context-manager-head-padding, 10px);
