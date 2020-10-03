@@ -28,7 +28,8 @@ import {BaseElement, html, css} from './base-element.js';
 export class FlowCheckbox extends BaseElement {
 	static get properties() {
 		return {
-			checked:{type:Boolean, reflect: true}
+			checked:{type:Boolean, reflect: true},
+			name:{type:String}
 		}
 	}
 	static get styles() {
@@ -123,7 +124,7 @@ export class FlowCheckbox extends BaseElement {
 			this.fireChangeEvent();
 	}
 	fireChangeEvent(){
-		this.fire("changed", {checked: this.checked})
+		this.fire("changed", {checked: this.checked, name:this.name}, {bubbles:true})
 	}
 }
 

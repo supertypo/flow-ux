@@ -2,23 +2,23 @@ import {BaseElement, html, css, ScrollbarStyle} from './base-element.js';
 export const FlowContextWorkspaces = new Map();
 export const FlowContexts = new Map();
 const boxStyle = css`
-:host{
-	display:block;padding:5px;border-radius:3px;margin-top:5px;
-	border:1px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
-}
-.head{
-	display:flex;align-items:center;
-	padding:5px;
-}
-.head .name{
-	flex:1;overflow:hidden;text-overflow:ellipsis;
-	margin-right:10px;
-}
-.head fa-icon{margin:5px;}
-fa-icon[disabled]{
-	pointer-events:none;opacity:0.5;
-}
-fa-icon:not([disabled]){cursor:pointer}
+	:host{
+		display:block;padding:5px;border-radius:3px;margin-top:5px;
+		border:1px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+	}
+	.head{
+		display:flex;align-items:center;
+		padding:5px;
+	}
+	.head .name{
+		flex:1;overflow:hidden;text-overflow:ellipsis;
+		margin-right:10px;
+	}
+	.head fa-icon{margin:5px;}
+	fa-icon[disabled]{
+		pointer-events:none;opacity:0.5;
+	}
+	fa-icon:not([disabled]){cursor:pointer}
 `
 
 let workspaceCount = 0;
@@ -69,7 +69,8 @@ export class FlowContextElement extends BaseElement{
 		return {
 			name:{type:String, value:""},
 			type:{type:String, value:""},
-			code:{type:String, value:""}
+			code:{type:String, value:""},
+			config:{type:Object, value:{}}
 		}
 	}
 	static get styles(){
@@ -106,6 +107,10 @@ export class FlowContextElement extends BaseElement{
 		super();
 		this.initPropertiesDefaultValues();
 	}
+	fireNotification(){
+		let args = this.buildConfig();
+		this.fire("context-updated", args, {bubbles:true})
+	}
 	onRemoveClick(){
 		this.fire("remove-ctx-request", {code:this.code}, {bubbles:true})
 	}
@@ -118,11 +123,11 @@ export class FlowContextElement extends BaseElement{
 		result.config = this.getConfig();
 		return result;
 	}
-	setConfig(){
-
+	setConfig(config){
+		this.config = config;
 	}
 	getConfig(){
-		return {};
+		return this.config || {};
 	}
 }
 
@@ -131,7 +136,8 @@ export class FlowContextWorkspaceElement extends BaseElement{
 		return {
 			name:{type:String, value:""},
 			code:{type:String, value:""},
-			contexts:{type:Array, value:[]}
+			contexts:{type:Array, value:[]},
+			readonly:{type:Boolean, value:false}
 		}
 	}
 	static init(){
@@ -168,38 +174,52 @@ export class FlowContextWorkspaceElement extends BaseElement{
 
 	render(){
 		let contexts = this.contexts;
-		console.log("contexts", contexts)
+		this.log("render:contexts", contexts)
 		let hasAddable = this.getAddableContexts().length
 		return html`
 		<div class="head">
+			${this.renderHeadPrefix()}
 			<span class="name">
-				<flow-input label="Workspace Name" @changed="${this.onNameChange}"
+				<flow-input ?readonly=${this.readonly} label="Workspace Name" @changed="${this.onNameChange}"
 					class="name-input" .value="${this.name}" pattern="^.{3,20}$">
 				</flow-input>
 			</span>
-			<fa-icon icon="plus-circle" ?disabled=${!hasAddable} 
-				@click="${this.onAddContextClick}"></fa-icon>
-			<fa-icon icon="trash-alt" @click="${this.onRemoveWorkspaceClick}"></fa-icon>
+			${this.renderHeadTools({hasAddable})}
 		</div>
-		<div class="contexts" @remove-ctx-request=${this.onRemoveContext}>
+		<div class="contexts" @remove-ctx-request=${this.onRemoveContext}
+			@context-updated=${this.onContextUpdate}>
 		${contexts.map(ctx=>{
 			let el = this.constructor.createContextNode(ctx.code);
 			if(ctx.config)
-				el.setConfig(ctx.config);
+				el.setConfig(Object.assign({}, ctx.config));
 			return el;
 		})}
 		</div>`
+	}
+	renderHeadPrefix(){
+		return '';
+	}
+	renderHeadTools({hasAddable}){
+		return html`<fa-icon icon="plus-circle" ?disabled=${!hasAddable} 
+			@click="${this.onAddContextClick}"></fa-icon>
+		<fa-icon icon="trash-alt" @click="${this.onRemoveWorkspaceClick}"></fa-icon>`;
 	}
 
 	buildConfig(){
 		let {name, code} = this; 
 		let config = {name, code};
+		this.getPropsKeys().forEach(key=>{
+			if(key != 'contexts')
+				config[key] = this[key];
+		})
 		config.contexts = this.buildContextConfig();
 		return config;
 	}
 	buildContextConfig(){
 		let contexts = this.renderRoot.querySelectorAll(".flow-context");
-		return [...contexts].map(ctx=>ctx.buildConfig());
+		contexts = [...contexts].map(ctx=>ctx.buildConfig());
+		this.log("buildContextConfig:contexts", contexts)
+		return contexts;
 	}
 
 	onNameChange(e){
@@ -268,23 +288,42 @@ export class FlowContextWorkspaceElement extends BaseElement{
 		super.updated(changes)
 		this.updateStaticValues();
 	}
+	onContextUpdate(){
+		this.updateStaticValues();
+	}
+	getPropsKeys(extraKeys=[]){
+		return ["name", "contexts"].concat(extraKeys);
+	}
 	updateStaticValues(){
-		this.updatePropValues(["name", "contexts"]);
+		this.updatePropValues(this.getPropsKeys());
 	}
 	updatePropValues(keys){
-		let props = this.constructor.properties;
+		let props = this.constructor._classProperties;
 		keys.forEach(key=>{
 			if(key == "contexts"){
-				props[key].value = this.buildContextConfig();
+				props.get(key).value = this.buildContextConfig();
 				return
 			}
-			props[key].value = this[key];
+			if(!props.has(key)){
+				this.log("perperty/key is missing", key)
+				return
+			}
+			props.get(key).value = this[key];
 		});
 		this.fireUpdateNotification();
 	}
 	buildNotificationArgs(){
-		let {code, name, contexts} = this;
-		return {code, name, contexts};
+		let {code} = this;
+		let args = {code};
+		let props = this.constructor._classProperties;
+		this.getPropsKeys().forEach(key=>{
+			if(key == "contexts"){
+				args[key] = props.get(key).value;
+				return
+			}
+			args[key] = this[key];
+		})
+		return args;
 	}
 	fireUpdateNotification(){
 		let props = this.buildNotificationArgs();
@@ -294,8 +333,10 @@ export class FlowContextWorkspaceElement extends BaseElement{
 	}
 	validateNotificationHash(props){
 		let hash = JSON.stringify(props);
-		if(this._hash == hash)
+		if(this._hash == hash){
+			//this.log("this._hash == hash\n"+this._hash+"\n--------\n"+hash)
 			return false;
+		}
 		this._hash = hash;
 		return true;
 	}
@@ -315,11 +356,14 @@ export const FlowContext = (config, base)=>{
 	klass.init();
 }
 
-export const FlowContextWorkspace = (config, base)=>{
+export const CreateFlowContextWorkspace = (config, base)=>{
 	let props = objectToProperties(config);
 	class klass extends (base||FlowContextWorkspaceElement){
 		static get properties(){
 			return props;
+		}
+		_initLog(forceLog){
+			super._initLog(forceLog, 'FlowContextWorkspace');
 		}
 	}
 
@@ -366,7 +410,14 @@ export const FlowContextListenerMixin = base=>{
 		}
 
 		openContextManager(){
-			(FlowContextListenerMixin.Manager||FlowContextManager).open(this);
+			Manager.open(this);
+		}
+
+		getContextWorkspaces(){
+			let workspaces = this.ctxworkspaces||[];
+			return workspaces.map(code=>{
+				return (FlowContextWorkspaces.get(code)||{}).info;
+			}).filter(w=>w);
 		}
 
 		serialize(){
@@ -405,7 +456,11 @@ export class FlowContextManager extends BaseElement{
 			    border-radius:var(--flow-context-manager-dialog-border-radius, 4px);
 			    min-width:var(--flow-context-manager-dialog-min-width, 300px);
 			    min-height:var(--flow-context-manager-dialog-min-height, 200px);
+			    background-color:var(--flow-context-manager-dialog-bg, var(--flow-dialog-background-color, var(--flow-background-color)));
+			    color:var(--flow-context-manager-dialog-color, var(--flow-dialog-color, var(--flow-color)));
+			    box-shadow:var(--flow-box-shadow);
 			}
+			dialog:not([open]){display:none}
 			.head,.header{
 				display:flex;align-items:center;justify-content:center;
 				padding:var(--flow-context-manager-head-padding, 10px);
@@ -418,7 +473,10 @@ export class FlowContextManager extends BaseElement{
 			.header{
 				padding:var(--flow-context-manager-header-padding, 5px);
 			}
-			.workspace-selector{flex:1;--flow-selector-dropdown-width:100%;}
+			.workspace-selector{
+				flex:1;--flow-selector-dropdown-width:100%;
+				--flow-select-selected-max-width:100%;
+			}
 			.close-icon{cursor:pointer;--fa-icon-size:20px;}
 			.body{
 				padding:var(--flow-context-manager-body-padding, 10px);
@@ -510,17 +568,17 @@ export class FlowContextManager extends BaseElement{
 		return nodes;
 	}
 
-	buildNewWorkspaceConfig(){
-		return {
+	buildNewWorkspaceConfig(config){
+		return Object.assign({
 			name:`Workspace ${++workspaceCount}`,
 			code:`workspace${(Math.random()*10000).toFixed(0)}`,
 			contexts:[]
-		}
+		}, config||{});
 	}
 
 	createNewWorkspace(baseClass){
 		let config = this.buildNewWorkspaceConfig();
-		FlowContextWorkspace(config, baseClass);
+		CreateWorkspace(config, baseClass);
 		return config;
 	}
 
@@ -563,7 +621,7 @@ export class FlowContextManager extends BaseElement{
 	loadWorkspacesConfig(workspaces){
 		console.log("loadWorkspacesConfig:workspaces", workspaces)
 		workspaces.forEach(workspace=>{
-			FlowContextWorkspace(workspace)
+			CreateWorkspace(workspace)
 		});
 		this.requestUpdate("_workspace", null)
 	}
@@ -732,4 +790,13 @@ export class FlowContextManager extends BaseElement{
 }
 
 FlowContextManager.define(FlowContextManager._tagName)
+
+let Manager = FlowContextManager;
+let CreateWorkspace = CreateFlowContextWorkspace;
+export const SetFlowContextManger = manager=>{
+	Manager = manager;
+}
+export const SetFlowContextWorkspaceCreator = creator=>{
+	CreateWorkspace = creator;
+}
 

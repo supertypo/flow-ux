@@ -229,6 +229,7 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 
 			.wrapper {
 				min-height: 100%;
+				height:var(--flow-app-wrapper-height, 100%);
 				margin-bottom: calc(-1 * var(--flow-app-footer-height,0px));
 
 			}

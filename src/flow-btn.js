@@ -12,7 +12,7 @@ import {BaseElement, html, css} from './base-element.js';
 * @cssvar {font-size} [--flow-btn-font-size=initial]
 * @cssvar {line-height} [--flow-btn-line-height=inherit]
 * @cssvar {color} [--flow-border-color=var(--flow-primary-color, rgba(0,151,115,1))]
-* @cssvar {color} [--flow-border-hover-color=var(--flow-primary-color, rgba(0,151,115,1))]
+* @cssvar {color} [--flow-btn-hover-border-color=var(--flow-primary-color, rgba(0,151,115,1))]
 * @cssvar {color} [--flow-btn-primary-invert-color=var(--flow-primary-invert-color, #FFF)]
 * @cssvar {color} [--flow-btn-success-color=var(--flow-btn-success-color, #FFF)]
 * @cssvar {color} [--flow-btn-hover-info-color=var(--flow-btn-info-color, #FFF))]
@@ -81,7 +81,7 @@ export class FlowBtn extends BaseElement {
 			}
 			:host(:not([disabled]):hover){
 				background-color:var(--flow-btn-hover-bg-color, inherit);
-				border-color:var(--flow-border-hover-color, inherit);
+				border-color:var(--flow-btn-hover-border-color, inherit);
 				color:var(--flow-btn-hover-color, inherit);
 			}
 			:host([primary]),
@@ -91,7 +91,7 @@ export class FlowBtn extends BaseElement {
 			}
 			:host([primary]:not([disabled]):hover),
 			:host(.primary:not([disabled]):hover){
-				background-color:var(--flow-btn-hover-primary-bg-color, var(--flow-border-hover-color, var(--flow-primary-color, rgba(0,151,115,1))));
+				background-color:var(--flow-btn-hover-primary-bg-color, var(--flow-btn-hover-border-color, var(--flow-primary-color, rgba(0,151,115,1))));
 			}
 
 			:host(.secondary){
