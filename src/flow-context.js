@@ -1,6 +1,7 @@
-import {BaseElement, html, css, ScrollbarStyle, deepClone} from './base-element.js';
+import {BaseElement, html, flowHtml, css, ScrollbarStyle, deepClone, render} from './base-element.js';
 export const FlowContextWorkspaces = new Map();
 export const FlowContexts = new Map();
+
 const boxStyle = css`
 	:host{
 		display:block;padding:5px;border-radius:3px;margin-top:5px;
@@ -187,9 +188,16 @@ export class FlowContextWorkspaceElement extends ContextElement{
 		}
 	}
 	static createContextNode(code, attr, props){
+		/*
 		let el = this.createElement(`flow-ctx-${code}`, attr, props);
 		el.classList.add("flow-context");
 		return el;
+		*/
+		let testValue = 123;
+		let tags = new Map();
+		tags.set("tag", `flow-ctx-${code}`);
+		tags.set("attr1", code)
+		return flowHtml`${tags}<{tag} {attr1}="${testValue}" .config=${props.config||{}} class="flow-context"></{tag}>`;
 	}
 	static createContextWorkspaceNode(code, attr, props){
 		let el = this.createElement(`flow-ctxworkspace-${code}`, attr, props);
@@ -235,12 +243,15 @@ export class FlowContextWorkspaceElement extends ContextElement{
 		<div class="contexts" @remove-ctx-request=${this.onRemoveContext}
 			@context-updated=${this.onContextUpdate}>
 			${contexts.map(ctx=>{
-				let el = this.constructor.createContextNode(ctx.code);
+				return this.constructor.createContextNode(ctx.code, {}, {
+					config: Object.assign({}, ctx.config||{})
+				})
+				/*let el = this.constructor.createContextNode(ctx.code);
 				if(!el.setConfig){
 					console.log("el.setConfig missing", el)
 				}
 				el.setConfig(Object.assign({}, ctx.config||{}));
-				return el;
+				return el;*/
 			})}
 		</div>`
 	}
