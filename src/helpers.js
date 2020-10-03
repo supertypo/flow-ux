@@ -181,6 +181,9 @@ export const DeferComponent = (ctor, name, deps) => {
 		ctor.define(name);
 }
 
+export const isArray = o=>Array.isArray(o);
+export const isObject = o=>Object.prototype.toString.call(o)=='[object Object]';
+
 export const camelCase = str=>{
   // Lower cases the string
   return (str+"").toLowerCase()
@@ -208,4 +211,23 @@ export const humanize = str=>{
     return str[0].toUpperCase()+str.substring(1);
     // Removes spaces 
     //.replace( / /g, '' );
+}
+
+export const deepClone = (obj, debug)=>{
+	if(debug)
+		console.log("deepClone:", obj, obj instanceof HTMLElement)
+	if((typeof jQuery !='undefined' && obj instanceof jQuery) || (obj?.constructor?.prototype.jquery))
+		return obj.clone();//$("___xxxxxx____");
+	if(obj instanceof HTMLElement)
+		return obj.cloneNode(true);
+	if(isArray(obj))
+		return obj.map(e=>deepClone(e, debug))
+	if(isObject(obj)){
+		let r = {};
+		Object.entries(obj).forEach(([key, value])=>{
+			r[key] = deepClone(value, debug);
+		})
+		return r;
+	}
+	return obj;
 }
