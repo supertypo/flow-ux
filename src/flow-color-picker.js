@@ -20,7 +20,7 @@ export class FlowColorPicker extends BaseElement {
 		return css`
 			:host{
 				display:inline-block;width:20px;height:20px;
-				position:relative;
+				position:relative;box-sizing:border-box;
 				border:var(--flow-color-picker-border, 1px solid var(--flow-border-color, var(--flow-primary-color, #FFF)));
 			}
 			.box{width:100%;height:100%}

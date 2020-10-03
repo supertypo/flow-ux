@@ -197,12 +197,20 @@ export class FlowContextWorkspaceElement extends ContextElement{
 		let tags = new Map();
 		tags.set("tag", `flow-ctx-${code}`);
 		tags.set("attr1", code)
-		return flowHtml`${tags}<{tag} {attr1}="${testValue}" .config=${props.config||{}} class="flow-context"></{tag}>`;
+		return flowHtml`${tags}<{tag} {attr1}="${testValue}" 
+			.config=${props.config||{}} class="flow-context"></{tag}>`;
 	}
 	static createContextWorkspaceNode(code, attr, props){
+		/*
 		let el = this.createElement(`flow-ctxworkspace-${code}`, attr, props);
 		el.classList.add("flow-workspace");
 		return el;
+		*/
+		let tags = new Map();
+		tags.set("tag", `flow-ctxworkspace-${code}`);
+
+		return flowHtml`${tags}<{tag} 
+			.manager=${props.manager} class="flow-workspace"></{tag}>`;
 	}
 	static get styles(){
 		return boxStyle;
