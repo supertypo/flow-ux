@@ -21,9 +21,10 @@ export class FlowColorPicker extends BaseElement {
 			:host{
 				display:inline-block;width:20px;height:20px;
 				position:relative;
+				border:var(--flow-color-picker-border, 1px solid var(--flow-border-color, var(--flow-primary-color, #FFF)));
 			}
 			.box{width:100%;height:100%}
-			:host(:not([disabled])){
+			:host(:not([disabled])) input{
 				cursor:pointer;
 			}
 			:host([disabled]) input{display:none}
