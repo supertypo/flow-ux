@@ -6,6 +6,7 @@ export * from 'lit-html/lit-html.js';
 import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon, FlowStates, DeferComponent} from './helpers.js';
 import {styleAppendTo} from "./helpers.js";
 export * from './helpers.js';
+export * from './flow-html.js';
 export * from './pagination.js';
 /**
 * @class BaseElement
