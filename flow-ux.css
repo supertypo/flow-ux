@@ -196,7 +196,7 @@ flow-dialog dialog input[type="url"]{
 flow-dialog dialog flow-checkbox{margin:10px 0px;}
 flow-dialog dialog textarea{min-height:50px;}
 flow-dialog.flow-menu{position:fixed;z-index:10000;width:200px;box-sizing:border-box;}
-flow-dialog.flow-menu dialog{margin:0px;}
+flow-dialog.flow-menu dialog{margin:0px;position:fixed;z-index:10000;max-width:200px;box-sizing:border-box;}
 flow-dialog.flow-menu dialog .body{padding:0px;}
 flow-dialog.flow-menu ul.menu{margin:0px;padding:0px;list-style:none}
 flow-dialog.flow-menu ul.menu>li{

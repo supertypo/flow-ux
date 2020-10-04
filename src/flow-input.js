@@ -165,7 +165,7 @@ export class FlowInput extends BaseElement {
 				pattern="${this.pattern||''}"
 				?readonly=${this.readonly}
 				?disabled=${this.disabled} 
-				@change=${this.onChange} 
+				@change=${this.onChange}
 				.value="${this.value}" />
 			<div class="btn">
 				<div class="text"><flow-i18n text="${this.btnText || 'Apply'}"></flow-i18n></div>

@@ -35,7 +35,7 @@ class FlowGridStackPanelKlass extends base {
 	static get properties() {
 		return {
 			heading:{type:String, value:"Hello"},
-			opened:{type:Boolean, value:false, reflect:true}
+			//opened:{type:Boolean, value:false, reflect:true}
 		}
 	}
 
@@ -69,9 +69,9 @@ class FlowGridStackPanelKlass extends base {
 			}
 			.drag-region{cursor:move;}
 			.body{overflow:auto;flex:1}
-			:host(:not([opened])) .body{
+			/*:host(:not([opened])) .body{
 				display:none;
-			}
+			}*/
 			.heading fa-icon:not(.disabled){cursor:pointer}
 		`;
 	}

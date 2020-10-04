@@ -56,16 +56,33 @@ export class FlowDialog extends BaseElement {
 
 	static _show(args){
 
-		let {btns, body, title, modal, cls, hideCloseBtn, compact} = args;
+		let {btns, body, title, modal, cls, hideCloseBtn, compact, alignTo} = args;
+		let {autoClose} = args;
 		let dg = document.createElement("flow-dialog");
 		let promise = new Promise((resolve, reject)=>{
 			let resolved = false;
+			let onWindoClick = (e)=>{
+				if(resolved){
+					removeWinEventListener();
+					return
+				}
+				let t = e.target;
+				let menu = t && t.closest && t.closest("flow-dialog");
+				if(menu != dg){
+					removeWinEventListener();
+					dg.destroy();
+				}
+			}
+			let removeWinEventListener = ()=>{
+				window.removeEventListener("click", onWindoClick)
+			}
 			let _resolve = (result)=>{
 				if(resolved)
 					return
 				resolved = true;
 				dg.remove();
 				dg.removeEventListener("btn-click", onBtnClicked);
+				removeWinEventListener();
 				resolve(result);
 			}
 			let onBtnClicked = e=>{
@@ -92,16 +109,56 @@ export class FlowDialog extends BaseElement {
 				dg.hideCloseBtn = true;
 			if(compact)
 				dg.compact = true;
+			if(alignTo)
+				this.alignTo(alignTo, dg, args);
+
 
 			document.body.append(dg)
 			setTimeout(()=>{
 				modal?dg.showModal():dg.show();
+				if(autoClose){
+					window.addEventListener("click", onWindoClick)
+				}
 			}, 100)
 			
 		})
 
 		promise.dialog = dg;
 		return promise
+	}
+
+	static alignTo(alignTarget, dialog, args){
+		let {vOffset=0, hOffset=0, targetPos='left-bottom', dialogPos='left-top'} = args;
+		let box = alignTarget.getBoundingClientRect();
+		let dialogBox = dialog.getBoundingClientRect();
+		let style = dialog.style;
+		let [H,V] = targetPos.split("-");
+		let [dH, dV] = dialogPos.split("-");
+		let dVOpposite = dV=='top'?'bottom':'top';
+		let dHOpposite = dH=='left'?'right':'left';
+		style[dVOpposite] = 'unset';
+		style[dHOpposite] = 'unset';
+		let setPos = ()=>{
+			style[dH] = (box[H]+hOffset)+"px";
+			style[dV] = (box[V]+vOffset)+"px";
+			
+			/*
+			if(targetPos == 'right-top'){
+				
+			}else{
+				style.top = (box.bottom+vOffset)+"px";
+				style.left = (box.right-dialogBox.width+hOffset)+"px";
+			}
+			*/
+		}
+
+		setPos();
+		dialog.addEventListener("updated", e=>{
+			let {dialog} = e.detail
+			dialogBox = dialog.getBoundingClientRect();
+			style = dialog.style;
+			setPos();
+		})
 	}
 
 	static alert(...args){
@@ -205,7 +262,7 @@ export class FlowDialog extends BaseElement {
 	}
 
 	onDialogClose(e){
-		if(this._show){
+		if(!this.autoClose && this._show){
 			this[this._show]();
 			return
 		}
@@ -217,7 +274,7 @@ export class FlowDialog extends BaseElement {
 		let btn = btnEl.getAttribute("value");
 		if(!btn)
 			return
-		let inputs = [...this.renderRoot.querySelectorAll(".input, flow-checkbox, input, textarea, select,flow-menu")];
+		let inputs = [...this.renderRoot.querySelectorAll(".input, flow-input, flow-checkbox, input, textarea, select,flow-menu")];
 		let values = {};
 		inputs.forEach(input=>{
 			name = input.name||input.getAttribute("name")||input.getAttribute("data-name");

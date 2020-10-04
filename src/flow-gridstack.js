@@ -69,6 +69,12 @@ class FlowGridStackKlass extends base{
 		return html`
 		<link rel="stylesheet" href="${baseUrl}resources/extern/gridstack/gridstack.min.css">
 		<style data-uid="${uid}"></style>
+		${this.renderGSTools(uid)}
+		<div class="grid-stack ${uid} hide-w-opacity"></div>
+		<slot></slot>`;
+	}
+	renderGSTools(uid){
+		return html`
 		<textarea class="gridstack-json" data-uid="${uid}"></textarea>
 		<div class="buttons">
 			<flow-btn @click="${this.saveGrid}">Save</flow-btn>
@@ -76,9 +82,7 @@ class FlowGridStackKlass extends base{
 			<flow-btn @click="${this.saveGridLS}">Save to LStorage</flow-btn>
 			<flow-btn @click="${this.loadGridLS}">Load from LStorage</flow-btn>
 			<flow-btn @click="${this.toggleDragMode}">ToggleDragMode : ${this.dragMode}</flow-btn>
-		</div>
-		<div class="grid-stack ${uid} hide-w-opacity"></div>
-		<slot></slot>`;
+		</div>`
 	}
 	firstUpdated(){
 		let {uid} = this;
