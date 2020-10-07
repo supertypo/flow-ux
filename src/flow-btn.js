@@ -163,6 +163,10 @@ export class FlowBtn extends BaseElement {
 				text-align:center;
 				justify-content:center;
 			}
+			:host([full-height-wrapper]) .wrapper{
+				height:100%;box-sizing:border-box;
+				margin:0px;
+			}
 		`;
 	}
 	constructor(){
