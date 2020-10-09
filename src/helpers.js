@@ -68,6 +68,21 @@ const dpc = (delay, fn)=>{
 		return setTimeout(delay, fn||0);
 	return setTimeout(fn, delay||0);
 }
+
+const clearDPC = (dpc_)=>{
+	clearTimeout(dpc_);
+}
+
+const deferred = () => {
+    let methods = {};
+    const p = new Promise((resolve, reject) => {
+        methods = { resolve, reject };
+    });
+    return Object.assign(p, methods);
+}
+
+export { dpc, clearDPC, deferred };
+
 export const setTheme = theme=>{
 	const body = document.body; 
 	[...body.classList]
@@ -90,7 +105,7 @@ export const getTheme = (defaultTheme=((theme && theme.default) || "light"))=>{
 
 	return theme.replace("flow-theme-", "");
 }
-export {IconMap, FlowIcons, NativeIcons, dpc, isSmallScreen, FlowStates};
+export {IconMap, FlowIcons, NativeIcons, isSmallScreen, FlowStates};
 export {baseUrl, debug, FlowIconPath, flow, UID, storage, resolveIcon};
 
 
