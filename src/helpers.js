@@ -271,16 +271,24 @@ export class AsyncQueue {
 	stop(err) {
 		this.err = err;
 		this.done = true;
-		this.signal.resolve();
+		if(!this.inflight) {
+			this.signal.resolve();
+		}
 	}
 	reset() {
 		this.pending = [];
-		this.inflight = 0;
+		this.abort = 0;
 	}
     get length() {
         return this.pending.length+this.inflight;
     }
 	async *iterator() {
+
+		if(this.done) {
+			this.done = false;
+			this.signal = deferred();
+		}
+
 		while(true) {
 			if(this.pending.length === 0) {
 				await this.signal;
@@ -291,12 +299,19 @@ export class AsyncQueue {
 			const pending = this.pending;
 			this.inflight = pending.length;
 			this.pending = [];
-			for (let i = 0; i < pending.length && this.inflight > 0; i++) {
+			let processed = 0;
+			for (; processed < pending.length && !this.done; processed++) {
                 this.processed++;
-                yield pending[i];
+                yield pending[processed];
 				this.inflight--;
 			}
-			if (this.done) {
+			if(this.done) {
+				const incoming = this.pending.length;
+				if(incoming)
+					this.pending = pending.slice(processed).concat(this.pending);
+				else
+					this.pending = pending.slice(processed);
+				this.inflight = 0;
 				break;
 			}
 			else if (this.pending.length === 0) {
