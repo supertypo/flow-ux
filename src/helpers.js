@@ -246,3 +246,55 @@ export const deepClone = (obj, debug)=>{
 	}
 	return obj;
 }
+
+
+export class AsyncQueue {
+	constructor() {
+		this.pending = [];
+        this.processed = 0;
+        this.inflight = 0;
+		this.signal = deferred();
+		this.done = false;
+	}
+	[Symbol.asyncIterator]() { return this.iterator(); }
+	push(v) {
+		if(this.done)
+			return;
+		this.pending.push(v);
+		this.signal.resolve();
+	}
+	stop(err) {
+		this.err = err;
+		this.done = true;
+		this.signal.resolve();
+    }
+    get length() {
+        return this.pending.length+this.inflight;
+    }
+	async *iterator() {
+		while(true) {
+			if(this.pending.length === 0) {
+				await this.signal;
+			}
+			if (this.err)
+				throw this.err;
+
+			const pending = this.pending;
+			this.inflight = pending.length;
+			this.pending = [];
+			for (let i = 0; i < pending.length; i++) {
+                this.processed++;
+                yield pending[i];
+				this.inflight--;
+			}
+			if (this.done) {
+				break;
+			}
+			else if (this.pending.length === 0) {
+				pending.length = 0;
+				this.pending = pending;
+				this.signal = deferred();
+			}
+		}
+	}
+}
