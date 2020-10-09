@@ -10,8 +10,8 @@
   "keywords": [],
   "license": "MIT",
   "dependencies": {
-      "@webcomponents/webcomponentsjs": "*",
-      "lit-element": "*"
+    "@webcomponents/webcomponentsjs": "*",
+    "lit-element": "*"
   },
   "devDependencies": {
     "uglify-es": "*",
