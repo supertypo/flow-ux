@@ -249,17 +249,22 @@ export const deepClone = (obj, debug)=>{
 
 
 export class AsyncQueue {
-	constructor() {
+	constructor(opt) {
 		this.pending = [];
         this.processed = 0;
         this.inflight = 0;
 		this.signal = deferred();
 		this.done = false;
+		this.max = opt?.max || 0;
 	}
 	[Symbol.asyncIterator]() { return this.iterator(); }
 	push(v) {
 		if(this.done)
 			return;
+		if(this.max) {
+			while(this.pending.length >= this.max)
+				this.pending.shift();
+		}
 		this.pending.push(v);
 		this.signal.resolve();
 	}
