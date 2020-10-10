@@ -270,6 +270,7 @@ export class AsyncQueue {
 	}
 	stop(err) {
 		this.err = err;
+		this.abort = true;
 		this.done = true;
 		if(!this.inflight) {
 			this.signal.resolve();
@@ -277,7 +278,10 @@ export class AsyncQueue {
 	}
 	reset() {
 		this.pending = [];
-		this.abort = 0;
+		if(this.inflight) {
+			this.abort = true;
+			this.reset = true;
+		}
 	}
     get length() {
         return this.pending.length+this.inflight;
@@ -286,7 +290,8 @@ export class AsyncQueue {
 
 		if(this.done) {
 			this.done = false;
-			this.signal = deferred();
+			if(!this.pending.length)
+				this.signal = deferred();
 		}
 
 		while(true) {
@@ -300,17 +305,26 @@ export class AsyncQueue {
 			this.inflight = pending.length;
 			this.pending = [];
 			let processed = 0;
-			for (; processed < pending.length && !this.done; processed++) {
+			for (; processed < pending.length && !this.abort; processed++) {
                 this.processed++;
                 yield pending[processed];
 				this.inflight--;
 			}
+
+
+			if(this.reset) {
+				this.abort = false;
+				this.reset = false;
+				pending.length = 0;
+			}
+			
 			if(this.done) {
+				this.abort = false;
 				const incoming = this.pending.length;
 				if(incoming)
-					this.pending = pending.slice(processed).concat(this.pending);
+					this.pending = processed ? pending.slice(processed).concat(this.pending) : pending.concat(this.pending);
 				else
-					this.pending = pending.slice(processed);
+					this.pending = processed ? pending.slice(processed) : pending;
 				this.inflight = 0;
 				break;
 			}
