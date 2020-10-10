@@ -254,7 +254,7 @@ export class BaseElement extends LitElement{
 		let stateChange = this._renderOnStateChange || {};
 		let ONLINE = stateChange[FlowStates.ONLINE];
 		let AUTH = stateChange[FlowStates.AUTH];
-
+		let GET_NETWORK_AND_USER_STATE = false;
 		if(this.onlineCallback || ONLINE) {
 			this.onlineCallback_ = (...args)=>{
 				this.__online = true;
@@ -263,6 +263,7 @@ export class BaseElement extends LitElement{
 					this.requestUpdate("FLOW-NETWORK-ONLINE", false)
 			}
 			window.addEventListener('network-iface-online', this.onlineCallback_);
+			GET_NETWORK_AND_USER_STATE = true;
 		}
 
 		if(this.offlineCallback || ONLINE) {
@@ -273,6 +274,7 @@ export class BaseElement extends LitElement{
 					this.requestUpdate("FLOW-NETWORK-ONLINE", true)
 			}
 			window.addEventListener('network-iface-offline', this.offlineCallback_);
+			GET_NETWORK_AND_USER_STATE = true;
 		}
 
 		if(this.signinCallback || AUTH) {
@@ -283,6 +285,7 @@ export class BaseElement extends LitElement{
 					this.requestUpdate("FLOW-USER-AUTH", false)
 			}
 			window.addEventListener('flow-user-signin', this.signinCallback_);
+			GET_NETWORK_AND_USER_STATE = true;
 		}
 
 		if(this.signoutCallback || AUTH) {
@@ -293,6 +296,28 @@ export class BaseElement extends LitElement{
 					this.requestUpdate("FLOW-USER-AUTH", true)
 			}
 			window.addEventListener('flow-user-signout', this.signoutCallback_);
+			GET_NETWORK_AND_USER_STATE = true;
+		}
+
+		if(GET_NETWORK_AND_USER_STATE){
+			let ce = this.fire("flow-network-and-user-state-get", {}, {}, window, true);
+			//console.log("signedin, online", ce.detail)
+			let {signedin, online} = ce.detail || {};
+
+			if(typeof online != 'undefined'){
+				if(online){
+					this.onlineCallback_?.()
+				}else{
+					this.offlineCallback_?.()
+				}
+			}
+			if(typeof signedin != 'undefined'){
+				if(signedin){
+					this.signinCallback_?.()
+				}else{
+					this.signoutCallback_?.()
+				}
+			}
 		}
 
 		if(this.registeredListeners) {
