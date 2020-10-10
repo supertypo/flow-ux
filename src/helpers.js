@@ -280,7 +280,7 @@ export class AsyncQueue {
 		this.pending = [];
 		if(this.inflight) {
 			this.abort = true;
-			this.reset = true;
+			this.reset_ = true;
 		}
 	}
     get length() {
@@ -312,9 +312,9 @@ export class AsyncQueue {
 			}
 
 
-			if(this.reset) {
+			if(this.reset_) {
 				this.abort = false;
-				this.reset = false;
+				this.reset_ = false;
 				pending.length = 0;
 			}
 			
