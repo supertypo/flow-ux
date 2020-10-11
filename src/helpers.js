@@ -276,7 +276,7 @@ export class AsyncQueue {
 			this.signal.resolve();
 		}
 	}
-	reset() {
+	clear() {
 		this.pending = [];
 		if(this.inflight) {
 			this.abort = true;
