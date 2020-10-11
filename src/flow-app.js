@@ -285,6 +285,11 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 	}
 	constructor(...args){
 		super(...args);
+		this.registerListener("flow-network-and-user-state-get", (e)=>{
+			//e.detail = e.detail||{};
+			e.detail.online = this.isOnline();
+			e.detail.signedin = this.signedin;
+		})
 	}
 	render(){
 		return html`
