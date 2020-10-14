@@ -100,7 +100,7 @@ export class ContextElement extends BaseElement{
 		})
 		*/
 
-		console.log("propspropsprops", keys, props)
+		//console.log("propspropsprops", keys, props)
 
 		return props;
 	}
@@ -179,7 +179,7 @@ export class FlowContextWorkspaceElement extends ContextElement{
 	static init(){
 		this.config = this.props;
 		let {code} = this.config;
-		console.log("code", code, this.properties)
+		console.log("FlowContextWorkspaceElement:init", code, this.properties)
 		if(code){
 			if(!FlowContextWorkspaces.has(code)){
 				FlowContextWorkspaces.set(code, this);
@@ -245,8 +245,8 @@ export class FlowContextWorkspaceElement extends ContextElement{
 	}
 
 	renderContexts(){
-		let contexts = this.contexts;
-		this.log("render:contexts", contexts)
+		let contexts = this.manager.filterContexts(this.getContexts());
+		this.log("render:contexts", contexts, JSON.stringify(this.constructor.config))
 		return html`
 		<div class="contexts" @remove-ctx-request=${this.onRemoveContext}
 			@context-updated=${this.onContextUpdate}>
@@ -262,6 +262,17 @@ export class FlowContextWorkspaceElement extends ContextElement{
 				return el;*/
 			})}
 		</div>`
+	}
+
+	getContexts(){
+		let klass;
+		return (this.contexts||[]).map(ctx=>{
+			klass = FlowContexts.get(ctx.code);
+			if(!klass)
+				return
+			//console.log("ctx", klass.config, JSON.stringify(ctx))
+			return Object.assign({}, klass.config, ctx);
+		}).filter(ctx=>!!ctx);
 	}
 
 	isDirty(){
@@ -308,9 +319,9 @@ export class FlowContextWorkspaceElement extends ContextElement{
 
 	getAddableContexts(){
 		console.log("getAddableContexts:this.contexts", this.contexts)
-		return [...FlowContexts.values()].map(ctx=>ctx.config).filter(ctx=>{
+		return this.manager.filterContexts([...FlowContexts.values()].map(ctx=>ctx.config).filter(ctx=>{
 			return !this.contexts.find(c=>c.code==ctx.code)
-		});
+		}));
 	}
 
 	onResetClick(e){
@@ -329,6 +340,7 @@ export class FlowContextWorkspaceElement extends ContextElement{
 			</flow-menu>`;
 
 		FlowDialog.show({
+			title:'Select Context',
 			body,
 			hideCloseBtn:true,
 			compact:true,
@@ -484,10 +496,10 @@ export const FlowContextListenerMixin = base=>{
 			console.log("onContextUpdate:props", props, e)
 			let workspaces = this.ctxworkspaces||[];
 			if(workspaces.includes(props.code))
-				this.requestUpdate("ctxworkspaces", null)
+				this.contextsUpdate();
 		}
 		contextsUpdate(){
-			//
+			this.requestUpdate("ctxworkspaces", null)
 		}
 		getContextManagerConfig(){
 			return {
@@ -676,6 +688,13 @@ export class FlowContextManager extends BaseElement{
 		return config;
 	}
 
+	filterContexts(contexts){
+		let cmp = this.getHostComponent();
+		if(!cmp)
+			return [];
+		return (contexts||[]).filter(ctx=>cmp.acceptContext(ctx))
+	}
+
 	saveWorkspace(props){
 		let workspaces = [];
 		FlowContextWorkspaces.forEach(klass=>{
@@ -749,6 +768,9 @@ export class FlowContextManager extends BaseElement{
 		console.log("Workspaces:selected", selected)
 	}
 	getWorkspacesConfig(){
+		let cmp = this.getHostComponent();
+		if(!cmp)
+			return [];
 		let config = [];
 		//let {workspacesMap} = this;
 		this.selected.map(wCode=>{
@@ -766,7 +788,7 @@ export class FlowContextManager extends BaseElement{
 			workspace = Object.assign({}, workspace);
 			workspace.contexts = workspace.contexts.filter(ctx=>{
 				return FlowContexts.get(ctx.code||ctx)
-			})
+			}).filter(cmp.acceptContext)
 			config.push(workspace);
 		});
 
