@@ -533,8 +533,9 @@ export const FlowContextListenerMixin = base=>{
 		deserialize(data){
 			super.deserialize(data);
 			let {ctxworkspaces=[]} = data||{};
-			console.log("got contexts", data)
+			//console.log("got contexts", data)
 			this.ctxworkspaces = ctxworkspaces;
+			this.contextsUpdate();
 		}
 	}
 
