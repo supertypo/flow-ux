@@ -21,7 +21,7 @@ class FlowGridStackKlass extends base{
 			cols:{type:Number, value:10},
 			rows:{type:Number, value:10},
 			gridMargin:{type:Number, value:1},
-			column:{type:Number, value:16},
+			column:{type:Number, value:30},
 			resizableHandles:{type:String, value:'e, s, w'},
 			cellHeight:{type:Number, value:100},
 			dragMode:{type:String, value:'header', reflect:true},
@@ -70,9 +70,10 @@ class FlowGridStackKlass extends base{
 		let {uid} = this;
 		return html`
 		<link rel="stylesheet" href="${baseUrl}resources/extern/gridstack/gridstack.min.css">
+		<link rel="stylesheet" href="${baseUrl}resources/extern/gridstack/gridstack-extra.css">
 		<style data-uid="${uid}"></style>
 		${this.renderGSTools(uid)}
-		<div class="grid-stack ${uid} hide-w-opacity"></div>
+		<div class="grid-stack grid-stack-${this.column} ${uid} hide-w-opacity"></div>
 		<slot></slot>`;
 	}
 	renderGSTools(uid){
