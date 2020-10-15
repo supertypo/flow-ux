@@ -20,6 +20,8 @@ class FlowGridStackKlass extends base{
 		return {
 			cols:{type:Number, value:10},
 			rows:{type:Number, value:10},
+			gridMargin:{type:Number, value:1},
+			column:{type:Number, value:16},
 			resizableHandles:{type:String, value:'e, s, w'},
 			cellHeight:{type:Number, value:100},
 			dragMode:{type:String, value:'header', reflect:true},
@@ -101,7 +103,9 @@ class FlowGridStackKlass extends base{
 			    handles: this.resizableHandles
 			},
 			minRow:1,
+			margin:this.gridMargin,
 			cellHeight:this.cellHeight,
+			column:this.column,
 			draggable:{
 				handle:'.grid-stack-item-content .heading',
 				handleFn:(event, uiDraggable)=>{
