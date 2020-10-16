@@ -107,6 +107,7 @@ class FlowGridStackKlass extends base{
 			margin:this.gridMargin,
 			cellHeight:this.cellHeight,
 			column:this.column,
+			acceptWidgets:this.acceptWidgets||function(el) { return true; },
 			draggable:{
 				handle:'.grid-stack-item-content .heading',
 				handleFn:(event, uiDraggable)=>{
