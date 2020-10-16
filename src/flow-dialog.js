@@ -1,4 +1,5 @@
-import {BaseElement, html, css} from './base-element.js';
+import '../resources/extern/dialog/dialog-polyfill.js';
+import {BaseElement, html, css, baseUrl} from './base-element.js';
 
 /**
 * @class FlowDialog
@@ -223,6 +224,7 @@ export class FlowDialog extends BaseElement {
 
 	firstUpdated(){
 		this.dialog = this.renderRoot.querySelector('dialog');
+		dialogPolyfill.registerDialog(this.dialog)
 		if(this._show)
 			this[this._show]();
 	}
@@ -292,4 +294,4 @@ export class FlowDialog extends BaseElement {
 
 window.FlowDialog = FlowDialog;
 
-FlowDialog.define('flow-dialog');
+FlowDialog.define('flow-dialog', [baseUrl+'resources/extern/dialog/dialog-polyfill.css']);

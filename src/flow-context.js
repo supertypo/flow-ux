@@ -1,4 +1,5 @@
 import {BaseElement, html, flowHtml, css, ScrollbarStyle, deepClone, render} from './base-element.js';
+import {baseUrl} from './base-element.js';
 export const FlowContextWorkspaces = new Map();
 export const FlowContexts = new Map();
 
@@ -554,7 +555,7 @@ export class FlowContextManager extends BaseElement{
 		return [ScrollbarStyle, css `
 			:host{--fa-icon-size:20px;}
 			dialog{
-				display:flex;padding:0px;height:700px;
+				display:flex;padding:0px;height:700px; top:2vh;
 				width:800px;max-width:95vw;
 				max-height:95vh;flex-direction:column;
 			    border:var(--flow-context-manager-dialog-border, 2px solid var(--flow-primary-color, #025763));
@@ -621,6 +622,7 @@ export class FlowContextManager extends BaseElement{
 
 	render(){
 		return html`
+		<link rel="stylesheet" type="text/css" href="${baseUrl}/resources/extern/dialog/dialog-polyfill.css" />
 		<dialog @close=${this.onDialogClose} ?loading=${this.isLoading}>
 			<div class="head">
 				<span class="head-text">${this.heading||'Context Manager'}</span>
@@ -798,6 +800,7 @@ export class FlowContextManager extends BaseElement{
 
 	firstUpdated(){
 		this.dialog = this.renderRoot.querySelector('dialog');
+		dialogPolyfill.registerDialog(this.dialog);
 		if(this._show)
 			this[this._show]();
 	}

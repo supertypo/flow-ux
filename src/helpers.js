@@ -182,10 +182,18 @@ export const DeferComponent = (ctor, name, deps) => {
 
 			console.log('Flow - loading dep:', src);
             count++;
-            let script = document.createElement("script");
-            script.src = src;
-            document.head.appendChild(script);
-            script.onload = ()=>{
+            let el
+            if(/\.css$/.test(src)){
+            	el = document.createElement("link");
+            	el.setAttribute("rel", "stylesheet");
+            	el.setAttribute("type", "text/css")
+            	el.href = src;
+            }else{
+            	el = document.createElement("script");
+            	el.src = src;
+            }
+            document.head.appendChild(el);
+            el.onload = ()=>{
                 count--;
                 if(!count)
                     ctor.define(name);

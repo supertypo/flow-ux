@@ -124,7 +124,7 @@ class FlowGridStackKlass extends base{
 
 						if(!handleEl)
 							return false;
-						return event.originalEvent.path.includes(handleEl);
+						return event.originalEvent.path?.includes(handleEl);
 					}
 
 					return handle?!!$(event.target)
