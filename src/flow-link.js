@@ -99,6 +99,8 @@ export class FlowLink extends BaseElement {
 	click() {
 		// console.log("opening href:",this.href,"target:",this.target);
 		this.fire("flow-link-click", {el:this})
+		if(!this.href)
+			return
 		if(typeof nw == 'undefined') {
 			let a = document.createElement('a');
 			a.href = this.href;
