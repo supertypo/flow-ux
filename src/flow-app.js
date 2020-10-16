@@ -114,7 +114,9 @@ export const FlowAppMixin = (baseClass)=>{
 			(el || document.body).classList.toggle("loading", isLoading)
 		}
 
-		initLog(){
+		initLog(...args){
+			if(super._initLog)
+				return super._initLog(...args)
 			const name = this.constructor.name;
 			this.log = Function.prototype.bind.call(
 				console.log,
