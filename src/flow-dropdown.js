@@ -56,7 +56,7 @@ export class FlowDropdown extends BaseElement {
 		.trigger{
 			background-color:var(--flow-dropdown-trigger-bg, var(--flow-primary-color, #3498DB));
 			color:var(--flow-dropdown-trigger-color, #FFF);
-			border-radius:3px;
+			border-radius:var(--flow-dropdown-trigger-border-radius, 3px);
 			border:none;
 			user-select:none;
 			padding:var(--flow-dropdown-trigger-padding, 21px 20px 20px);
@@ -87,6 +87,10 @@ export class FlowDropdown extends BaseElement {
 			border:var(--flow-dropdown-border, none);
 		}
 		:host([opened]) .dropdown-content{display:block;}
+		:host(.right-align) .dropdown-content,
+		:host([right-align]) .dropdown-content{
+			left:initial;right:0px;
+		}
 		`];
 	}
 	render() {
