@@ -287,7 +287,7 @@ export class FlowDialog extends BaseElement {
 			values
 		}
 
-		console.log("onBtnClick", detail)
+		//console.log("onBtnClick", detail)
 		this.dispatchEvent(new CustomEvent('btn-click', {detail}))
 	}
 }
