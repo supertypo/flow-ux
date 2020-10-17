@@ -42,7 +42,7 @@ export class FlowCheckbox extends BaseElement {
 				display: block;
 				width: max-content;
 			}
-			:host(:not([disabled])) .checkbox{
+			:host(:not([disabled]):not([readonly])) .checkbox{
 				cursor:pointer;
 			}
 			.checkbox{
