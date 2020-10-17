@@ -55,4 +55,5 @@ export * from './src/flow-toolbar.js';
 export * from './src/flow-gridstack.js';
 export * from './src/flow-download-badge.js';
 export * from './src/flow-color-picker.js';
+export * from './src/flow-rss.js';
 
