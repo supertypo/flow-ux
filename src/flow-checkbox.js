@@ -29,6 +29,7 @@ export class FlowCheckbox extends BaseElement {
 	static get properties() {
 		return {
 			checked:{type:Boolean, reflect: true},
+			readonly:{type:Boolean, reflect: true},
 			name:{type:String}
 		}
 	}
@@ -102,7 +103,7 @@ export class FlowCheckbox extends BaseElement {
 	render(){
 		return html`
 		<label class="checkbox">
-			<input class="checkbox-input" type="checkbox" @change="${this.onChange}" .checked="${this.checked}">
+			<input class="checkbox-input" type="checkbox" @change="${this.onChange}" ?disabled=${this.readonly} .checked="${this.checked}">
 			<div class="checkbox-outer"><div class="outline"></div></div>
 			<slot></slot>
 		</label>
