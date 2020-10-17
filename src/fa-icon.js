@@ -28,12 +28,12 @@ export class FaIcon extends BaseElement {
 			display: inline-block;
 			padding: 0;
 			margin: 0;
-			width: var(--fa-icon-size);
-			height: var(--fa-icon-size);
+			width: var(--fa-icon-size, 19px);
+			height: var(--fa-icon-size, 19px);
 		}
 		svg{
-			width: var(--fa-icon-size);
-			height: var(--fa-icon-size);
+			width: var(--fa-icon-size, 19px);
+			height: var(--fa-icon-size, 19px);
 			fill: var(--fa-icon-color);
 		}
 		`;
@@ -42,7 +42,7 @@ export class FaIcon extends BaseElement {
 		super();
 		this.src = '';
 		this.style = '';
-		this.size = 19;
+		//this.size = 19;
 		this.color = '';
 	}
 	firstUpdated() {
@@ -50,12 +50,14 @@ export class FaIcon extends BaseElement {
 	}
 	render() {
 		this.src = this.iconPath(this.icon);
+		//let size1 = this.style.getPropertyValue("--fa-icon-size");
+		//console.log("size1size1", size1)
 		let {size, color, w, h} = this;
 		w = (w||size)?`width:${w||size}px;`:'';
 		h = (h||size)?`height:${h||size}px;`:'';
 		color = color?`fill:${color};`:'';
 		return html`
-		<svg style="${w}${h}${color}${this.style};"><use href="${this.src}"></use></svg>
+		<svg style="${w}${h}${color}${this.style}"><use href="${this.src}"></use></svg>
 		`;
 	}
 }
