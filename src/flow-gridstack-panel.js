@@ -50,6 +50,8 @@ class FlowGridStackPanelKlass extends base {
 				border-radius:var(--flow-gridstack-panel-border-radius, 4px);
 				border:var(--flow-gridstack-panel-border, 1px solid var(--flow-primary-color));
 				box-sizing:border-box;
+				--flow-dropdown-content-right:2px;
+				--flow-dropdown-border:var(--flow-gridstack-dd-border, 1px solid var(--flow-primary-color));
 			}
 			.heading{
 				text-overflow:elipsis;overflow:hidden;
@@ -88,15 +90,27 @@ class FlowGridStackPanelKlass extends base {
 					@click="${this.onHeadClick}">${this.renderHead()}</div>
 				${this.renderHeadSuffix()}
 			</div>
+			<flow-dropdown id="settingDD" no-trigger right-align>
+				${this.renderSettings()}
+			</flow-dropdown>
 			<div class="body">${this.renderBody()}</div>`;
+	}
+
+	firstUpdated(){
+		super.firstUpdated();
+		this.settingDD = this.renderRoot.querySelector("#settingDD");
+		this.renderRoot.querySelectorAll(".setting-trigger").forEach(node=>{
+			node.flowDropdown = this.settingDD;
+		})
 	}
 
 	renderHeadPrefix(){
 		return html `<fa-icon icon="window-maximize"></fa-icon>`
 	}
 	renderHeadSuffix(){
-		return html `<fa-icon @click="${this.openContextManager}" icon="link"></fa-icon>
-		<fa-icon icon="times"></fa-icon>`
+		return html `
+		<fa-icon class="setting-trigger" @click="${this.onSettingsIconClick}" icon="cog"></fa-icon>
+		<fa-icon icon="times" @click="${this.onClosePanelClick}"></fa-icon>`
 	}
 	renderHead(){
 		return this.heading || ''
@@ -108,6 +122,15 @@ class FlowGridStackPanelKlass extends base {
 			<div>contexts:${JSON.stringify(this.ctxworkspaces||[])}</div>
 		</div>
 		`
+	}
+
+	renderSettings(){
+		return html`
+		<div class="head">
+		<flow-btn @click="${this.onClosePanelClick}">
+			<fa-icon icon="times"></fa-icon>
+		</flow-btn>
+		</div>`
 	}
 
 	onHeadingClick(){
@@ -141,6 +164,10 @@ class FlowGridStackPanelKlass extends base {
 
 	getGridstackDragHandle(){
 		return this.renderRoot.querySelector('.heading .head')
+	}
+
+	onSettingsIconClick(){
+		this.settingDD.toggle();
 	}
 
 	onClosePanelClick(){
