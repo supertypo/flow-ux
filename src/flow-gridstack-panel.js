@@ -95,8 +95,8 @@ class FlowGridStackPanelKlass extends base {
 		return html `<fa-icon icon="window-maximize"></fa-icon>`
 	}
 	renderHeadSuffix(){
-		return html `
-		<fa-icon @click="${this.openContextManager}" icon="link"></fa-icon><fa-icon icon="times"></fa-icon>`
+		return html `<fa-icon @click="${this.openContextManager}" icon="link"></fa-icon>
+		<fa-icon icon="times"></fa-icon>`
 	}
 	renderHead(){
 		return this.heading || ''
@@ -107,7 +107,6 @@ class FlowGridStackPanelKlass extends base {
 			PANEL : ${Math.random()*10000}
 			<div>contexts:${JSON.stringify(this.ctxworkspaces||[])}</div>
 		</div>
-			
 		`
 	}
 
@@ -142,6 +141,16 @@ class FlowGridStackPanelKlass extends base {
 
 	getGridstackDragHandle(){
 		return this.renderRoot.querySelector('.heading .head')
+	}
+
+	onClosePanelClick(){
+		return this.fire(
+			"remove-gridstack-panel-request", 
+			{panel:this},
+			{bubbles:true, cancelable:true},
+			null,
+			true
+		);
 	}
 }
 

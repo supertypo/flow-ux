@@ -73,7 +73,9 @@ class FlowGridStackKlass extends base{
 		<link rel="stylesheet" href="${baseUrl}resources/extern/gridstack/gridstack-extra.css">
 		<style data-uid="${uid}"></style>
 		${this.renderGSTools(uid)}
-		<div class="grid-stack grid-stack-${this.column} ${uid} hide-w-opacity"></div>
+		<div class="grid-stack grid-stack-${this.column} ${uid} hide-w-opacity"
+			@remove-gridstack-panel-request=${this.onRemovePanelRequest}
+		></div>
 		<slot></slot>`;
 	}
 	renderGSTools(uid){
@@ -298,6 +300,13 @@ class FlowGridStackKlass extends base{
     		//grid.compact();
     	})
     }
+    removePanel(panel, removeDOM=true, fireEvent=true){
+    	if(!panel.matches(".grid-stack-item"))
+    		panel = panel.closest(".grid-stack-item");
+    	if(!panel)
+    		return
+    	this.grid.removeWidget(panel, removeDOM, fireEvent)
+    }
     toggleDragMode(){
     	if(this.dragMode == 'panel'){
 			this.setDragMode('header');
@@ -315,6 +324,20 @@ class FlowGridStackKlass extends base{
     	}
 
     	return false
+    }
+
+    onRemovePanelRequest(e){
+    	let {panel} = e.detail;
+    	if(!panel)
+    		return
+    	console.log("onRemovePanelRequest:", panel)
+    	/*
+    	setTimeout(()=>{
+    		e.preventDefault();
+    	}, 100)
+    	*/
+
+    	this.removePanel(panel);
     }
 
     serialize(){

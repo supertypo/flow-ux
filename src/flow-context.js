@@ -1,5 +1,5 @@
 import {BaseElement, html, flowHtml, css, ScrollbarStyle, deepClone, render} from './base-element.js';
-import {baseUrl} from './base-element.js';
+import {baseUrl, dpc} from './base-element.js';
 export const FlowContextWorkspaces = new Map();
 export const FlowContexts = new Map();
 
@@ -113,12 +113,15 @@ export class FlowContextElement extends ContextElement{
 			name:{type:String, value:""},
 			code:{type:String, value:""},
 			type:{type:String, value:""},
-			config:{type:Object, value:{}}
+			config:{type:Object, value:{}},
+			advance:{type:Boolean, reflect:true}
 		}
 	}
 	static get styles(){
 		return [boxStyle, css`
 			:host{display:inline-block;padding:5px;margin:0px 5px 5px;}
+			:host(:not([advance])) .remove-ctx-icon{display:none}
+			:host(:not([advance])){border-color:transparent;}
 		`]
 	}
 	static init(){
@@ -135,7 +138,8 @@ export class FlowContextElement extends ContextElement{
 		return html`
 		<div class="head">
 			<span class="name">${this.name||''}</span>
-			<fa-icon icon="trash-alt" @click="${this.onRemoveClick}"></fa-icon>
+			<fa-icon class="remove-ctx-icon" icon="trash-alt"
+				@click="${this.onRemoveClick}"></fa-icon>
 		</div>
 		${this.renderBody()}`
 	}
@@ -173,7 +177,8 @@ export class FlowContextWorkspaceElement extends ContextElement{
 			name:{type:String, value:""},
 			code:{type:String, value:""},
 			contexts:{type:Array, value:[]},
-			readonly:{type:Boolean, value:false}
+			readonly:{type:Boolean, value:false},
+			advance:{type:Boolean, reflect:true}
 		}
 	}
 
@@ -197,8 +202,8 @@ export class FlowContextWorkspaceElement extends ContextElement{
 		let testValue = 123;
 		let tags = new Map();
 		tags.set("tag", `flow-ctx-${code}`);
-		tags.set("attr1", code)
-		return flowHtml`${tags}<{tag} {attr1}="${testValue}" 
+		//tags.set("attr1", code)
+		return flowHtml`${tags}<{tag} ?advance=${attr.advance}
 			.config=${props.config||{}} class="flow-context"></{tag}>`;
 	}
 	static createContextWorkspaceNode(code, attr, props){
@@ -209,12 +214,17 @@ export class FlowContextWorkspaceElement extends ContextElement{
 		*/
 		let tags = new Map();
 		tags.set("tag", `flow-ctxworkspace-${code}`);
+		const {manager} = props;
 
-		return flowHtml`${tags}<{tag} 
-			.manager=${props.manager} class="flow-workspace"></{tag}>`;
+		return flowHtml`${tags}<{tag} ?advance=${manager.advance}
+			.manager=${manager} class="flow-workspace"></{tag}>`;
 	}
-	static get styles(){
-		return boxStyle;
+	static get styles() {
+		return [boxStyle, css`
+			:host(:not([advance])) .head {
+				display:none
+			}
+		`]
 	}
 	
 
@@ -252,7 +262,9 @@ export class FlowContextWorkspaceElement extends ContextElement{
 		<div class="contexts" @remove-ctx-request=${this.onRemoveContext}
 			@context-updated=${this.onContextUpdate}>
 			${contexts.map(ctx=>{
-				return this.constructor.createContextNode(ctx.code, {}, {
+				return this.constructor.createContextNode(ctx.code, {
+					advance:this.advance
+				}, {
 					config: Object.assign({}, ctx.config||{})
 				})
 				/*let el = this.constructor.createContextNode(ctx.code);
@@ -547,7 +559,8 @@ export class FlowContextManager extends BaseElement{
 	static get properties(){
 		return {
 			selected:{type:Array, value:[]},
-			isLoading:{type:Boolean}
+			isLoading:{type:Boolean},
+			advance:{type:Boolean, reflect:true}
 		}
 	}
 
@@ -570,6 +583,10 @@ export class FlowContextManager extends BaseElement{
 			.head,.header{
 				display:flex;align-items:center;justify-content:center;
 				padding:var(--flow-context-manager-head-padding, 10px);
+				line-height:1.3;
+			}
+			.header{
+				justify-content:flex-end;min-height:72px
 			}
 			.head-text{
 				flex:1;overflow:hidden;text-overflow:ellipsis;
@@ -577,7 +594,7 @@ export class FlowContextManager extends BaseElement{
 				margin-right:15px;
 			}
 			.header{
-				padding:var(--flow-context-manager-header-padding, 5px);
+				padding:var(--flow-context-manager-header-padding, 0px 5px);
 			}
 			.workspace-selector{
 				flex:1;--flow-selector-dropdown-width:100%;
@@ -598,6 +615,13 @@ export class FlowContextManager extends BaseElement{
 				content:"";z-index:10000;
 				position:absolute;left:0px;top:0px;width:100%;height:100%;
 				background-color:var(--flow-context-manager-loading-mask-bg, rgba(0,0,0, 0.5))
+			}
+			:host(:not([advance])) .advance-tools,
+			[hidden]{
+				display:none;
+			}
+			:host([advance]) flow-btn.toggle-advance-mode-btn{
+				background-color:var(--flow-primary-color)
 			}
 		`];
 	}
@@ -623,16 +647,14 @@ export class FlowContextManager extends BaseElement{
 	render(){
 		return html`
 		<link rel="stylesheet" type="text/css" href="${baseUrl}/resources/extern/dialog/dialog-polyfill.css" />
-		<dialog @close=${this.onDialogClose} ?loading=${this.isLoading}>
+		<dialog @close=${this.onDialogClose} ?loading=${this.isLoading} ?advance=${this.advance}>
 			<div class="head">
 				<span class="head-text">${this.heading||'Context Manager'}</span>
 				<fa-icon class="close-icon" @click="${this.onCloseClick}" icon="times"></fa-icon>
 			</div>
 			<div class="header">
 				${this.renderWorkspaceSelector()}
-				<flow-btn @click="${this.onCreateWorkspaceClick}" >
-					<fa-icon class="add-icon" icon="plus"></fa-icon>
-				</flow-btn>
+				${this.renderHeaderTools()}
 			</div>
 			<div class="body" @workspace-updated="${this.onWorkspaceUpdate}">
 				${this.renderWorkspaces()}
@@ -653,7 +675,7 @@ export class FlowContextManager extends BaseElement{
 	renderWorkspaceSelector(){
 		let workspaces = [...FlowContextWorkspaces.values()].map(w=>w.config);
 		console.log("this.selected", this.selected)
-		return html`<flow-selector class="workspace-selector" label="Select Workspace"
+		return html`<flow-selector class="workspace-selector advance-tools" label="Select Workspace"
 			?multiple=${this.multiWorkspace} .selected="${this.selected.slice(0)}"
 			@select="${this.onWorkspacesSelectionChange}">
 			${workspaces.map(w=>{
@@ -665,6 +687,23 @@ export class FlowContextManager extends BaseElement{
 		return html`<flow-context-workspace-item 
 					value="${w.code}" ?multi=${this.multiWorkspace}
 					class="menu-item" data-text="${w.name}" .data="${w}"></flow-context-workspace-item>`
+	}
+
+	renderHeaderTools(){
+		return html`
+		<flow-btn class="advance-tools add-workspace-btn" title="Add workspace" 
+			?hidden=${!this.multiWorkspace} 
+			@click="${this.onCreateWorkspaceClick}" >
+			<fa-icon icon="plus"></fa-icon>
+		</flow-btn>
+		<flow-btn class="close-panel-btn" title="Remove Panel" 
+			@click="${this.onClosePanelClick}" >
+			<fa-icon icon="times"></fa-icon>
+		</flow-btn>
+		<flow-btn class="toggle-advance-mode-btn" title="Toggle advance mode"
+			@click="${this.onToggleModeClick}" >
+			<fa-icon icon="cogs"></fa-icon>
+		</flow-btn>`
 	}
 
 	renderWorkspaces(){
@@ -746,6 +785,25 @@ export class FlowContextManager extends BaseElement{
 		let {props} = e.detail;
 		this.saveWorkspace(props);
 		this.fire("flow-ctxworkspace-updated", {props}, {}, window);
+	}
+
+	onToggleModeClick(){
+		this.advance = !this.advance;
+	}
+
+	onClosePanelClick(){
+		let cmp = this.getHostComponent();
+		if(!cmp || !cmp.onClosePanelClick)
+			return
+
+		let e = cmp.onClosePanelClick();
+		dpc(100, ()=>{
+			//console.log("e:::", e, e.defaultPrevented)
+			if(e.defaultPrevented)
+				return
+			this.close();
+		})
+		
 	}
 
 	onCreateWorkspaceClick(){
