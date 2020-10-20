@@ -41,6 +41,7 @@ import {BaseElement, ScrollbarStyle, html, css} from './base-element.js';
 * @cssvar {z-index} --flow-app-body-mask-z-index=10000]
 * @cssvar {background-color} [--flow-app-body-mask-bg=initial]
 * @cssvar {padding} [--flow-app-header-sm-padding=0px 15px]
+* #cssvar {overflow} [--flow-app-body-overflow=hidden]
 */
 	// {--fa-icon-color} [--flow-app-drawer-close-icon-color=var(--flow-color)]
 	// {--fa-icon-color} [--flow-app-menu-icon-color=var(--flow-color)]		
@@ -193,7 +194,8 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 			}
 			
 			.body{
-				flex:1;display:flex;flex-direction:row;overflow:hidden;
+				flex:1;display:flex;flex-direction:row;
+				overflow:var(--flow-app-body-overflow, hidden);
 			}
 			.drawer{
 				background-color:var(--flow-app-drawer-bg, var(--flow-background-color, inherit));
