@@ -121,6 +121,9 @@ export class FlowCheckbox extends BaseElement {
 	onChange(e){
 		this.setChecked(e.target.checked);
 	}
+	toggle(){
+		this.setChecked(!this.checked)
+	}
 	setChecked(checked){
 		let lastChecked = this.checked;
 		this.checked = !!checked;
