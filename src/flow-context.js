@@ -621,7 +621,9 @@ export class FlowContextManager extends BaseElement{
 				display:none;
 			}
 			:host([advance]) flow-btn.toggle-advance-mode-btn{
-				background-color:var(--flow-primary-color)
+				background-color:var(--flow-primary-color);
+				color:var(--flow-primary-invert-color);
+				--fa-icon-color:var(--flow-primary-invert-color);
 			}
 		`];
 	}
