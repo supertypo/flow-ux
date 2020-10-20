@@ -81,16 +81,20 @@ export class FlowDropdown extends BaseElement {
 			overflow:auto;border-radius:3px;
 			box-shadow:var(--flow-box-shadow);
 			z-index:1000;
-			top:var(--flow-dropdown-top, 0px);
-			left:0px;
+			top:var(--flow-dropdown-content-top, var(--flow-dropdown-top, 0px));
+			left:var(--flow-dropdown-content-left, 0px);
+			right:var(--flow-dropdown-content-right, initial);
 			padding:var(--flow-dropdown-content-padding, 5px);
 			border:var(--flow-dropdown-border, none);
 		}
 		:host([opened]) .dropdown-content{display:block;}
 		:host(.right-align) .dropdown-content,
 		:host([right-align]) .dropdown-content{
-			left:initial;right:0px;
+			left:var(--flow-dropdown-content-left, initial);
+			right:var(--flow-dropdown-content-right, 0px);
 		}
+		:host([no-trigger]) .trigger{display:none}
+		:host([no-trigger]){margin:0px;}
 		`];
 	}
 	render() {
@@ -137,10 +141,14 @@ export class FlowDropdown extends BaseElement {
 			this.opened = false;
 			return
 		}
-		dropdown = target.closest?.('flow-dropdown');
+		dropdown = target.flowDropdown || target.closest?.('flow-dropdown');
 		if(!dropdown){
 			let p = e.path?.[0] || target;
 			while(p){
+				if(p.flowDropdown){
+					dropdown = p.flowDropdown;
+					break;
+				}
 				if(p.matches?.("flow-dropdown")){
 					dropdown = p;
 					break;
