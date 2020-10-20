@@ -533,7 +533,17 @@ export const FlowContextListenerMixin = base=>{
 		getContextWorkspaces(){
 			let workspaces = this.ctxworkspaces||[];
 			return workspaces.map(code=>{
-				return (FlowContextWorkspaces.get(code)||{}).config;
+				let workspace = (FlowContextWorkspaces.get(code)||{}).config;
+				if(!workspace)
+					return false;
+				workspace = Object.assign({}, workspace)
+				workspace.contexts = (workspace.contexts||[]).map(ctx=>{
+					let klass = FlowContexts.get(ctx.code);
+					if(!klass)
+						return false;
+					return Object.assign({}, klass.config, ctx);
+				}).filter(ctx=>this.acceptContext(ctx))
+				return workspace;
 			}).filter(w=>w);
 		}
 
@@ -560,7 +570,7 @@ export class FlowContextManager extends BaseElement{
 		return {
 			selected:{type:Array, value:[]},
 			isLoading:{type:Boolean},
-			advance:{type:Boolean, reflect:true}
+			advance:{type:Boolean, reflect:true, value:true}
 		}
 	}
 
@@ -698,14 +708,14 @@ export class FlowContextManager extends BaseElement{
 			@click="${this.onCreateWorkspaceClick}" >
 			<fa-icon icon="plus"></fa-icon>
 		</flow-btn>
-		<flow-btn class="close-panel-btn" title="Remove Panel" 
+		<!--flow-btn class="close-panel-btn" title="Remove Panel" 
 			@click="${this.onClosePanelClick}" >
 			<fa-icon icon="times"></fa-icon>
 		</flow-btn>
 		<flow-btn class="toggle-advance-mode-btn" title="Toggle advance mode"
 			@click="${this.onToggleModeClick}" >
 			<fa-icon icon="cogs"></fa-icon>
-		</flow-btn>`
+		</flow-btn-->`
 	}
 
 	renderWorkspaces(){
