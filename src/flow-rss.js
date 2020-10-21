@@ -61,25 +61,28 @@ export class FlowRSS extends BaseElement {
 		})
 		*/
 	}
-	fetchFeed(){
-		console.log("fetchFeed: fetching...", this.href)
+	// fetchFeed(){
+	// 	console.log("fetchFeed: fetching...", this.href)
 		
-		this.fetch(this.href)
-			.then(response =>{
-				//console.log("fetchFeed: response", response)
-				return response.text()
-			})
-			.then(str => {
-				//console.log("fetchFeed : str"+str)
-				return new window.DOMParser().parseFromString(str, "text/xml")
-			})
-			.then(data => {
-				//console.log("fetchFeed", data);
-				this.setFeedData(data);
-			});
-	}
+	// 	this.fetch(this.href)
+	// 		.then(response =>{
+	// 			//console.log("fetchFeed: response", response)
+	// 			return response.text()
+	// 		})
+	// 		.then(str => {
+	// 			//console.log("fetchFeed : str"+str)
+	// 			return new window.DOMParser().parseFromString(str, "text/xml")
+	// 		})
+	// 		.then(data => {
+	// 			//console.log("fetchFeed", data);
+	// 			this.setFeedData(data);
+	// 		});
+	// }
+
+	
 	setFeedData(data){
 		//this.feedData = data;
+		data = new window.DOMParser().parseFromString(data, "text/xml")
 		this.buildBody(data);
 		this.requestUpdate("body", null);
 	}
