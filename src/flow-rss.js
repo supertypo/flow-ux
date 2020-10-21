@@ -44,42 +44,9 @@ export class FlowRSS extends BaseElement {
 		let opts = {method:"GET", mode:"cors", referrerPolicy: 'no-referrer'};
 		return fetch(href, Object.assign(opts, this.feedOpt||{}))
 
-		/*
-		return new Promise((resolve)=>{
-			let xhr = new XMLHttpRequest();
-			xhr.open('GET', this.href, true);
-			xhr.responseType = 'text';
-			xhr.onload = function(e) {
-				console.log("fetchFeed:this.status", e)
-				if (this.status == 200) {
-					console.log("fetchFeed:responseText", this.responseText)
-					resolve(Promise.resolve({text:()=>this.responseText}))
-				}
-			};
-
-			xhr.send();
-		})
-		*/
 	}
-	// fetchFeed(){
-	// 	console.log("fetchFeed: fetching...", this.href)
-		
-	// 	this.fetch(this.href)
-	// 		.then(response =>{
-	// 			//console.log("fetchFeed: response", response)
-	// 			return response.text()
-	// 		})
-	// 		.then(str => {
-	// 			//console.log("fetchFeed : str"+str)
-	// 			return new window.DOMParser().parseFromString(str, "text/xml")
-	// 		})
-	// 		.then(data => {
-	// 			//console.log("fetchFeed", data);
-	// 			this.setFeedData(data);
-	// 		});
-	// }
-
 	
+
 	setFeedData(data){
 		//this.feedData = data;
 		data = new window.DOMParser().parseFromString(data, "text/xml")
