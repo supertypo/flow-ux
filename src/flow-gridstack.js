@@ -18,14 +18,15 @@ export const FlowGridStackMixin = (base)=>{
 class FlowGridStackKlass extends base{
 	static get properties() {
 		return {
-			cols:{type:Number, value:10},
-			rows:{type:Number, value:10},
 			gridMargin:{type:Number, value:1},
 			column:{type:Number, value:30},
 			resizableHandles:{type:String, value:'e, s, w'},
 			cellHeight:{type:Number, value:100},
 			dragMode:{type:String, value:'header', reflect:true},
-			items:{type:Array, value:[]}
+			items:{type:Array, value:[]},
+			hidetools:{type:Boolean},
+			dragInOptions:{type:Object},
+			minWidth:{type:Number, value:400}
 		}
 	}
 
@@ -80,8 +81,8 @@ class FlowGridStackKlass extends base{
 	}
 	renderGSTools(uid){
 		return html`
-		<textarea class="gridstack-json" data-uid="${uid}"></textarea>
-		<div class="buttons">
+		<textarea class="gridstack-json" data-uid="${uid}" ?hidden=${this.hidetools}></textarea>
+		<div class="buttons" ?hidden=${this.hidetools}>
 			<flow-btn @click="${this.saveGrid}">Save</flow-btn>
 			<flow-btn @click="${this.loadGrid}">Load</flow-btn>
 			<flow-btn @click="${this.saveGridLS}">Save to LStorage</flow-btn>
@@ -109,7 +110,15 @@ class FlowGridStackKlass extends base{
 			margin:this.gridMargin,
 			cellHeight:this.cellHeight,
 			column:this.column,
+			minWidth:this.minWidth,
+			dragIn: '.sidebar .grid-stack-item',
 			acceptWidgets:this.acceptWidgets||function(el) { return true; },
+			dragInOptions:this.dragInOptions|| {
+				revert: 'invalid',
+				scroll: false,
+				appendTo: 'body',
+				helper: 'clone'
+			}, // clone
 			draggable:{
 				handle:'.grid-stack-item-content .heading',
 				handleFn:(event, uiDraggable)=>{
@@ -206,6 +215,7 @@ class FlowGridStackKlass extends base{
 		let {items} = this;
 		if(items && items.length)
 			this.setGridItemsConfig(items);
+		this.fire("gridstack-ready", {grid:this})
 	}
     getGridItemsConfig(){
     	let data = [];
@@ -373,8 +383,6 @@ return FlowGridStackKlass;
 /**
 * @class FlowGridStack
 * @extends BaseElement
-* @property {Number} [cols]
-* @property {Number} [rows]
 * @example
 *   <flow-gridstack></flow-gridstack>
 *
