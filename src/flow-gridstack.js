@@ -26,7 +26,8 @@ class FlowGridStackKlass extends base{
 			items:{type:Array, value:[]},
 			hidetools:{type:Boolean},
 			dragInOptions:{type:Object},
-			minWidth:{type:Number, value:400}
+			minWidth:{type:Number, value:400},
+			removeTimeout:{type:Number, value:1000}
 		}
 	}
 
@@ -56,6 +57,117 @@ class FlowGridStackKlass extends base{
 	}
 
 	constructor() {
+		var intersect = $.ui.intersect;
+		/*
+		let test = (droppable, draggable)=>{
+			 var x1 = ( draggable.positionAbs ||
+		        draggable.position.absolute ).left + draggable.margins.left,
+		      y1 = ( draggable.positionAbs ||
+		        draggable.position.absolute ).top + draggable.margins.top,
+		      x2 = x1 + draggable.helperProportions.width,
+		      y2 = y1 + draggable.helperProportions.height,
+		      l = droppable.offset.left,
+		      t = droppable.offset.top,
+		      r = l + droppable.proportions().width,
+		      b = t + droppable.proportions().height;
+
+	       console.log("sssssss", droppable.eventNamespace, [ 
+		       	l < x1 + ( draggable.helperProportions.width / 2 ) , // Right Half
+		        x2 - ( draggable.helperProportions.width / 2 ) < r , // Left Half
+		        t < y1 + ( draggable.helperProportions.height / 2 ) , // Bottom Half
+		        y2 - ( draggable.helperProportions.height / 2 ) < b
+	        ]); // Top Half
+		}
+		*/
+
+		$.ui.ddmanager.dragStart = function( draggable, event ) {
+
+		    // Listen for scrolling so that if the dragging causes scrolling the position of the
+		    // droppables can be recalculated (see #5003)
+		    draggable.element.parentsUntil( "body" ).on( "scroll.droppable", function() {
+		      if ( !draggable.options.refreshPositions ) {
+		        $.ui.ddmanager.prepareOffsets( draggable, event );
+		      }
+		    } );
+
+		    draggable.element.parent()[0].gridstack._onResizeHandler();
+
+		    
+		    $.each( $.ui.ddmanager.droppables[ draggable.options.scope ] || [], function() {
+		    	//if(this.eventNamespace==".droppable1"){
+		    		this.isover = false;
+		    		this.isout = true;
+		    		this._out.call(this, event);
+		    	//}
+		    })
+		}
+		$.ui.ddmanager.drag = function( draggable, event ) {
+
+			//console.log("CCCCCC",  $.ui.ddmanager.droppables[ draggable.options.scope ])
+
+		    // If you have a highly dynamic page, you might try this option. It renders positions
+		    // every time you move the mouse.
+		    if ( draggable.options.refreshPositions ) {
+		      $.ui.ddmanager.prepareOffsets( draggable, event );
+		    }
+
+		    // Run through all droppables and check their positions based on specific tolerance options
+		    $.each( $.ui.ddmanager.droppables[ draggable.options.scope ] || [], function() {
+	    		if ( this.options.disabled || this.greedyChild || !this.visible || !this.element.width() ) {
+		        	return;
+		       	}
+
+		      var parentInstance, scope, parent;
+		      var intersects = intersect( draggable, this, this.options.tolerance, event );
+		      //if(!intersects && this.isover && this.options.tolerance=="intersect")
+		      //	intersects = intersect( draggable, this, "fit", event );
+		      //console.log("draggable.helperProportions", draggable.helperProportions)
+		      //test(this, draggable);
+
+		      var c = !intersects && this.isover ?
+		          "isout" :
+		          ( intersects && !this.isover ? "isover" : null );
+
+		     //console.log("CCCCCC", this.element.width(), this.eventNamespace, this.element[0], c, intersects)
+		      
+		      if ( !c ) {
+		        return;
+		      }
+
+		      if ( this.options.greedy ) {
+
+		        // find droppable parents with same scope
+		        scope = this.options.scope;
+		        parent = this.element.parents( ":data(ui-droppable)" ).filter( function() {
+		          return $( this ).droppable( "instance" ).options.scope === scope;
+		        } );
+
+		        if ( parent.length ) {
+		          parentInstance = $( parent[ 0 ] ).droppable( "instance" );
+		          parentInstance.greedyChild = ( c === "isover" );
+		        }
+		      }
+
+		      // We just moved into a greedy child
+		      if ( parentInstance && c === "isover" ) {
+		        parentInstance.isover = false;
+		        parentInstance.isout = true;
+		        parentInstance._out.call( parentInstance, event );
+		      }
+
+		      this[ c ] = true;
+		      this[ c === "isout" ? "isover" : "isout" ] = false;
+		      this[ c === "isover" ? "_over" : "_out" ].call( this, event );
+
+		      // We just moved out of a greedy child
+		      if ( parentInstance && c === "isout" ) {
+		        parentInstance.isout = false;
+		        parentInstance.isover = true;
+		        parentInstance._over.call( parentInstance, event );
+		      }
+		    });
+
+		};
 		super();
 		this.initPropertiesDefaultValues();
 		this.uid = 'flow-gs-'+(Math.random()*1000000).toFixed(0);
@@ -111,16 +223,28 @@ class FlowGridStackKlass extends base{
 			cellHeight:this.cellHeight,
 			column:this.column,
 			minWidth:this.minWidth,
+			removeTimeout:this.removeTimeout,
 			dragIn: '.sidebar .grid-stack-item',
-			acceptWidgets:this.acceptWidgets||function(el) { return true; },
+			acceptWidgets:this.acceptWidgets||function(el) {console.log("acceptWidgets", this, el); return true; },
 			dragInOptions:this.dragInOptions|| {
 				revert: 'invalid',
 				scroll: false,
-				appendTo: 'body',
-				helper: 'clone'
+				appendTo: this,
+				helper: ()=>{
+					//console.log("ssssshelper:")
+					///let el = document.createElement("div");
+					//el.style.backgroundColor = "#F0F";
+					//return;// el;
+				}
 			}, // clone
 			draggable:{
 				handle:'.grid-stack-item-content .heading',
+				//refreshPositions:true,
+				helper___: ()=>{
+					let el = document.createElement("div");
+					el.style.backgroundColor = "#F0F";
+					return el;
+				},
 				handleFn:(event, uiDraggable)=>{
 					let {handle} = uiDraggable.options.handle;
 					if(this.dragMode=="panel"){
@@ -153,6 +277,12 @@ class FlowGridStackKlass extends base{
 				});
 				this.log(`${e.type} ${items.length} items\n${str}` );
 			});
+			//if(this.acceptWidgets != false){
+				//$(this.gridEl).droppable("option", "tolerance", "fit")
+				//let dropOptions = $(this.gridEl).droppable("option")
+				//dropOptions.tolerance = "fit";
+				//console.log("optionsoptions", dropOptions)
+			//}
 			//console.log("GridStack.prototype.getElement", GridStack.prototype.getElement)
 			this.initItems();
 		}, 100)
