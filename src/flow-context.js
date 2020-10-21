@@ -499,6 +499,8 @@ export const FlowContextListenerMixin = base=>{
 		constructor(){
 			super();
 			this.registerListener("flow-ctxworkspace-updated", this.onContextUpdate.bind(this));
+			//console.log("flow-ctxworkspace-loaded: event bind")
+			this.registerListener("flow-ctxworkspace-loaded", this.onContextLoaded.bind(this));
 		}
 
 		acceptContext(context){
@@ -511,6 +513,10 @@ export const FlowContextListenerMixin = base=>{
 			if(workspaces.includes(props.code))
 				this.contextsUpdate();
 		}
+		onContextLoaded(e){
+			//console.log("flow-ctxworkspace-loaded: event got ",this, this.ctxworkspaces)
+			this.contextsUpdate();
+		}
 		contextsUpdate(){
 			this.requestUpdate("ctxworkspaces", null)
 		}
@@ -522,6 +528,7 @@ export const FlowContextListenerMixin = base=>{
 		}
 		setContextManagerConfig(config){
 			let {workspaces} = config;
+			console.log("workspaces", workspaces)
 			this.ctxworkspaces = workspaces;
 			this.contextsUpdate();
 		}
@@ -649,6 +656,10 @@ export class FlowContextManager extends BaseElement{
 		ctxManger = document.createElement(this._tagName);
 		document.body.appendChild(ctxManger);
 		return ctxManger;
+	}
+
+	static createContextManager(){
+		return this.getContextManager();
 	}
 
 	static open(cmp){
@@ -790,6 +801,8 @@ export class FlowContextManager extends BaseElement{
 			CreateWorkspace(workspace)
 		});
 		this.requestUpdate("_workspace", null)
+		//console.log("low-ctxworkspace-loaded : event fire")
+		this.fire("flow-ctxworkspace-loaded", {}, {}, window);
 	}
 
 	onWorkspaceUpdate(e){
