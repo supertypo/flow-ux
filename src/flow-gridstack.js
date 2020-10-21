@@ -435,7 +435,8 @@ class FlowGridStackKlass extends base{
     	dpc(10, e=>{
     		//console.log("onResize1")
     		//grid._updateContainerHeight();
-    		grid._onResizeHandler();
+    		//if(this.offsetHeight)
+    			grid._onResizeHandler();
     		//grid.commit();
     		//grid.compact();
     	})
