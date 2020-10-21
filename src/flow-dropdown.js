@@ -113,8 +113,10 @@ export class FlowDropdown extends BaseElement {
 		this.dropdownEl = this.renderRoot.querySelector(".dropdown");
 		this.dropdownContentEl = this.renderRoot.querySelector(".dropdown-content");
 	}
-	updated(){
+	updated(changes){
 		this.updateDropdownSize();
+		if(changes.has("opened"))
+			this.fire(this.opened?"opened":"closed", {opened:this.opened, dd:this})
 	}
 
 	_onClick(e){
