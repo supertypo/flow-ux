@@ -703,8 +703,7 @@ export class FlowContextManager extends BaseElement{
 
 	renderHeaderTools(){
 		return html`
-		<flow-btn class="advance-tools add-workspace-btn" title="Add workspace" 
-			?hidden=${!this.multiWorkspace} 
+		<flow-btn class="advance-tools add-workspace-btn" title="Add workspace"  
 			@click="${this.onCreateWorkspaceClick}" >
 			<fa-icon icon="plus"></fa-icon>
 		</flow-btn>
