@@ -371,7 +371,11 @@ class FlowGridStackKlass extends base{
 
 		return data;
     }
-	setGridItemsConfig(itemsConfig){
+    setGridItemsConfig(config){
+		this.lastConfig = config
+		this.onResize();
+	}
+	activateGridItemsConfig(itemsConfig){
 		let items = GridStack.Utils.sort(itemsConfig);
 		let {grid} = this;
 		if(!grid)
@@ -437,10 +441,19 @@ class FlowGridStackKlass extends base{
     		//grid._updateContainerHeight();
     		//if(this.offsetHeight)
     			grid._onResizeHandler();
+    			this.afterResize();
     		//grid.commit();
     		//grid.compact();
     	})
     }
+	afterResize(e){
+		//console.log("this.offsetWidth", this.offsetWidth, this.lastConfig)
+		if(this.offsetWidth && this.lastConfig){
+			let config = this.lastConfig;
+			this.lastConfig = null;
+			this.activateGridItemsConfig(config);
+		}
+	}
     removePanel(panel, removeDOM=true, fireEvent=true){
     	if(!panel.matches(".grid-stack-item"))
     		panel = panel.closest(".grid-stack-item");
