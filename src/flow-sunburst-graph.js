@@ -239,52 +239,6 @@ export class FlowSunburstGraph extends Flowd3Element {
 		})
 		
 		let data = samplers[0].data;
-
-		//console.log(JSON.stringify(data, null))
-		let [min,max] = d3.extent(data, d => d.date);
-		//console.log("processing min-max[1]",min,max);
-		if(!this.axes)
-			min = max - 1000*this.range;
-		let maxTextLength = 0;
-		data.forEach(d=>{
-			if(d.value.toFixed(this.precision).length>maxTextLength)
-				maxTextLength = d.value.toFixed(this.precision).length;
-		})
-
-		if(this.axes && margin.left < maxTextLength * 10){
-			let oldLeft = margin.left
-			margin.left = maxTextLength * 10;
-			width += oldLeft - margin.left;
-		}
-
-		
-		const x = d3.scaleUtc()
-		.domain([min, max])
-		.range([0, width])
-
-		const y = d3.scaleLinear()
-		.domain(d3.extent(data, d => d.value)).nice()
-		.range([height, 0]);
-
-		
-		let xAxis, yAxis;
-		if(this.axes){
-			xAxis = g => g
-			.attr("transform", `translate(0,${height})`)
-			.call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
-
-			yAxis = g => g
-			//.attr("transform", `translate(${margin.left},0)`)
-			.call(d3.axisLeft(y).ticks(height / 20).tickSizeOuter(0))
-			//.call(g => g.select(".domain").remove())
-		}
-		
-
-		const area = d3.area()
-			.curve(d3.curveLinear)
-			.x(d => x(d.date))
-			.y0(height)
-			.y1(d => y(d.value));
 		*/
 
 
@@ -313,14 +267,15 @@ export class FlowSunburstGraph extends Flowd3Element {
 		let color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, data.children.length + 1));
 		let format = d3.format(",d");
 		let radiusRef = width<height?width:height;
-		let radius = radiusRef / 6.2;
+		let radius = radiusRef / 10;
+		let offsetR = radius*2;
 		let arc = d3.arc()
 			.startAngle(d => d.x0)
 			.endAngle(d => d.x1)
 			.padAngle(d => Math.min((d.x1 - d.x0) / 2, 0.005))
-			.padRadius(radius * 1.5)
-			.innerRadius(d => d.y0 * radius)
-			.outerRadius(d => Math.max(d.y0 * radius, d.y1 * radius - 1))
+			.padRadius(radius * 5)
+			.innerRadius(d => d.y0 * radius + offsetR)
+			.outerRadius(d => Math.max(d.y0 * radius +offsetR, d.y1 * radius - 1 + offsetR))
 
 		
 		if(!this.rootPaths){
@@ -351,7 +306,9 @@ export class FlowSunburstGraph extends Flowd3Element {
 				.style("user-select", "none")
       	}
 
-		const label = this.labels
+		let label;
+		if(this.useLabels)
+			label = this.labels
 			.selectAll("text")
 			.data(root.descendants().slice(1))
 			.join("text")
@@ -365,7 +322,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 
 	    const parent = this.circleEl
 			.datum(root)
-			.attr("r", radius)
+			.attr("r", radius+offsetR)
 			.attr("fill", "none")
 			.attr("pointer-events", "all")
 			.on("click", clicked);
@@ -373,7 +330,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 	    
 		const noZoom = this.noZoom;
 		function clicked(p, ...args) {
-			if(!noZoom)
+			if(noZoom)
 				return
 			parent.datum(p.parent || root);
 			//console.log("p.depth", args, p, p.x0, p.x1, p.depth);
@@ -402,6 +359,8 @@ export class FlowSunburstGraph extends Flowd3Element {
 				.attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)
 				.attrTween("d", d => () => arc(d.current));
 
+				if(!label)
+					return
 				label.filter(function(d) {
 					return +this.getAttribute("fill-opacity") || labelVisible(d.target);
 				})
@@ -421,7 +380,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 		function labelTransform(d) {
 			//console.log("d.x0 + d.x1", d.x0 , d.x1)
 			const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;
-			const y = (d.y0 + d.y1) / 2 * radius;
+			const y = ((d.y0 + d.y1) / 2 * radius)+offsetR;
 			return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
 		}
 
