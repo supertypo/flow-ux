@@ -204,7 +204,7 @@ export class FlowContextWorkspaceElement extends ContextElement{
 		tags.set("tag", `flow-ctx-${code}`);
 		//tags.set("attr1", code)
 		return flowHtml`${tags}<{tag} ?advance=${attr.advance}
-			.config=${props.config||{}} class="flow-context"></{tag}>`;
+			config=${JSON.stringify(props.config||{})} class="flow-context"></{tag}>`;
 	}
 	static createContextWorkspaceNode(code, attr, props){
 		/*
@@ -225,6 +225,14 @@ export class FlowContextWorkspaceElement extends ContextElement{
 				display:none
 			}
 		`]
+	}
+
+	static updateConfig(config){
+		//console.log("updateConfig\n"+JSON.stringify(this.config)+"\n"+
+		//JSON.stringify(config)+"\n")
+		this.config = config;
+		let props = deepClone(this.config);
+		Manager.getContextManager().saveWorkspaceAndNotify(props)
 	}
 	
 
@@ -807,6 +815,9 @@ export class FlowContextManager extends BaseElement{
 
 	onWorkspaceUpdate(e){
 		let {props} = e.detail;
+		this.saveWorkspaceAndNotify(props);
+	}
+	saveWorkspaceAndNotify(props){
 		this.saveWorkspace(props);
 		this.fire("flow-ctxworkspace-updated", {props}, {}, window);
 	}
