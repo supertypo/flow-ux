@@ -79,8 +79,14 @@ let data =
 export class FlowSunburstGraph extends Flowd3Element {
 	static get properties() {
 		return {
-			noZoom:{type:Boolean}
+			noZoom:{type:Boolean},
+			data:{type:Object},
+			updatenum:{type:Number}
 		}
+	}
+
+	static get sampleData(){
+		return data;
 	}
 
 	static get styles(){
@@ -96,9 +102,8 @@ export class FlowSunburstGraph extends Flowd3Element {
 				border-radius: 10px;
 				overflow: hidden;
 				position:relative;
-				width:600px;
-				height:600px;
-				margin-left:calc(50% - 300px);
+				width:100%;
+				height:100%;
 			}
 			:host([disabled]){opacity:0.5;cursor:default;pointer-events:none;}
 			.container{white-space:nowrap;padding:2px 6px 6px 6px;height:100%;}
@@ -172,7 +177,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 		})
 
 		let value = '';
-		//this.log("render flow-graph");
+		/*//this.log("render flow-graph");
 		if(this.sampler) {
 			let idents = this.sampler.split(':');
 			let ident = idents.shift(); 
@@ -185,6 +190,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 		else {
 			console.log("no sampler", this);
 		}
+		*/
 
 
 		return html`
@@ -212,6 +218,9 @@ export class FlowSunburstGraph extends Flowd3Element {
 	}
 	draw(){
 		let margin = this.getMargin();
+		let data = this.data;
+		if(!data || !data.children)
+			return
 		let {height:fullHeight, width:fullWidth} = this.el_d3.getBoundingClientRect();
 		let width = fullWidth - margin.left - margin.right;
     	let height = fullHeight - margin.top - margin.bottom;
@@ -303,7 +312,8 @@ export class FlowSunburstGraph extends Flowd3Element {
 
 		let color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, data.children.length + 1));
 		let format = d3.format(",d");
-		let radius = width / 6.2;
+		let radiusRef = width<height?width:height;
+		let radius = radiusRef / 6.2;
 		let arc = d3.arc()
 			.startAngle(d => d.x0)
 			.endAngle(d => d.x1)
