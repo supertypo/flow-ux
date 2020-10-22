@@ -20,6 +20,7 @@ class FlowGridStackKlass extends base{
 		return {
 			gridMargin:{type:Number, value:1},
 			column:{type:Number, value:30},
+			disableResize:{type:Boolean},
 			resizableHandles:{type:String, value:'e, s, w'},
 			cellHeight:{type:Number, value:100},
 			dragMode:{type:String, value:'header', reflect:true},
@@ -215,7 +216,7 @@ class FlowGridStackKlass extends base{
 		let options = {
 			alwaysShowResizeHandle:false,// /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
 			//ddPlugin:GridStackDDJQueryUI,
-			resizable: {
+			resizable:{
 			    handles: this.resizableHandles
 			},
 			minRow:1,

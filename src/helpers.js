@@ -255,6 +255,36 @@ export const deepClone = (obj, debug)=>{
 	return obj;
 }
 
+export class ExtendedMap extends Map{
+	constructor(...args){
+		super(...args)
+		this.handlers = new Map();
+	}
+	setListener(type, handler){
+		if(!["set", "clear", "delete"].includes(type)){
+			return false
+		}
+		let handlers = this.handlers.get(type)
+		if(!handlers)
+			handlers = []
+		if(!handlers.includes(handler))
+			handlers.push(handler);
+		this.handlers.set(type, handlers);
+	}
+	callHandlers(type, ...args){
+		let handlers = this.handlers.get(type);
+		if(!handlers)
+			return
+		handlers.forEach(fn=>{
+			fn(...args);
+		})
+	}
+	set(key, value){
+		super.set(key, value);
+		this.callHandlers("set", key, value);
+	}
+}
+
 
 export class AsyncQueue {
 	constructor(opt) {
