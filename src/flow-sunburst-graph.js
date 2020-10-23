@@ -158,6 +158,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 				color:var(--flow-sunburst-graph-tip-color, var(--flow-color));
 			}
 			.legends{
+				margin:var(--flow-sunburst-graph-legends-margin, 0px 0px 0px 5px);
 				width:var(--flow-sunburst-graph-legends-width, 30%);
 				height:var(--flow-sunburst-graph-legends-height, initial);
 				background-color:var(--flow-sunburst-graph-legends-bg, initial);
@@ -165,6 +166,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 				max-height:var(--flow-sunburst-graph-legends-max-height, 100%);
 				overflow:var(--flow-sunburst-graph-legends-overflow, auto);
 				display:flex;align-items:center;
+				flex-direction:column;
 			}
 			.legends .items>div{
 				display:flex;align-items:center;

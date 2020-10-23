@@ -211,6 +211,7 @@ class FlowGridStackKlass extends base{
 		this.styleEl.textContent = `
 			/*.${uid} .grid-stack-item-content{display:block}*/
 			.${uid}.grid-stack.hide-w-opacity{opacity:0}
+			${this.customCss(uid)}
 		`
 		console.log("this.resizableHandles", this.resizableHandles)
 		let options = {
@@ -287,6 +288,9 @@ class FlowGridStackKlass extends base{
 			//console.log("GridStack.prototype.getElement", GridStack.prototype.getElement)
 			this.initItems();
 		}, 100)
+	}
+	customCss(uid){
+		return '';
 	}
 
 	setLocalSetting(name, value){
