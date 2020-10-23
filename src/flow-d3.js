@@ -17,7 +17,7 @@ export class Flowd3Element extends BaseElement {
 				flex-direction:column;
 				box-sizing:border-box;
 				position:relative;
-				user-select: none;        
+				user-select: none;      
 			}
             
             #d3 {flex:1;overflow:hidden}
