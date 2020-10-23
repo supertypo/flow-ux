@@ -264,7 +264,10 @@ export class FlowSunburstGraph extends Flowd3Element {
 				.attr("height", fullHeight)
 		}
 
-		let color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, data.children.length + 1));
+		let length = this.getDataItemsCount(data);
+
+
+		let color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, length + 1));
 		let format = d3.format(",d");
 		let radiusRef = width<height?width:height;
 		let radius = radiusRef / 10;
@@ -286,7 +289,13 @@ export class FlowSunburstGraph extends Flowd3Element {
 		    .selectAll("path")
 		    .data(root.descendants().slice(1))
 		    .join("path")
-				.attr("fill", d => { while (d.depth > 1) d = d.parent; return color(d.data.name); })
+				.attr("fill", d => { 
+					//c = d.data.color;
+					//while (d.depth > 1)
+					//	d = d.parent;
+					//console.log("d.datad.data", d.data)
+					return d.data.color || color(d.data.name);
+				})
 				.attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
 				.attr("d", d => arc(d.current));
 		
@@ -296,7 +305,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 
 
 		const title = path.selectAppend("title")
-      		.text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.value)}`);
+      		.text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${this.format(d.value, d)}`);
 
 
       	if(!this.labels){
@@ -316,6 +325,26 @@ export class FlowSunburstGraph extends Flowd3Element {
 				.attr("fill-opacity", d => +labelVisible(d.current))
 				.attr("transform", d => labelTransform(d.current))
 				.text(d => d.data.name);
+
+		if(!this.centerLabelHolder){
+			this.centerLabelHolder = el.append("g")
+				.attr("class", "center-label")
+			this.centerLabel1 = this.centerLabelHolder
+				.append("text")
+				.attr("dy", -10)
+				.attr("class", "center-label-top")
+				.attr("text-anchor", "middle")
+			this.centerLabel2 = this.centerLabelHolder
+				.append("text")
+				.attr("dy", 10)
+				.attr("class", "center-label-bottom")
+				.attr("text-anchor", "middle")
+
+		}
+
+		this.centerLabel1.text("ABC")
+		this.centerLabel2.text("3434")
+
 
 		if(!this.circleEl)
 			this.circleEl = el.append("circle")
@@ -419,6 +448,19 @@ export class FlowSunburstGraph extends Flowd3Element {
 		}
 		*/
 
+	}
+	format(value, d){
+		if(!this.formatFn)
+			this.formatFn = d3.format(",d");
+		return this.formatFn(value);
+	}
+
+	getDataItemsCount(data){
+		let count = data.children?.length||0;
+		data.children?.forEach(child=>{
+			count+=this.getDataItemsCount(child)
+		});
+		return count;
 	}
 
 	partition(data){
