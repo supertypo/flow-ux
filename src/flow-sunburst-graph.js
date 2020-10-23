@@ -1,4 +1,4 @@
-import {BaseElement, html, css, flow, dpc} from './base-element.js';
+import {BaseElement, html, css, flow, dpc, render} from './base-element.js';
 import {Flowd3Element} from './flow-d3.js';
 import {FlowSampler} from './flow-sampler.js';
 import {FlowFormat} from './flow-format.js';
@@ -125,7 +125,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 
 			}
 
-			.wrapper > div {
+			.wrapper > div:not(.tip) {
 				width:100%;height:100%;
 				position:relative;left:0px;top:0px;bottom:0px;right:0px;
 			}
@@ -141,7 +141,50 @@ export class FlowSunburstGraph extends Flowd3Element {
 			}
 			text{fill:var(--flow-sunburst-graph-text-color, var(--flow-color, #000))}
 			path{cursor:default}
+			.wrapper>div.tip{
+				position:absolute;border:1px solid var(--flow-primary-color,#333);
+				box-sizing:border-box;display:none;
+				width:var(--flow-sunburst-graph-tip-width, unset);
+				max-width:var(--flow-sunburst-graph-tip-width, 45%);
+				padding:var(--flow-sunburst-graph-tip-padding, 10px);
+				min-width:var(--flow-sunburst-graph-tip-min-width, 100px);
+				min-height:var(--flow-sunburst-graph-tip-min-height, unset);
+				border-radius:var(--flow-sunburst-graph-tip-border-radius, 4px);
+				background-color:var(--flow-sunburst-graph-tip-bg, var(--flow-background-color));
+				color:var(--flow-sunburst-graph-tip-color, var(--flow-color));
+			}
 		`];
+	}
+
+	render() {
+
+		dpc(()=>{
+			this.draw();
+		})
+
+		/*let value = '';
+		//this.log("render flow-graph");
+		if(this.sampler) {
+			let idents = this.sampler.split(':');
+			let ident = idents.shift(); 
+			let sampler =  FlowSampler.get(ident);
+			value = sampler.last() || '';
+			if(value !== undefined) { 
+				value = FlowFormat[this.format || 'default'](value || 0, this);
+			}
+		}
+		else {
+			console.log("no sampler", this);
+		}
+		*/
+
+
+		return html`
+			<div class='wrapper'>
+				<div class="d3-holder">${super.render()}</div>
+				<div class="tip"></div>
+			</div>
+			`;
 	}
 
 	constructor() {
@@ -170,36 +213,6 @@ export class FlowSunburstGraph extends Flowd3Element {
 			clearInterval(this.interval);
 	}
 
-	render() {
-
-		dpc(()=>{
-			this.draw();
-		})
-
-		let value = '';
-		/*//this.log("render flow-graph");
-		if(this.sampler) {
-			let idents = this.sampler.split(':');
-			let ident = idents.shift(); 
-			let sampler =  FlowSampler.get(ident);
-			value = sampler.last() || '';
-			if(value !== undefined) { 
-				value = FlowFormat[this.format || 'default'](value || 0, this);
-			}
-		}
-		else {
-			console.log("no sampler", this);
-		}
-		*/
-
-
-		return html`
-			<div class='wrapper'>
-				<div class="d3-holder">${super.render()}</div>
-			</div>
-			`;
-	}
-
 	getMargin(){
 		if(this.axes){
 			return {
@@ -221,7 +234,8 @@ export class FlowSunburstGraph extends Flowd3Element {
 		let data = this.data;
 		if(!data || !data.children)
 			return
-		let {height:fullHeight, width:fullWidth} = this.el_d3.getBoundingClientRect();
+		const box = this.el_d3.getBoundingClientRect();
+		let {height:fullHeight, width:fullWidth} = box;
 		let width = fullWidth - margin.left - margin.right;
     	let height = fullHeight - margin.top - margin.bottom;
 		/*
@@ -284,6 +298,25 @@ export class FlowSunburstGraph extends Flowd3Element {
 		if(!this.rootPaths){
 			this.rootPaths = el.append("g")
 				.attr("class", "paths")
+
+			this.labels = el.append("g")
+				.attr("pointer-events", "none")
+				.attr("text-anchor", "middle")
+				.style("user-select", "none")
+
+			this.centerLabelHolder = el.append("g")
+				.attr("class", "center-label")
+			this.centerLabel1 = this.centerLabelHolder
+				.append("text")
+				.attr("dy", -10)
+				.attr("class", "center-label-top")
+				.attr("text-anchor", "middle")
+			this.centerLabel2 = this.centerLabelHolder
+				.append("text")
+				.attr("dy", 10)
+				.attr("class", "center-label-bottom")
+				.attr("text-anchor", "middle")
+			this.tip = this.renderRoot.querySelector("div.tip")
 		}
 		const path = this.rootPaths
 		    .selectAll("path")
@@ -301,19 +334,16 @@ export class FlowSunburstGraph extends Flowd3Element {
 		
 		path.filter(d => d.children)
 			.style("cursor", "pointer")
-			.on("click", clicked);
+			.on("click", clicked)
+		path
+			.on("mouseenter", mouseenter)
+			.on("mousemove", mousemove)
+			.on("mouseleave", mouseleave);
 
 
-		const title = path.selectAppend("title")
-      		.text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${this.format(d.value, d)}`);
+		//const title = path.selectAppend("title")
+      	//	.text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${this.format(d.value, d)}`);
 
-
-      	if(!this.labels){
-      		this.labels = el.append("g")
-				.attr("pointer-events", "none")
-				.attr("text-anchor", "middle")
-				.style("user-select", "none")
-      	}
 
 		let label;
 		if(this.useLabels)
@@ -325,22 +355,6 @@ export class FlowSunburstGraph extends Flowd3Element {
 				.attr("fill-opacity", d => +labelVisible(d.current))
 				.attr("transform", d => labelTransform(d.current))
 				.text(d => d.data.name);
-
-		if(!this.centerLabelHolder){
-			this.centerLabelHolder = el.append("g")
-				.attr("class", "center-label")
-			this.centerLabel1 = this.centerLabelHolder
-				.append("text")
-				.attr("dy", -10)
-				.attr("class", "center-label-top")
-				.attr("text-anchor", "middle")
-			this.centerLabel2 = this.centerLabelHolder
-				.append("text")
-				.attr("dy", 10)
-				.attr("class", "center-label-bottom")
-				.attr("text-anchor", "middle")
-
-		}
 
 		this.centerLabel1.text("ABC")
 		this.centerLabel2.text("3434")
@@ -364,6 +378,9 @@ export class FlowSunburstGraph extends Flowd3Element {
 			parent.datum(p.parent || root);
 			//console.log("p.depth", args, p, p.x0, p.x1, p.depth);
 			//return
+			this.tip.style.top = p.y0+"px";
+			this.tip.style.left = p.x0+"px";
+
 
 			root.each(d => d.target = {
 				x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
@@ -396,6 +413,51 @@ export class FlowSunburstGraph extends Flowd3Element {
 				.transition(t)
 				.attr("fill-opacity", d => +labelVisible(d.target))
 				.attrTween("transform", d => () => labelTransform(d.current));
+		}
+
+		const {tip} = this, self=this;
+		function buildTip(d, ...args){
+			console.log("buildTip",  d, ...args)
+			let tpl = html`
+				<div class="name">${d.ancestors().map(d => d.data.name).reverse().join("/")}</div>
+				<div class="value">${self.format(d.value, d)}</div>`;
+			render(tpl, tip);
+		}
+		function showTip(...args){
+			let {pageX, pageY} = d3.event;
+			let {left, top, right, width, height} = box;
+			let x = pageX-left+10, y = pageY-top+10;
+			
+			tip.style.opacity = "0";
+			tip.style.display = "inline-block";
+			let r = x+tip.offsetWidth;
+			let t = y+tip.offsetHeight;
+			//console.log("showTip",  {x, y}, tip.offsetWidth, right, width, r)
+			if(r>width){
+				tip.style.left = (x-tip.offsetWidth-20)+"px";
+			}else{
+				tip.style.left = x+"px";
+			}
+
+			if(t>height){
+				tip.style.top = (y-tip.offsetHeight-20)+"px";
+			}else{
+				tip.style.top = y+"px";
+			}
+			tip.style.opacity = "1";	
+		}
+		function hideTip(){
+			tip.style.display = "none";
+		}
+		function mouseenter(...args) {
+			buildTip(...args);
+			showTip(...args);
+		}
+		function mouseleave(...args) {
+			hideTip(...args)
+		}
+		function mousemove(...args){
+			showTip(...args);
 		}
 	  
 		function arcVisible(d) {
