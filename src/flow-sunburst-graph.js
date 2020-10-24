@@ -225,6 +225,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 		this.el_wrapper = this.renderRoot.querySelector(".wrapper");
 		//this.el_d3Holder = this.renderRoot.querySelector(".d3-holder");
 		this.el_legends = this.el_legends||this.renderRoot.querySelector(".legends");
+		this.outerBox = this.el_wrapper.getBoundingClientRect();
 		this.updateD3Holder()
 	}
 
@@ -240,9 +241,11 @@ export class FlowSunburstGraph extends Flowd3Element {
 
 	onElementResize(){
 		super.onElementResize();
+		this.outerBox = this.el_wrapper.getBoundingClientRect();
 		dpc(()=>{
-			this.updateD3Holder()
-			this.requestUpdate();
+			this.outerBox = this.el_wrapper.getBoundingClientRect();
+			this.updateD3Holder();
+			this.requestUpdate("outerBox", null);
 		})
 	}
 
@@ -283,6 +286,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 
 		const self = this;
 		const box = this.el_d3.getBoundingClientRect();
+
 		let {height:fullHeight, width:fullWidth} = box;
 		let width = fullWidth - margin.left - margin.right;
     	let height = fullHeight - margin.top - margin.bottom;
@@ -362,7 +366,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 					//console.log("d.datad.data", d.data)
 					return d.data.color || color(d.data.name);
 				})
-				.attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
+				.attr("fill-opacity", d => self.arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
 				.attr("d", d => arc(d.current));
 		
 		path.filter(d => d.children)
@@ -390,19 +394,11 @@ export class FlowSunburstGraph extends Flowd3Element {
 				.text(d => d.data.name);
 
 		this.centerLabel1.text(root.data.title||root.data.name)
-		this.centerLabel2.text("3434")
+		if(root.data.subtitle)
+			this.centerLabel2.text(root.data.subtitle)
 
 		//console.log("root.descendants().slice(1)", root.descendants().slice(0))
-		let legendHtml = html`<div class="items">${
-			root.descendants().slice(1).map(d=>{
-				return html`
-				<div class="item">
-					<div class="color-box" style="background-color:${d.data.color||color(d.data.name)}"></div>
-					<div class="name">${d.data.name}</div>
-				</div>`
-			})
-		}</div>`;
-		render(legendHtml, this.el_legends);
+		this.buildLegends(root, color);
 
 		if(!this.circleEl)
 			this.circleEl = el.append("circle")
@@ -438,73 +434,47 @@ export class FlowSunburstGraph extends Flowd3Element {
 			// Transition the data on all arcs, even the ones that aren’t visible,
 			// so that if this transition is interrupted, entering arcs will start
 			// the next transition from the desired position.
-			path.transition(t)
+			let transition =  path.transition(t)
 				.tween("data", d => {
 					const i = d3.interpolate(d.current, d.target);
 					return t => d.current = i(t);
 				})
 				.filter(function(d) {
-					return +this.getAttribute("fill-opacity") || arcVisible(d.target);
+					return +this.getAttribute("fill-opacity") || self.arcVisible(d.target);
 				})
-				.attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)
-				.attrTween("d", d => () => arc(d.current));
-
-				if(!label)
-					return
-				label.filter(function(d) {
-					return +this.getAttribute("fill-opacity") || labelVisible(d.target);
+				.attr("fill-opacity", d => self.arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)
+				.attrTween("d", d => () => arc(d.current))
+			let size = transition.size();
+				transition
+				.on("end", (d)=>{
+					//console.log("endendendendend", d, --size)
+					if(!size)
+						self.buildLegends(p.parent || root, color)
 				})
-				.transition(t)
-				.attr("fill-opacity", d => +labelVisible(d.target))
-				.attrTween("transform", d => () => labelTransform(d.current));
-		}
-
-		function buildTip(d, ...args){
-			console.log("buildTip",  d, ...args)
-			let tpl = html`
-				<div class="name">${d.ancestors().map(d => d.data.name).reverse().join("/")}</div>
-				<div class="value">${self.format(d.value, d)}</div>`;
-			render(tpl, el_tip);
-		}
-		function showTip(...args){
-			let {pageX, pageY} = d3.event;
-			let {left, top, right, width, height} = box;
-			let x = pageX-left+10, y = pageY-top+10;
 			
-			el_tip.style.opacity = "0";
-			el_tip.style.display = "inline-block";
-			let r = x+el_tip.offsetWidth;
-			let t = y+el_tip.offsetHeight;
-			//console.log("showTip",  {x, y}, el_tip.offsetWidth, right, width, r)
-			if(r>width){
-				el_tip.style.left = (x-el_tip.offsetWidth-20)+"px";
-			}else{
-				el_tip.style.left = x+"px";
-			}
 
-			if(t>height){
-				el_tip.style.top = (y-el_tip.offsetHeight-20)+"px";
-			}else{
-				el_tip.style.top = y+"px";
-			}
-			el_tip.style.opacity = "1";	
+			if(!label)
+				return
+			label.filter(function(d) {
+				return +this.getAttribute("fill-opacity") || labelVisible(d.target);
+			})
+			.transition(t)
+			.attr("fill-opacity", d => +labelVisible(d.target))
+			.attrTween("transform", d => () => labelTransform(d.current));
 		}
+
 		function hideTip(){
 			el_tip.style.display = "none";
 		}
 		function mouseenter(...args) {
-			buildTip(...args);
-			showTip(...args);
+			self.buildTip(...args);
+			self.showTip(...args);
 		}
 		function mouseleave(...args) {
 			hideTip(...args)
 		}
 		function mousemove(...args){
-			showTip(...args);
-		}
-	  
-		function arcVisible(d) {
-			return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
+			self.showTip(...args);
 		}
 
 		function labelVisible(d) {
@@ -517,8 +487,65 @@ export class FlowSunburstGraph extends Flowd3Element {
 			const y = ((d.y0 + d.y1) / 2 * radius)+offsetR;
 			return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
 		}
+	}
 
+	arcVisible(d) {
+		return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
+	}
 
+	buildLegends(root, color){
+		let shown = new Map();
+		let legendHtml = html`<div class="items">${
+			root.descendants().slice(1).map(d=>{
+				if(!this.arcVisible(d.current))
+					return false;
+				if(d.data.legendOnce){
+					if(shown.has(d.data.legendOnce))
+						return false;
+					shown.set(d.data.legendOnce, 1);
+				}
+				return html`
+				<div class="item">
+					<div class="color-box" style="background-color:${d.data.color||color(d.data.name)}"></div>
+					<div class="name">${d.data.name}</div>
+				</div>`
+			}).filter(a=>a)
+		}</div>`;
+		render(legendHtml, this.el_legends);
+	}
+
+	showTip(box, ...args){
+		let {pageX, pageY} = d3.event;
+		if(!this.outerBox)
+			this.outerBox = this.el_wrapper.getBoundingClientRect();
+		let {left, top, right, width, height} = this.outerBox;
+		let x = pageX-left+10, y = pageY-top+10;
+		const {el_tip} = this;
+		
+		el_tip.style.opacity = "0";
+		el_tip.style.display = "inline-block";
+		let r = x+el_tip.offsetWidth;
+		let t = y+el_tip.offsetHeight;
+		//console.log("showTip",  {x, y}, el_tip.offsetWidth, right, width, r)
+		if(r>width){
+			el_tip.style.left = (x-el_tip.offsetWidth-20)+"px";
+		}else{
+			el_tip.style.left = x+"px";
+		}
+
+		if(t>height){
+			el_tip.style.top = (y-el_tip.offsetHeight-20)+"px";
+		}else{
+			el_tip.style.top = y+"px";
+		}
+		el_tip.style.opacity = "1";	
+	}
+	buildTip(d, ...args){
+		//console.log("buildTip",  d, ...args)
+		let tpl = html`
+			<div class="name">${d.ancestors().slice(0, -1).map(d => d.data.name).reverse().join(" / ")}</div>
+			<div class="value">${this.format(d.value, d)}</div>`;
+		render(tpl, this.el_tip);
 	}
 	format(value, d){
 		if(!this.formatFn)
