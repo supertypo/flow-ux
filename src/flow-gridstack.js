@@ -374,7 +374,7 @@ class FlowGridStackKlass extends base{
 				y: node.y,
 				width: node.width,
 				height: node.height,
-				id: node.id,
+				id: node.id||el.parentNode?.dataset.gsId||'node-'+(Math.random()*10000).toFixed(),
 				nodeName,
 				serializedData
 			});
