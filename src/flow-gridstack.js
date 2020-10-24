@@ -211,7 +211,10 @@ class FlowGridStackKlass extends base{
 		this.styleEl.textContent = `
 			/*.${uid} .grid-stack-item-content{display:block}*/
 			.${uid}.grid-stack .grid-stack-placeholder{
-				background:var(--flow-gridstack-placeholder-bg, #DDD);
+				background:var(--flow-gridstack-placeholder-bg, #1b202f);
+			}
+			.${uid}.grid-stack .grid-stack-placeholder .placeholder-content{
+				border:var(--flow-gridstack-placeholder-content-border, 0px);
 			}
 			.${uid}.grid-stack.hide-w-opacity{opacity:0}
 			${this.customCss(uid)}
