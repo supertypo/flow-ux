@@ -210,6 +210,9 @@ class FlowGridStackKlass extends base{
 		this.debugEl = this.renderRoot.querySelector(`textarea[data-uid="${uid}"]`);
 		this.styleEl.textContent = `
 			/*.${uid} .grid-stack-item-content{display:block}*/
+			.${uid}.grid-stack .grid-stack-placeholder{
+				background:var(--flow-gridstack-placeholder-bg, #DDD);
+			}
 			.${uid}.grid-stack.hide-w-opacity{opacity:0}
 			${this.customCss(uid)}
 		`
