@@ -413,6 +413,43 @@ export class BaseElement extends LitElement{
 		this.registeredListeners = [];
 	}
 
+	bindDDTriggers(skipEventBind=false){
+		
+		let triggers = this.renderRoot.querySelectorAll("[data-trigger-for]");
+		//console.log("bindDDTriggers", this, triggers)
+		triggers.forEach(node=>{
+			let id = node.getAttribute("data-trigger-for");
+			//console.log("idididid", id)
+			if(!id)
+				return
+			let selector = id;
+			if(id[0]!="#")
+				selector = "#"+selector;
+			let key = node.dataset.ddKey
+			if(!key){
+				key = id.replace("#", "");
+				if(!/DD$/.test(key))
+					key = key+"DD";
+			}
+			let dd = this[key]||this.renderRoot.querySelector(selector);
+			//console.log("idididid", {id, key, selector, dd})
+			if(!dd)
+				node.flowDropdown = null;
+			this[key] = dd;
+			node.flowDropdown = dd;
+			if(skipEventBind)
+				return
+			if(!node["event-bind-"+id]){
+				node["event-bind-"+id] = true;
+				node.addEventListener("click", ()=>{
+					if(!this[key])
+						return
+					this[key].toggle();
+				})
+			}
+		})
+	}
+
 	isOnline(){
 		return this.__online;
 	}

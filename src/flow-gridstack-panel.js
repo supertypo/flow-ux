@@ -102,10 +102,7 @@ class FlowGridStackPanelKlass extends base {
 
 	firstUpdated(){
 		super.firstUpdated();
-		this.settingDD = this.renderRoot.querySelector("#settingDD");
-		this.renderRoot.querySelectorAll(".setting-trigger").forEach(node=>{
-			node.flowDropdown = this.settingDD;
-		})
+		this.bindDDTriggers();
 	}
 
 	renderHeadPrefix(){
@@ -113,7 +110,7 @@ class FlowGridStackPanelKlass extends base {
 	}
 	renderHeadSuffix(){
 		return html `
-		<fa-icon class="setting-trigger" @click="${this.onSettingsIconClick}" icon="cog"></fa-icon>
+		<fa-icon class="setting-trigger" data-trigger-for="settingDD" icon="cog"></fa-icon>
 		<fa-icon icon="times" @click="${this.onClosePanelClick}"></fa-icon>`
 	}
 	renderHead(){
@@ -170,7 +167,7 @@ class FlowGridStackPanelKlass extends base {
 		return this.renderRoot.querySelector('.heading .head')
 	}
 
-	onSettingsIconClick(){
+	toggleSettingDD(){
 		this.settingDD.toggle();
 	}
 
