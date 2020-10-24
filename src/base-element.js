@@ -4,10 +4,11 @@ export * from 'lit-element';
 export * from 'lit-html/lit-html.js';
 
 import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon, FlowStates, DeferComponent} from './helpers.js';
-import {styleAppendTo} from "./helpers.js";
+import {styleAppendTo, sizeClsMap} from "./helpers.js";
 export * from './helpers.js';
 export * from './flow-html.js';
 export * from './pagination.js';
+
 /**
 * @class BaseElement
 * @extends LitElement
@@ -110,6 +111,30 @@ export class BaseElement extends LitElement{
 		let ev = new CustomEvent(eventName, Object.assign({}, options, {detail}));
 		let result = (el || window).dispatchEvent(ev);
 		return returnEvent?ev:result
+	}
+
+	static get sizeClsMap(){
+		return sizeClsMap
+	}
+	static setElementSizeClass(cmp, width){
+
+		width = width || cmp.getBoundingClientRect().width;
+		let found = [...this.sizeClsMap.entries()].find(([key, size])=>{
+			//console.log("foundfoundfound:key,size", key, size)
+			return width<=size
+		}) || ["LG"];
+
+		//console.log("foundfoundfound", width, found)
+		let cls = [...this.sizeClsMap.keys(), "LG"];
+		
+		let [clsToAdd] = found;
+		cls.splice(cls.indexOf(clsToAdd), 1);
+
+		cmp.classList.remove(...cls);
+		//console.log("foundfoundfound:adding cls", cls, clsToAdd, cmp)
+		cmp.classList.add(clsToAdd);
+		cmp.sizeCls = clsToAdd;
+
 	}
 
 	constructor(){

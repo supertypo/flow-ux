@@ -204,6 +204,13 @@ export const DeferComponent = (ctor, name, deps) => {
 		ctor.define(name);
 }
 
+export const sizeClsMap = new Map();
+sizeClsMap.set("TINY", 400);
+sizeClsMap.set("XXS", 550);
+sizeClsMap.set("XS", 768);
+sizeClsMap.set("SM", 992);
+sizeClsMap.set("MD", 1200);
+
 export const isArray = o=>Array.isArray(o);
 export const isObject = o=>Object.prototype.toString.call(o)=='[object Object]';
 
