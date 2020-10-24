@@ -93,7 +93,11 @@ class FlowGridStackPanelKlass extends base {
 			<flow-dropdown id="settingDD" no-trigger right-align>
 				${this.renderSettings()}
 			</flow-dropdown>
+			${this.renderExtraBody()}
 			<div class="body">${this.renderBody()}</div>`;
+	}
+	renderExtraBody(){
+		return '';
 	}
 
 	firstUpdated(){
