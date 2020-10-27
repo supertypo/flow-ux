@@ -3,9 +3,11 @@ import {Flowd3Element} from './flow-d3.js';
 import {FlowSampler} from './flow-sampler.js';
 import {FlowFormat} from './flow-format.js';
 
-d3.selection.prototype.selectAppend = function(name) {
-    let t = this.select(name);
-    return t.size()?t:this.append(name);
+if(window.d3?.selection){
+	d3.selection.prototype.selectAppend = function(name) {
+	    let t = this.select(name);
+	    return t.size()?t:this.append(name);
+	}
 }
 
 let data = 
