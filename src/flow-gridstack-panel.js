@@ -94,14 +94,17 @@ class FlowGridStackPanelKlass extends base {
 				${this.renderSettings()}
 			</flow-dropdown>
 			${this.renderExtraBody()}
-			<div class="body">${this.renderBody()}</div>`;
+			<div class="body">${this.renderBody()}${this.renderBodySuffix()}</div>`;
 	}
 	renderExtraBody(){
 		return '';
 	}
+	renderBodySuffix(){
+		return '';
+	}
 
-	firstUpdated(){
-		super.firstUpdated();
+	updated(changes){
+		super.updated(changes);
 		this.bindDDTriggers();
 	}
 

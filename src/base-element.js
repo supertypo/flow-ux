@@ -395,13 +395,18 @@ export class BaseElement extends LitElement{
 		}
 	}
 
-	registerListener(name, handler_) {
+	registerListener(name_, handler_) {
+		const {name, handler} = this.addToListenersStack(name_, handler_);
+		window.addEventListener(name, handler);
+		//console.log("window.addEventListener",name,handler);
+	}
+	addToListenersStack(name, handler_, stack){
 		if(!this.registeredListeners)
 			this.registeredListeners = [];
 		const handler = handler_ || (() => { this.requestUpdate(); });//.bind(this);
-		this.registeredListeners.push({name,handler});
-		window.addEventListener(name,handler);
-		//console.log("window.addEventListener",name,handler);
+		(stack||this.registeredListeners).push({name,handler});
+		return {name,handler};
+		
 	}
 
 	removeListeners() {
