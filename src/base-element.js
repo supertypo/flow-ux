@@ -360,6 +360,11 @@ export class BaseElement extends LitElement{
 			}
 		}
 
+		if(this.onReCaptchaReady){
+			this._onReCaptchaReady = this.onReCaptchaReady.bind(this);
+			window.addEventListener("g-recaptcha-ready", this._onReCaptchaReady)
+		}
+
 		if(this.registeredListeners) {
 			this.registeredListeners.forEach(({ name, handler }) => {
 				window.addEventListener(name, handler);
@@ -386,6 +391,9 @@ export class BaseElement extends LitElement{
 		if(this.signoutCallback) {
 			window.removeEventListener('flow-user-signout', this.signoutCallback);
 			delete this.signoutCallback;
+		}
+		if(this._onReCaptchaReady){
+			window.removeEventListener("g-recaptcha-ready", this._onReCaptchaReady)
 		}
 
 		if(this.registeredListeners) {

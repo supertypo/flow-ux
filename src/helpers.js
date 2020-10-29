@@ -13,6 +13,15 @@ const UID = (len = 26)=>{
 }
 
 window.UID = UID;
+
+if(!window.OnReCaptchaLoad){
+	window.OnReCaptchaLoad = ()=>{
+		console.log("OnReCaptchaLoad OnReCaptchaLoad OnReCaptchaLoad")
+		trigger("g-recaptcha-ready")
+		buildReCaptcha();
+	}
+}
+
 const universe = storage();
 const default_flow_global = { }
 const flow = universe.flow = (universe.flow || default_flow_global);
@@ -381,4 +390,37 @@ export class AsyncQueue {
 			}
 		}
 	}
+}
+
+export const trigger = (eventName, detail={}, options={}, el=null, returnEvent=false)=>{
+	let ev = new CustomEvent(eventName, Object.assign({}, options, {detail}));
+	let result = (el || window).dispatchEvent(ev);
+	return returnEvent?ev:result
+}
+
+export const buildReCaptcha = root=>{
+	if(!window.grecaptcha)
+		return
+	root = root||document;
+	root.querySelectorAll('.g-recaptcha').forEach((el)=>{
+		let id = el.dataset.grecaptchaId;
+		if(id !== undefined){
+			grecaptcha.reset(id)
+			return
+		}
+
+		id = grecaptcha.render(el, {
+			'sitekey' : el.dataset.sitekey || document.body.dataset.recaptchaKey,
+			callback(data){
+				trigger("g-recaptcha", {code:"success", data}, {bubbles:true}, el)
+			},
+			'expired-callback':()=>{
+				trigger("g-recaptcha", {code:"expired"}, {bubbles:true}, el)
+			},
+			'error-callback':()=>{
+				trigger("g-recaptcha", {code:"error"}, {bubbles:true}, el)
+			}
+		});
+		el.dataset.grecaptchaId = id;
+	});
 }
