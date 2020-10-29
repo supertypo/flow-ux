@@ -100,9 +100,13 @@ export const setTheme = theme=>{
 
 	body.classList.add(`flow-theme-${theme}`);
 	localStorage.flowtheme = theme;
-	let ce = new CustomEvent("flow-theme-changed", {detail:{theme}});
-	body.dispatchEvent(ce);
+	//let ce = new CustomEvent("flow-theme-changed", {detail:{theme}});
+	//body.dispatchEvent(ce);
+	trigger("flow-theme-changed", {theme}, {bubbles:true}, body);
+	//trigger("flow-theme-changed", {theme}, {bubbles:true}, window);
 }
+
+//window.setTheme = setTheme;
 export const getTheme = (defaultTheme=((theme && theme.default) || "light"))=>{ 
 	if(localStorage.flowtheme)
 		return localStorage.flowtheme;
@@ -401,26 +405,28 @@ export const trigger = (eventName, detail={}, options={}, el=null, returnEvent=f
 export const buildReCaptcha = root=>{
 	if(!window.grecaptcha)
 		return
-	root = root||document;
-	root.querySelectorAll('.g-recaptcha').forEach((el)=>{
-		let id = el.dataset.grecaptchaId;
-		if(id !== undefined){
-			grecaptcha.reset(id)
-			return
-		}
-
-		id = grecaptcha.render(el, {
-			'sitekey' : el.dataset.sitekey || document.body.dataset.recaptchaKey,
-			callback(data){
-				trigger("g-recaptcha", {code:"success", data}, {bubbles:true}, el)
-			},
-			'expired-callback':()=>{
-				trigger("g-recaptcha", {code:"expired"}, {bubbles:true}, el)
-			},
-			'error-callback':()=>{
-				trigger("g-recaptcha", {code:"error"}, {bubbles:true}, el)
+	grecaptcha.ready(()=>{
+		root = root||document;
+		root.querySelectorAll('.g-recaptcha').forEach((el)=>{
+			let id = el.dataset.grecaptchaId;
+			if(id !== undefined){
+				grecaptcha.reset(id)
+				return
 			}
+
+			id = grecaptcha.render(el, {
+				'sitekey' : el.dataset.sitekey || document.body.dataset.recaptchaKey,
+				callback(data){
+					trigger("g-recaptcha", {code:"success", data}, {bubbles:true}, el)
+				},
+				'expired-callback':()=>{
+					trigger("g-recaptcha", {code:"expired"}, {bubbles:true}, el)
+				},
+				'error-callback':()=>{
+					trigger("g-recaptcha", {code:"error"}, {bubbles:true}, el)
+				}
+			});
+			el.dataset.grecaptchaId = id;
 		});
-		el.dataset.grecaptchaId = id;
-	});
+	})
 }

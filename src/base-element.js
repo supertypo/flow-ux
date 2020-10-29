@@ -341,7 +341,7 @@ export class BaseElement extends LitElement{
 
 		if(GET_NETWORK_AND_USER_STATE){
 			let ce = this.fire("flow-network-and-user-state-get", {}, {}, window, true);
-			//console.log("signedin, online", ce.detail)
+			//console.log("signedin, online", ce.detail, this)
 			let {signedin, online} = ce.detail || {};
 
 			if(typeof online != 'undefined'){
