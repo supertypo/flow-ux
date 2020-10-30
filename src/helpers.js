@@ -1,3 +1,20 @@
+const toString = Object.prototype.toString;
+const is = (obj, type) =>toString.call(obj)=='[object '+type+']'
+
+export const utils = {};
+utils.toString = toString;
+utils.is = is;
+utils.isArray = obj=>Array.isArray(obj);
+utils.isObject = obj=>is(obj, 'Object');
+utils.isString = obj=>is(obj, 'String');
+utils.isNumber = obj=>is(obj, 'Number');
+utils.isBoolean = obj=>is(obj, 'Boolean');
+utils.isFunction = obj=>is(obj, 'Function');
+utils.isUndefined = obj=>is(obj, 'Undefined');
+utils.valueToDataType = (value)=>{
+	return window[toString.call(value).split("object")[1]?.replace("]", "").trim()||""]
+}
+
 const storage = () => {
 	if(typeof global != 'undefined')
 		return global
