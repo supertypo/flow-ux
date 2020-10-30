@@ -44,7 +44,10 @@ export class FlowDropdown extends BaseElement {
 			opened:{type:Boolean, reflect:true},
 			disabled:{type:Boolean, reflect:true},
 			absolute:{type:Boolean, reflect:true},
-			"right-align":{type:Boolean}
+			"right-align":{type:Boolean},
+			xMargin:{type:Number, value:10},
+			yMargin:{type:Number, value:10},
+			yOffset:{type:Number, value:8},
 		}
 	}
 
@@ -114,6 +117,10 @@ export class FlowDropdown extends BaseElement {
 				</div>
 			</div>
 		`;
+	}
+	constructor(){
+		super();
+		this.initPropertiesDefaultValues();
 	}
 	firstUpdated(){
 		if(this.classList.contains("right-align"))
@@ -192,18 +199,18 @@ export class FlowDropdown extends BaseElement {
 		if(!this.absolute){
 			let {left, bottom, right} = parentBox;
 			let width = window.innerWidth;
-			bottom -= 8;
+			bottom -= this.yOffset;
 			if(this["right-align"]){
-				dropdownContentEl.style.maxWidth = `${right}px`;
+				dropdownContentEl.style.maxWidth = `${right-this.xMargin}px`;
 				dropdownContentEl.style.left = 'initial';
 				dropdownContentEl.style.right = `${width-right}px`;
 			}else{
-				dropdownContentEl.style.maxWidth = `calc(100vw - ${left}px)`;
+				dropdownContentEl.style.maxWidth = `calc(100vw - ${left+this.xMargin}px)`;
 				dropdownContentEl.style.right = 'initial';
 				dropdownContentEl.style.left = `${left}px`;
 			}
 			dropdownContentEl.style.top = `${bottom}px`;
-			dropdownContentEl.style.maxHeight = `calc(100vh - ${bottom}px)`;
+			dropdownContentEl.style.maxHeight = `calc(100vh - ${bottom+this.yMargin}px)`;
 			return
 		}
 
@@ -233,7 +240,6 @@ export class FlowDropdown extends BaseElement {
 		dropdownContentEl.style.transform = `translate(${left}px, ${top}px)`;
 		dropdownContentEl.style.maxWidth = width+"px";
 		dropdownContentEl.style.maxHeight = height+"px";
-
 	}
 	connectedCallback(){
     	super.connectedCallback();
