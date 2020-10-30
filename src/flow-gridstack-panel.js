@@ -90,7 +90,7 @@ class FlowGridStackPanelKlass extends base {
 					@click="${this.onHeadClick}">${this.renderHead()}</div>
 				${this.renderHeadSuffix()}
 			</div>
-			<flow-dropdown id="settingDD" no-trigger right-align>
+			<flow-dropdown id="settingDD" no-trigger right-align absolute>
 				${this.renderSettings()}
 			</flow-dropdown>
 			${this.renderExtraBody()}
@@ -103,8 +103,8 @@ class FlowGridStackPanelKlass extends base {
 		return '';
 	}
 
-	updated(changes){
-		super.updated(changes);
+	update(changes){
+		super.update(changes);
 		this.bindDDTriggers();
 	}
 
