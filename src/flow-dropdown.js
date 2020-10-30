@@ -42,7 +42,9 @@ export class FlowDropdown extends BaseElement {
 	static get properties() {
 		return {
 			opened:{type:Boolean, reflect:true},
-			disabled:{type:Boolean, reflect:true}
+			disabled:{type:Boolean, reflect:true},
+			absolute:{type:Boolean, reflect:true},
+			"right-align":{type:Boolean}
 		}
 	}
 
@@ -86,6 +88,7 @@ export class FlowDropdown extends BaseElement {
 			right:var(--flow-dropdown-content-right, initial);
 			padding:var(--flow-dropdown-content-padding, 5px);
 			border:var(--flow-dropdown-border, none);
+			box-sizing:border-box;
 		}
 		:host([opened]) .dropdown-content{display:block;}
 		:host(.right-align) .dropdown-content,
@@ -95,6 +98,12 @@ export class FlowDropdown extends BaseElement {
 		}
 		:host([no-trigger]) .trigger{display:none}
 		:host([no-trigger]){margin:0px;}
+		:host([absolute]) .dropdown-content{
+			position:absolute;
+		}
+		:host(:not([absolute])) .dropdown-content{
+			position:fixed;z-index:1010;
+		}
 		`];
 	}
 	render() {
@@ -107,6 +116,8 @@ export class FlowDropdown extends BaseElement {
 		`;
 	}
 	firstUpdated(){
+		if(this.classList.contains("right-align"))
+			this["right-align"] = true;
 		this.renderRoot
 			.querySelector(".trigger")
 			.addEventListener("click", this._onClick.bind(this));
@@ -177,11 +188,30 @@ export class FlowDropdown extends BaseElement {
 		if(!dropdownContentEl||!dropdownEl||!scrollParants||!scrollParants.length)
 			return
 
+		let parentBox = dropdownEl.getBoundingClientRect();
+		if(!this.absolute){
+			let {left, bottom, right} = parentBox;
+			let width = window.innerWidth;
+			bottom -= 8;
+			if(this["right-align"]){
+				dropdownContentEl.style.maxWidth = `${right}px`;
+				dropdownContentEl.style.left = 'initial';
+				dropdownContentEl.style.right = `${width-right}px`;
+			}else{
+				dropdownContentEl.style.maxWidth = `calc(100vw - ${left}px)`;
+				dropdownContentEl.style.right = 'initial';
+				dropdownContentEl.style.left = `${left}px`;
+			}
+			dropdownContentEl.style.top = `${bottom}px`;
+			dropdownContentEl.style.maxHeight = `calc(100vh - ${bottom}px)`;
+			return
+		}
+
 		//let box = dropdownContentEl.getBoundingClientRect();
 		let firstScrollParent = scrollParants[0];
 		//console.log("firstScrollParent", firstScrollParent)
 		let firstScrollParentBox = firstScrollParent.getBoundingClientRect();
-		let parentBox = dropdownEl.getBoundingClientRect();
+		
 
 		let topMargin = Math.max(parentBox.top - firstScrollParentBox.top, 0);
 		let top = Math.max(firstScrollParentBox.top - parentBox.top, 0);
