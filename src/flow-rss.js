@@ -16,7 +16,8 @@ import {BaseElement, html, css} from './base-element.js';
 export class FlowRSS extends BaseElement {
 	static get properties() {
 		return {
-			href:{type:String}
+			href:{type:String},
+			enablePictures:{type:Boolean}
 		}
 	}
 
@@ -46,16 +47,14 @@ export class FlowRSS extends BaseElement {
 		return html`${this.href} ${this.body}`;
 	}
 	updated(changes){
-		if(changes.has("href") && this.href)
-			this.fetchFeed();
+		if((changes.has("href") || changes.has("enablePictures")) && this.href)
+			this.fetch(this.href);
 	}
 	fetch(href){
 		let opts = {method:"GET", mode:"cors", referrerPolicy: 'no-referrer'};
 		return fetch(href, Object.assign(opts, this.feedOpt||{}))
-
 	}
 	
-
 	setFeedData(data){
 		//this.feedData = data;
 		data = new window.DOMParser().parseFromString(data, "text/xml")
@@ -94,7 +93,7 @@ export class FlowRSS extends BaseElement {
 		this._tpl.innerHTML = `<div class="article-content">${htmlContent}</div>`;
 		let node = this._tpl.content.firstChild;
 		//console.log("htmlContent", htmlContent, this._tpl.innerHTML, node)
-		node.querySelectorAll("script,img1").forEach(el=>{
+		node.querySelectorAll("script"+(this.enablePictures?"":",img")).forEach(el=>{
 			console.log("fetchFeed:script,img:el", el)
 			el.remove();
 		})

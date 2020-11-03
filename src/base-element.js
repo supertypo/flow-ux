@@ -4,10 +4,11 @@ export * from 'lit-element';
 export * from 'lit-html/lit-html.js';
 
 import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon, FlowStates, DeferComponent} from './helpers.js';
-import {styleAppendTo} from "./helpers.js";
+import {styleAppendTo, sizeClsMap} from "./helpers.js";
 export * from './helpers.js';
 export * from './flow-html.js';
 export * from './pagination.js';
+
 /**
 * @class BaseElement
 * @extends LitElement
@@ -110,6 +111,30 @@ export class BaseElement extends LitElement{
 		let ev = new CustomEvent(eventName, Object.assign({}, options, {detail}));
 		let result = (el || window).dispatchEvent(ev);
 		return returnEvent?ev:result
+	}
+
+	static get sizeClsMap(){
+		return sizeClsMap
+	}
+	static setElementSizeClass(cmp, width){
+
+		width = width || cmp.getBoundingClientRect().width;
+		let found = [...this.sizeClsMap.entries()].find(([key, size])=>{
+			//console.log("foundfoundfound:key,size", key, size)
+			return width<=size
+		}) || ["LG"];
+
+		//console.log("foundfoundfound", width, found)
+		let cls = [...this.sizeClsMap.keys(), "LG"];
+		
+		let [clsToAdd] = found;
+		cls.splice(cls.indexOf(clsToAdd), 1);
+
+		cmp.classList.remove(...cls);
+		//console.log("foundfoundfound:adding cls", cls, clsToAdd, cmp)
+		cmp.classList.add(clsToAdd);
+		cmp.sizeCls = clsToAdd;
+
 	}
 
 	constructor(){
@@ -316,7 +341,7 @@ export class BaseElement extends LitElement{
 
 		if(GET_NETWORK_AND_USER_STATE){
 			let ce = this.fire("flow-network-and-user-state-get", {}, {}, window, true);
-			//console.log("signedin, online", ce.detail)
+			//console.log("signedin, online", ce.detail, this)
 			let {signedin, online} = ce.detail || {};
 
 			if(typeof online != 'undefined'){
@@ -333,6 +358,11 @@ export class BaseElement extends LitElement{
 					this.signoutCallback_?.()
 				}
 			}
+		}
+
+		if(this.onReCaptchaReady){
+			this._onReCaptchaReady = this.onReCaptchaReady.bind(this);
+			window.addEventListener("g-recaptcha-ready", this._onReCaptchaReady)
 		}
 
 		if(this.registeredListeners) {
@@ -362,6 +392,9 @@ export class BaseElement extends LitElement{
 			window.removeEventListener('flow-user-signout', this.signoutCallback);
 			delete this.signoutCallback;
 		}
+		if(this._onReCaptchaReady){
+			window.removeEventListener("g-recaptcha-ready", this._onReCaptchaReady)
+		}
 
 		if(this.registeredListeners) {
 			this.registeredListeners.forEach(({ name, handler }) => {
@@ -370,13 +403,18 @@ export class BaseElement extends LitElement{
 		}
 	}
 
-	registerListener(name, handler_) {
+	registerListener(name_, handler_) {
+		const {name, handler} = this.addToListenersStack(name_, handler_);
+		window.addEventListener(name, handler);
+		//console.log("window.addEventListener",name,handler);
+	}
+	addToListenersStack(name, handler_, stack){
 		if(!this.registeredListeners)
 			this.registeredListeners = [];
 		const handler = handler_ || (() => { this.requestUpdate(); });//.bind(this);
-		this.registeredListeners.push({name,handler});
-		window.addEventListener(name,handler);
-		//console.log("window.addEventListener",name,handler);
+		(stack||this.registeredListeners).push({name,handler});
+		return {name,handler};
+		
 	}
 
 	removeListeners() {
@@ -386,6 +424,43 @@ export class BaseElement extends LitElement{
 			})
 		}
 		this.registeredListeners = [];
+	}
+
+	bindDDTriggers(skipEventBind=false){
+		
+		let triggers = this.renderRoot.querySelectorAll("[data-trigger-for]");
+		//console.log("bindDDTriggers", this, triggers)
+		triggers.forEach(node=>{
+			let id = node.getAttribute("data-trigger-for");
+			//console.log("idididid", id)
+			if(!id)
+				return
+			let selector = id;
+			if(id[0]!="#")
+				selector = "#"+selector;
+			let key = node.dataset.ddKey
+			if(!key){
+				key = id.replace("#", "");
+				if(!/DD$/.test(key))
+					key = key+"DD";
+			}
+			let dd = this[key]||this.renderRoot.querySelector(selector);
+			//console.log("idididid", {id, key, selector, dd})
+			if(!dd)
+				node.flowDropdown = null;
+			this[key] = dd;
+			node.flowDropdown = dd;
+			if(skipEventBind)
+				return
+			if(!node["event-bind-"+id]){
+				node["event-bind-"+id] = true;
+				node.addEventListener("click", ()=>{
+					if(!this[key])
+						return
+					this[key].toggle();
+				})
+			}
+		})
 	}
 
 	isOnline(){

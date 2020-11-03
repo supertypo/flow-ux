@@ -1,5 +1,5 @@
 import {BaseElement, html, flowHtml, css, ScrollbarStyle, deepClone, render} from './base-element.js';
-import {baseUrl, dpc} from './base-element.js';
+import {baseUrl, dpc, utils, trigger} from './base-element.js';
 export const FlowContextWorkspaces = new Map();
 export const FlowContexts = new Map();
 
@@ -60,7 +60,10 @@ export const objectToProperties = config=>{
 			props[key] = value;
 			continue;
 		}
-		props[key] = {type:String, value};
+		props[key] = {
+			type:utils.valueToDataType(value)||String,
+			value
+		};
 	}
 
 	return props;
@@ -483,6 +486,7 @@ export const FlowContext = (config, base)=>{
 
 export const CreateFlowContextWorkspace = (config, base)=>{
 	let props = objectToProperties(config);
+	//console.log("CreateFlowContextWorkspace", config, props)
 	class klass extends (base||FlowContextWorkspaceElement){
 		static get properties(){
 			return props;
@@ -565,7 +569,7 @@ export const FlowContextListenerMixin = base=>{
 		serialize(){
 			let {ctxworkspaces} = this;
 			return Object.assign({}, super.serialize(), {
-				ctxworkspaces
+				ctxworkspaces:this.getContextWorkspaces()
 			});
 		}
 		deserialize(data){
@@ -804,13 +808,10 @@ export class FlowContextManager extends BaseElement{
 		
 	}
 	loadWorkspacesConfig(workspaces){
-		console.log("loadWorkspacesConfig:workspaces", workspaces)
-		workspaces.forEach(workspace=>{
-			CreateWorkspace(workspace)
-		});
+		FlowLoadWorkspaces(workspaces);
 		this.requestUpdate("_workspace", null)
 		//console.log("low-ctxworkspace-loaded : event fire")
-		this.fire("flow-ctxworkspace-loaded", {}, {}, window);
+		
 	}
 
 	onWorkspaceUpdate(e){
@@ -999,7 +1000,23 @@ export class FlowContextManager extends BaseElement{
 	}
 }
 
-FlowContextManager.define(FlowContextManager._tagName)
+FlowContextManager.define(FlowContextManager._tagName);
+
+
+export const FlowLoadWorkspaces = (workspaces)=>{
+	console.log("loadWorkspacesConfig:workspaces", workspaces)
+	workspaces.forEach(workspace=>{
+		if(!workspace?.code)
+			return
+		let wKlass = FlowContextWorkspaces.get(workspace.code)
+		if(wKlass){
+			wKlass.updateConfig(workspace)
+		}else{
+			CreateWorkspace(workspace);
+		}
+	});
+	trigger("flow-ctxworkspace-loaded");
+}
 
 let Manager = FlowContextManager;
 let CreateWorkspace = CreateFlowContextWorkspace;

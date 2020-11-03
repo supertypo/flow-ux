@@ -1,11 +1,13 @@
-import {BaseElement, html, css, flow, dpc} from './base-element.js';
+import {BaseElement, ScrollbarStyle, html, css, flow, dpc, render} from './base-element.js';
 import {Flowd3Element} from './flow-d3.js';
 import {FlowSampler} from './flow-sampler.js';
 import {FlowFormat} from './flow-format.js';
 
-d3.selection.prototype.selectAppend = function(name) {
-    let t = this.select(name);
-    return t.size()?t:this.append(name);
+if(window.d3?.selection){
+	d3.selection.prototype.selectAppend = function(name) {
+	    let t = this.select(name);
+	    return t.size()?t:this.append(name);
+	}
 }
 
 let data = 
@@ -90,13 +92,12 @@ export class FlowSunburstGraph extends Flowd3Element {
 	}
 
 	static get styles(){
-		return [Flowd3Element.styles, css`
+		return [Flowd3Element.styles, ScrollbarStyle, css`
 			:host{
 				display:inline-flex;
 				font-weight:bold;
 				font-size:13px;
 				text-transform:uppercase;
-				cursor:pointer;
 				font-family:var(--flow-data-field-font-family, "Julius Sans One");
 				font-weight:var(--flow-data-field-font-weight, bold);
 				border-radius: 10px;
@@ -113,9 +114,11 @@ export class FlowSunburstGraph extends Flowd3Element {
 			.row{display: flex; flex-direction: row; flex:0;}
 
 			.wrapper {
-				position:relative;
-				flex:1;
+				position:relative;flex:1;
 				margin:6px;overflow:hidden;
+				display: flex;
+			    align-items: stretch;
+			    justify-content: center;
 			}
 			
 			:host([border]) .wrapper {
@@ -125,7 +128,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 
 			}
 
-			.wrapper > div {
+			.wrapper > div:not(.tip,.legends) {
 				width:100%;height:100%;
 				position:relative;left:0px;top:0px;bottom:0px;right:0px;
 			}
@@ -134,40 +137,51 @@ export class FlowSunburstGraph extends Flowd3Element {
 				min-height:10px;
 				min-width:10px;
 				opacity:1;
+				display:flex;
+				/*background-color:#F00;*/
+				align-items:center;
 			}
-			.wrapper>div.d3-holder{position:absolute;}
 			[flex] {
 				flex: 1;
 			}
+			/*#d3{background-color:#f0f}*/
 			text{fill:var(--flow-sunburst-graph-text-color, var(--flow-color, #000))}
 			path{cursor:default}
+			.tip{
+				position:absolute;border:1px solid var(--flow-primary-color,#333);
+				box-sizing:border-box;display:none;
+				width:var(--flow-sunburst-graph-tip-width, unset);
+				max-width:var(--flow-sunburst-graph-tip-width, 45%);
+				padding:var(--flow-sunburst-graph-tip-padding, 10px);
+				min-width:var(--flow-sunburst-graph-tip-min-width, 100px);
+				min-height:var(--flow-sunburst-graph-tip-min-height, unset);
+				border-radius:var(--flow-sunburst-graph-tip-border-radius, 4px);
+				background-color:var(--flow-sunburst-graph-tip-bg, var(--flow-background-color));
+				color:var(--flow-sunburst-graph-tip-color, var(--flow-color));
+			}
+			.legends{
+				margin:var(--flow-sunburst-graph-legends-margin, 0px 0px 0px 5px);
+				width:var(--flow-sunburst-graph-legends-width, 30%);
+				height:var(--flow-sunburst-graph-legends-height, initial);
+				background-color:var(--flow-sunburst-graph-legends-bg, initial);
+				max-width:var(--flow-sunburst-graph-legends-max-width, 300px);
+				max-height:var(--flow-sunburst-graph-legends-max-height, 100%);
+				overflow:var(--flow-sunburst-graph-legends-overflow, auto);
+				display:flex;align-items:center;
+				flex-direction:column;
+			}
+			.legends .items>div{
+				display:flex;align-items:center;
+			}
+			.color-box{
+				display:inline-block;
+				margin:var(--flow-sunburst-graph-color-box-margin, 2px 10px 2px 0px);
+				width:var(--flow-sunburst-graph-color-box-width, 20px);
+				min-width:var(--flow-sunburst-graph-color-box-width, 20px);
+				height:var(--flow-sunburst-graph-color-box-height, 20px);
+				opacity:var(--flow-sunburst-graph-color-box-opacity, 0.6);
+			}
 		`];
-	}
-
-	constructor() {
-		super();
-		this.sampler = '';
-		this.svgPreserveAspectRatio = 'xMaxYMax meet';
-	}
-
-	onElementResize(){
-		super.onElementResize();
-		dpc(()=>{
-			this.requestUpdate();
-		})
-	}
-
-	connectedCallback() {
-		super.connectedCallback();
-		if(this.sampler)
-			this.interval = setInterval(this.requestUpdate.bind(this), this.refresh);
-	}
-
-	disconnectedCallback() {
-		super.disconnectedCallback();
-
-		if(this.interval)
-			clearInterval(this.interval);
 	}
 
 	render() {
@@ -176,8 +190,8 @@ export class FlowSunburstGraph extends Flowd3Element {
 			this.draw();
 		})
 
-		let value = '';
-		/*//this.log("render flow-graph");
+		/*let value = '';
+		//this.log("render flow-graph");
 		if(this.sampler) {
 			let idents = this.sampler.split(':');
 			let ident = idents.shift(); 
@@ -196,8 +210,58 @@ export class FlowSunburstGraph extends Flowd3Element {
 		return html`
 			<div class='wrapper'>
 				<div class="d3-holder">${super.render()}</div>
+				<div class="legends"></div>
+				<div class="tip"></div>
 			</div>
 			`;
+	}
+
+	constructor() {
+		super();
+		this.sampler = '';
+		this.svgPreserveAspectRatio = 'xMaxYMax meet';
+	}
+
+	firstUpdated(){
+		super.firstUpdated();
+		this.el_wrapper = this.renderRoot.querySelector(".wrapper");
+		//this.el_d3Holder = this.renderRoot.querySelector(".d3-holder");
+		this.el_legends = this.el_legends||this.renderRoot.querySelector(".legends");
+		this.outerBox = this.el_wrapper.getBoundingClientRect();
+		this.updateD3Holder()
+	}
+
+	updateD3Holder(){
+		let {width, height} = this.el_wrapper.getBoundingClientRect();
+		let {width:lWidth} = this.el_legends.getBoundingClientRect();
+		width -= lWidth;
+		let size = width>height? height:width;
+		this.el_d3.style.width = size+"px";
+		this.el_d3.style.height = size+"px";
+		this.el_d3Rect = this.getBoundingClientRect.call(this.el_d3);
+	}
+
+	onElementResize(){
+		super.onElementResize();
+		this.outerBox = this.el_wrapper.getBoundingClientRect();
+		dpc(()=>{
+			this.outerBox = this.el_wrapper.getBoundingClientRect();
+			this.updateD3Holder();
+			this.requestUpdate("outerBox", null);
+		})
+	}
+
+	connectedCallback() {
+		super.connectedCallback();
+		if(this.sampler)
+			this.interval = setInterval(this.requestUpdate.bind(this), this.refresh);
+	}
+
+	disconnectedCallback() {
+		super.disconnectedCallback();
+
+		if(this.interval)
+			clearInterval(this.interval);
 	}
 
 	getMargin(){
@@ -221,26 +285,13 @@ export class FlowSunburstGraph extends Flowd3Element {
 		let data = this.data;
 		if(!data || !data.children)
 			return
-		let {height:fullHeight, width:fullWidth} = this.el_d3.getBoundingClientRect();
+
+		const self = this;
+		const box = this.el_d3.getBoundingClientRect();
+
+		let {height:fullHeight, width:fullWidth} = box;
 		let width = fullWidth - margin.left - margin.right;
     	let height = fullHeight - margin.top - margin.bottom;
-		/*
-		if(!this.sampler)
-			return;
-		let samplerIdents = this.sampler.split(':');
-		
-		let samplers = samplerIdents.map((ident) => {
-			let sampler =  FlowSampler.get(ident);
-			if(!this._draw){
-				this._draw = this.draw.bind(this);
-				sampler.on('data', this._draw);
-			}
-			return sampler;
-		})
-		
-		let data = samplers[0].data;
-		*/
-
 
 		const root = this.partition(data);
   		root.each(d => d.current = d);
@@ -284,49 +335,12 @@ export class FlowSunburstGraph extends Flowd3Element {
 		if(!this.rootPaths){
 			this.rootPaths = el.append("g")
 				.attr("class", "paths")
-		}
-		const path = this.rootPaths
-		    .selectAll("path")
-		    .data(root.descendants().slice(1))
-		    .join("path")
-				.attr("fill", d => { 
-					//c = d.data.color;
-					//while (d.depth > 1)
-					//	d = d.parent;
-					//console.log("d.datad.data", d.data)
-					return d.data.color || color(d.data.name);
-				})
-				.attr("fill-opacity", d => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
-				.attr("d", d => arc(d.current));
-		
-		path.filter(d => d.children)
-			.style("cursor", "pointer")
-			.on("click", clicked);
 
-
-		const title = path.selectAppend("title")
-      		.text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${this.format(d.value, d)}`);
-
-
-      	if(!this.labels){
-      		this.labels = el.append("g")
+			this.labels = el.append("g")
 				.attr("pointer-events", "none")
 				.attr("text-anchor", "middle")
 				.style("user-select", "none")
-      	}
 
-		let label;
-		if(this.useLabels)
-			label = this.labels
-			.selectAll("text")
-			.data(root.descendants().slice(1))
-			.join("text")
-				.attr("dy", "0.35em")
-				.attr("fill-opacity", d => +labelVisible(d.current))
-				.attr("transform", d => labelTransform(d.current))
-				.text(d => d.data.name);
-
-		if(!this.centerLabelHolder){
 			this.centerLabelHolder = el.append("g")
 				.attr("class", "center-label")
 			this.centerLabel1 = this.centerLabelHolder
@@ -339,12 +353,54 @@ export class FlowSunburstGraph extends Flowd3Element {
 				.attr("dy", 10)
 				.attr("class", "center-label-bottom")
 				.attr("text-anchor", "middle")
-
+			this.el_tip = this.renderRoot.querySelector("div.tip");
+			this.el_legends = this.el_legends||this.renderRoot.querySelector(".legends");
 		}
+		const {el_tip} = this;
+		const path = this.rootPaths
+		    .selectAll("path")
+		    .data(root.descendants().slice(1))
+		    .join("path")
+				.attr("fill", d => { 
+					//c = d.data.color;
+					//while (d.depth > 1)
+					//	d = d.parent;
+					//console.log("d.datad.data", d.data)
+					return d.data.color || color(d.data.name);
+				})
+				.attr("fill-opacity", d => self.arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
+				.attr("d", d => arc(d.current));
+		
+		path.filter(d => d.children)
+			.style("cursor", "pointer")
+			.on("click", clicked)
+		path
+			.on("mouseenter", mouseenter)
+			.on("mousemove", mousemove)
+			.on("mouseleave", mouseleave);
 
-		this.centerLabel1.text("ABC")
-		this.centerLabel2.text("3434")
 
+		//const title = path.selectAppend("title")
+      	//	.text(d => `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${this.format(d.value, d)}`);
+
+
+		let label;
+		if(this.useLabels)
+			label = this.labels
+			.selectAll("text")
+			.data(root.descendants().slice(1))
+			.join("text")
+				.attr("dy", "0.35em")
+				.attr("fill-opacity", d => +labelVisible(d.current))
+				.attr("transform", d => labelTransform(d.current))
+				.text(d => d.data.name);
+
+		this.centerLabel1.text(root.data.title||root.data.name)
+		if(root.data.subtitle)
+			this.centerLabel2.text(root.data.subtitle)
+
+		//console.log("root.descendants().slice(1)", root.descendants().slice(0))
+		this.buildLegends(root, color);
 
 		if(!this.circleEl)
 			this.circleEl = el.append("circle")
@@ -364,6 +420,9 @@ export class FlowSunburstGraph extends Flowd3Element {
 			parent.datum(p.parent || root);
 			//console.log("p.depth", args, p, p.x0, p.x1, p.depth);
 			//return
+			el_tip.style.top = p.y0+"px";
+			el_tip.style.left = p.x0+"px";
+
 
 			root.each(d => d.target = {
 				x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
@@ -377,29 +436,47 @@ export class FlowSunburstGraph extends Flowd3Element {
 			// Transition the data on all arcs, even the ones that aren’t visible,
 			// so that if this transition is interrupted, entering arcs will start
 			// the next transition from the desired position.
-			path.transition(t)
+			let transition =  path.transition(t)
 				.tween("data", d => {
 					const i = d3.interpolate(d.current, d.target);
 					return t => d.current = i(t);
 				})
 				.filter(function(d) {
-					return +this.getAttribute("fill-opacity") || arcVisible(d.target);
+					return +this.getAttribute("fill-opacity") || self.arcVisible(d.target);
 				})
-				.attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)
-				.attrTween("d", d => () => arc(d.current));
+				.attr("fill-opacity", d => self.arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)
+				.attrTween("d", d => () => arc(d.current))
+			let size = transition.size();
+				transition
+				.on("end", (d)=>{
+					//console.log("endendendendend", d, --size)
+					if(!size)
+						self.buildLegends(p.parent || root, color)
+				})
+			
 
-				if(!label)
-					return
-				label.filter(function(d) {
-					return +this.getAttribute("fill-opacity") || labelVisible(d.target);
-				})
-				.transition(t)
-				.attr("fill-opacity", d => +labelVisible(d.target))
-				.attrTween("transform", d => () => labelTransform(d.current));
+			if(!label)
+				return
+			label.filter(function(d) {
+				return +this.getAttribute("fill-opacity") || labelVisible(d.target);
+			})
+			.transition(t)
+			.attr("fill-opacity", d => +labelVisible(d.target))
+			.attrTween("transform", d => () => labelTransform(d.current));
 		}
-	  
-		function arcVisible(d) {
-			return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
+
+		function hideTip(){
+			el_tip.style.display = "none";
+		}
+		function mouseenter(...args) {
+			self.buildTip(...args);
+			self.showTip(...args);
+		}
+		function mouseleave(...args) {
+			hideTip(...args)
+		}
+		function mousemove(...args){
+			self.showTip(...args);
 		}
 
 		function labelVisible(d) {
@@ -412,42 +489,65 @@ export class FlowSunburstGraph extends Flowd3Element {
 			const y = ((d.y0 + d.y1) / 2 * radius)+offsetR;
 			return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
 		}
+	}
 
-		/*
-		if(!this.path)
-			this.path = el.append('path')
-				.attr('stroke-opacity', 'var(--flow-graph-stroke-opacity, 1.0)')
-				.attr("stroke-linejoin", "round")
-				.attr("stroke-linecap", "round")
-				.attr("stroke-width", 'var(--flow-graph-stroke-width, 0)')
-				.attr('fill','var(--flow-graph-fill, steelblue)')
-				.attr('stroke','var(--flow-graph-stroke, "#000)')
+	arcVisible(d) {
+		return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
+	}
 
+	buildLegends(root, color){
+		let shown = new Map();
+		let legendHtml = html`<div class="items">${
+			root.descendants().slice(1).map(d=>{
+				if(!this.arcVisible(d.current))
+					return false;
+				if(d.data.legendOnce){
+					if(shown.has(d.data.legendOnce))
+						return false;
+					shown.set(d.data.legendOnce, 1);
+				}
+				return html`
+				<div class="item">
+					<div class="color-box" style="background-color:${d.data.color||color(d.data.name)}"></div>
+					<div class="name">${d.data.name}</div>
+				</div>`
+			}).filter(a=>a)
+		}</div>`;
+		render(legendHtml, this.el_legends);
+	}
+
+	showTip(box, ...args){
+		let {pageX, pageY} = d3.event;
+		if(!this.outerBox)
+			this.outerBox = this.el_wrapper.getBoundingClientRect();
+		let {left, top, right, width, height} = this.outerBox;
+		let x = pageX-left+10, y = pageY-top+10;
+		const {el_tip} = this;
 		
-		try {				
-			this.path.datum(data)
-				.attr('d', area);
-		} catch(ex) {
-			if(this.sampler)
-				console.log('error while processing sampler:',this.sampler);
-			console.log(ex);
-
+		el_tip.style.opacity = "0";
+		el_tip.style.display = "inline-block";
+		let r = x+el_tip.offsetWidth;
+		let t = y+el_tip.offsetHeight;
+		//console.log("showTip",  {x, y}, el_tip.offsetWidth, right, width, r)
+		if(r>width){
+			el_tip.style.left = (x-el_tip.offsetWidth-20)+"px";
+		}else{
+			el_tip.style.left = x+"px";
 		}
-		*/
 
-
-		/*
-		if(this.axes){
-			this.xAxis = this.xAxis || el.append("g")
-			this.xAxis.call(xAxis);
-			this.yAxis = this.yAxis || el.append("g")
-			this.yAxis.call(yAxis);
-
-			this.xAxis.classed('axis', true);
-			this.yAxis.classed('axis', true);
+		if(t>height){
+			el_tip.style.top = (y-el_tip.offsetHeight-20)+"px";
+		}else{
+			el_tip.style.top = y+"px";
 		}
-		*/
-
+		el_tip.style.opacity = "1";	
+	}
+	buildTip(d, ...args){
+		//console.log("buildTip",  d, ...args)
+		let tpl = html`
+			<div class="name">${d.ancestors().slice(0, -1).map(d => d.data.name).reverse().join(" / ")}</div>
+			<div class="value">${this.format(d.value, d)}</div>`;
+		render(tpl, this.el_tip);
 	}
 	format(value, d){
 		if(!this.formatFn)

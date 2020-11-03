@@ -210,7 +210,14 @@ class FlowGridStackKlass extends base{
 		this.debugEl = this.renderRoot.querySelector(`textarea[data-uid="${uid}"]`);
 		this.styleEl.textContent = `
 			/*.${uid} .grid-stack-item-content{display:block}*/
+			.${uid}.grid-stack .grid-stack-placeholder{
+				background:var(--flow-gridstack-placeholder-bg, #1b202f);
+			}
+			.${uid}.grid-stack .grid-stack-placeholder .placeholder-content{
+				border:var(--flow-gridstack-placeholder-content-border, 0px);
+			}
 			.${uid}.grid-stack.hide-w-opacity{opacity:0}
+			${this.customCss(uid)}
 		`
 		console.log("this.resizableHandles", this.resizableHandles)
 		let options = {
@@ -288,6 +295,9 @@ class FlowGridStackKlass extends base{
 			this.initItems();
 		}, 100)
 	}
+	customCss(uid){
+		return '';
+	}
 
 	setLocalSetting(name, value){
 		if(typeof value != 'string')
@@ -364,7 +374,7 @@ class FlowGridStackKlass extends base{
 				y: node.y,
 				width: node.width,
 				height: node.height,
-				id: node.id,
+				id: node.id||el.parentNode?.dataset.gsId||'node-'+(Math.random()*10000).toFixed(),
 				nodeName,
 				serializedData
 			});

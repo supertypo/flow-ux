@@ -83,6 +83,7 @@ export class FlowBtn extends BaseElement {
 				background-color:var(--flow-btn-hover-bg-color, inherit);
 				border-color:var(--flow-btn-hover-border-color, inherit);
 				color:var(--flow-btn-hover-color, inherit);
+				--fa-icon-color:var(--flow-btn-hover-color, inherit);
 			}
 			:host([primary]),
 			:host(.primary){

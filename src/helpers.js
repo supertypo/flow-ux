@@ -1,3 +1,20 @@
+const toString = Object.prototype.toString;
+const is = (obj, type) =>toString.call(obj)=='[object '+type+']'
+
+export const utils = {};
+utils.toString = toString;
+utils.is = is;
+utils.isArray = obj=>Array.isArray(obj);
+utils.isObject = obj=>is(obj, 'Object');
+utils.isString = obj=>is(obj, 'String');
+utils.isNumber = obj=>is(obj, 'Number');
+utils.isBoolean = obj=>is(obj, 'Boolean');
+utils.isFunction = obj=>is(obj, 'Function');
+utils.isUndefined = obj=>is(obj, 'Undefined');
+utils.valueToDataType = (value)=>{
+	return window[toString.call(value).split("object")[1]?.replace("]", "").trim()||""]
+}
+
 const storage = () => {
 	if(typeof global != 'undefined')
 		return global
@@ -13,6 +30,15 @@ const UID = (len = 26)=>{
 }
 
 window.UID = UID;
+
+if(!window.OnReCaptchaLoad){
+	window.OnReCaptchaLoad = ()=>{
+		console.log("OnReCaptchaLoad OnReCaptchaLoad OnReCaptchaLoad")
+		trigger("g-recaptcha-ready")
+		buildReCaptcha();
+	}
+}
+
 const universe = storage();
 const default_flow_global = { }
 const flow = universe.flow = (universe.flow || default_flow_global);
@@ -91,9 +117,13 @@ export const setTheme = theme=>{
 
 	body.classList.add(`flow-theme-${theme}`);
 	localStorage.flowtheme = theme;
-	let ce = new CustomEvent("flow-theme-changed", {detail:{theme}});
-	body.dispatchEvent(ce);
+	//let ce = new CustomEvent("flow-theme-changed", {detail:{theme}});
+	//body.dispatchEvent(ce);
+	trigger("flow-theme-changed", {theme}, {bubbles:true}, body);
+	//trigger("flow-theme-changed", {theme}, {bubbles:true}, window);
 }
+
+//window.setTheme = setTheme;
 export const getTheme = (defaultTheme=((theme && theme.default) || "light"))=>{ 
 	if(localStorage.flowtheme)
 		return localStorage.flowtheme;
@@ -203,6 +233,13 @@ export const DeferComponent = (ctor, name, deps) => {
 	else
 		ctor.define(name);
 }
+
+export const sizeClsMap = new Map();
+sizeClsMap.set("TINY", 400);
+sizeClsMap.set("XXS", 550);
+sizeClsMap.set("XS", 768);
+sizeClsMap.set("SM", 992);
+sizeClsMap.set("MD", 1200);
 
 export const isArray = o=>Array.isArray(o);
 export const isObject = o=>Object.prototype.toString.call(o)=='[object Object]';
@@ -374,4 +411,39 @@ export class AsyncQueue {
 			}
 		}
 	}
+}
+
+export const trigger = (eventName, detail={}, options={}, el=null, returnEvent=false)=>{
+	let ev = new CustomEvent(eventName, Object.assign({}, options, {detail}));
+	let result = (el || window).dispatchEvent(ev);
+	return returnEvent?ev:result
+}
+
+export const buildReCaptcha = root=>{
+	if(!window.grecaptcha)
+		return
+	grecaptcha.ready(()=>{
+		root = root||document;
+		root.querySelectorAll('.g-recaptcha').forEach((el)=>{
+			let id = el.dataset.grecaptchaId;
+			if(id !== undefined){
+				grecaptcha.reset(id)
+				return
+			}
+
+			id = grecaptcha.render(el, {
+				'sitekey' : el.dataset.sitekey || document.body.dataset.recaptchaKey,
+				callback(data){
+					trigger("g-recaptcha", {code:"success", data}, {bubbles:true}, el)
+				},
+				'expired-callback':()=>{
+					trigger("g-recaptcha", {code:"expired"}, {bubbles:true}, el)
+				},
+				'error-callback':()=>{
+					trigger("g-recaptcha", {code:"error"}, {bubbles:true}, el)
+				}
+			});
+			el.dataset.grecaptchaId = id;
+		});
+	})
 }

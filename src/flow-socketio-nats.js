@@ -98,7 +98,7 @@ export class FlowSocketIONATS extends FlowSocketIO {
 		this.socket.on('response', (msg)=>{
 			this.trace && console.log("sio/response",msg);
 			let {rid, error, data} = msg;
-			error = error || data.error;
+			error = error || data?.error;
 			if(error?.code == "TIMEOUT" && !error.error)
 				error.error = "NATS TIMEOUT";
 			let info = rid && this.pending.get(rid);

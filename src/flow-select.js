@@ -44,7 +44,8 @@ export class FlowSelect extends FlowMenu {
 			hidefilter:{type:Boolean},
 			filterText:{type:String},
 			searchIcon:{type:String},
-			disabled:{type:Boolean, reflect:true}
+			disabled:{type:Boolean, reflect:true},
+			"right-align":{type:Boolean}
 		}
 	}
 
@@ -152,7 +153,8 @@ export class FlowSelect extends FlowMenu {
 	render() {
 		let iconSrc = this.iconPath(this.searchIcon || "search");
 		return html
-		`<flow-dropdown ?multiple="${this.multiple}" ?disabled=${this.disabled}>
+		`<flow-dropdown ?multiple="${this.multiple}" ?disabled=${this.disabled}
+			?right-align=${this["right-align"]}>
 			<div slot="trigger">
 				<label ?hidden=${!this.label}>${this.label||""}</label>
 				<div class="wrapper" @click=${this.onClick}>
@@ -206,6 +208,8 @@ export class FlowSelect extends FlowMenu {
 
 	firstUpdated(){
 		super.firstUpdated();
+		if(this.classList.contains("right-align"))
+			this["right-align"] = true;
 		this.dropdown = this.renderRoot.querySelector("flow-dropdown");
 		let slot = this.renderRoot.querySelector('slot.menu-list');
 		this.listSlot = slot;
