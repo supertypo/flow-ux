@@ -31,6 +31,15 @@ export class FlowRSS extends BaseElement {
 			a:hover {
 				color: var(--flow-link-hover-color, #017b68);
 			}
+
+			.article-link{
+				margin: 5px 0px;
+			}
+
+			.article-content{
+				font-family: var(--flow-font-family, 'Sans Serif');
+				font-size: 14px;
+			}
 		`;
     }
 	render() {
@@ -70,11 +79,11 @@ export class FlowRSS extends BaseElement {
 			return html`
 			<article>
 	          <img src="${link.innerHTML}/image/large.png" alt="">
-	          <h2>
+	          <div class="article-link">
 	            <flow-link href="${link.innerHTML}" target="_blank" rel="noopener">
 	              ${el.querySelector("title").innerHTML}
 	            </flow-link>
-	          </h2>
+	          </div>
 	          ${this.buildNode(dsc)}
 	        </article>`
         })}
@@ -82,7 +91,7 @@ export class FlowRSS extends BaseElement {
 	}
 	buildNode(htmlContent){
 		this._tpl = this._tpl || document.createElement("template");
-		this._tpl.innerHTML = `<div>${htmlContent}</div>`;
+		this._tpl.innerHTML = `<div class="article-content">${htmlContent}</div>`;
 		let node = this._tpl.content.firstChild;
 		//console.log("htmlContent", htmlContent, this._tpl.innerHTML, node)
 		node.querySelectorAll("script,img1").forEach(el=>{
