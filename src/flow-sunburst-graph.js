@@ -96,7 +96,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 			:host{
 				display:inline-flex;
 				font-weight:bold;
-				font-size:13px;
+				font-size:10px;
 				text-transform:uppercase;
 				font-family:var(--flow-data-field-font-family, "Julius Sans One");
 				font-weight:var(--flow-data-field-font-weight, bold);

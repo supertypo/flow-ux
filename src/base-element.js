@@ -126,11 +126,13 @@ export class BaseElement extends LitElement{
 
 		//console.log("foundfoundfound", width, found)
 		let cls = [...this.sizeClsMap.keys(), "LG"];
-		
 		let [clsToAdd] = found;
 		cls.splice(cls.indexOf(clsToAdd), 1);
-
 		cmp.classList.remove(...cls);
+		
+		//temporarily remove XSS size for accounts panel
+		if(clsToAdd == "XXS")
+			clsToAdd = "TINY";
 		//console.log("foundfoundfound:adding cls", cls, clsToAdd, cmp)
 		cmp.classList.add(clsToAdd);
 		cmp.sizeCls = clsToAdd;
