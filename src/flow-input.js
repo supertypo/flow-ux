@@ -77,7 +77,7 @@ export class FlowInput extends BaseElement {
 				display:flex;
 				align-items:stretch;
 				min-width_:50px;
-				text-align:center;
+				text-align:left;
 				justify-content:center;
 				margin-top:var(--flow-input-wrapper-margin-top,-0.5rem);
 				height:var(--flow-input-wrapper-height);
@@ -116,13 +116,15 @@ export class FlowInput extends BaseElement {
 				border: var(--flow-input-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:var(--flow-input-border-radius, 8px);
     			margin:0px;
-    			padding:16px 30px 10px 10px;
+    			padding:var(--flow-input-padding,10px);
 				background-color:var(--flow-input-bg, inherit);
 				color:var(--flow-input-color, inherit);
 				font-size:var(--flow-input-font-size, 1rem);
 				font-weight:var(--flow-input-font-weight, 400);
 				line-height:var(--flow-input-line-height, 1.2);
 				box-shadow:var(--flow-input-box-shadow);
+				text-align:var(--flow-input-text-align);
+				
 			}
 
 			:host([apply-btn]) .input{

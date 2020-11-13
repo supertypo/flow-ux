@@ -47,7 +47,7 @@ export class FlowGroupBtns extends BaseElement {
 			:host{
 				display:inline-block;
 				margin: var(--flow-group-btns-margin);
-				padding:0px	;
+				padding:0px;
 				border:1px solid var(--flow-group-btns-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:var(--flow-group-btns-radius, 8px);
 				border-width:var(--flow-group-btns-border-width, 1px);

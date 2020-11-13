@@ -56,6 +56,8 @@ export class FlowSelect extends FlowMenu {
 				font-family:var(--flow-font-family, "Julius Sans One");
 				padding:var(--flow-select-padding, 0px);
 				margin:var(--flow-select-margin, 5px);
+				width:var(--flow-select-width);
+				height:var(--flow-select-height);
 				--flow-dropdown-border:var(--flow-select-dropdown-border, 1px solid var(--flow-primary-color, #000));
 				--flow-dropdown-trigger-bg:var(--flow-select-trigger-bg, transparent);
 				--flow-dropdown-trigger-color:var(--flow-select-trigger-color, var(--flow-color, #000));
@@ -73,7 +75,8 @@ export class FlowSelect extends FlowMenu {
 				min-width:50px;
 				text-align:center;
 				/*justify-content:center;*/
-			    margin-top:-0.5rem;
+				margin-top:var(--flow-select-wrapper-margin-top,-0.5rem);
+				
 			}
 			label{
 				/*font-size:0.7rem;
@@ -88,12 +91,13 @@ export class FlowSelect extends FlowMenu {
     			font-weight:var(--flow-font-weight, bold);
 			}
 			.input{
+				
 				flex:1;box-sizing:border-box;
 			    /*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
 				border: var(--flow-select-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:var(--flow-select-input-border-radius, var(--flow-input-border-radius, 8px));
     			margin:0px;
-    			padding:16px 30px 10px 10px;
+    			padding:var(--flow-select-input-padding,16px 30px 10px 10px);
 				background-color:var(--flow-select-input-bg, var(--flow-input-bg, inherit));
 				color:var(--flow-input-color, inherit);
 				font-size:var(--flow-input-font-size, 1rem);
@@ -110,6 +114,7 @@ export class FlowSelect extends FlowMenu {
 				min-height:var(--flow-select-selected-min-height, 44px);
 				position:relative;
 				box-shadow:var(--flow-input-box-shadow);
+				height:var(--flow-select-selected-height);	
 			}
 			:host(:not([disabled])) .input.selected::after{
 				content:"";display:inline-block;
