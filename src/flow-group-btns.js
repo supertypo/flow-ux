@@ -57,6 +57,7 @@ export class FlowGroupBtns extends BaseElement {
 				line-height:var(--flow-group-btns-line-height, inherit);
 				user-select: none;
 				overflow:hidden;
+				background-color: var(--flow-group-btns-bg, var(--flow-input-bg, inherit));
 			}
 			:host([disabled]){
 				opacity:0.5;

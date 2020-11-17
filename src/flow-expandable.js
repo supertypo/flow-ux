@@ -32,7 +32,7 @@ export class FlowExpandable extends BaseElement {
 		:host{
 			display:flex;
 			align-items:flex-start;
-			margin:10px 0px;
+			margin:var(--flow-expandable-margin,10px 0px);
 		}
 		.icon-box{
 			width:30px;
@@ -59,16 +59,20 @@ export class FlowExpandable extends BaseElement {
 			height:100%;
 		}
 		.icon-box svg{
-			width:24px;
-			height:24px;
-			margin-right: 8px;
+			width:var(--flow-expandable-icon-box-svg-width,24px);
+			height:var(--flow-expandable-icon-box-svg-height,24px);
+			margin-right: var(--flow-expandable-icon-box-svg-margin-right,8px);
 			fill:var(--flow-primary-color, rgba(0,151,115,1.0));
 		}
 		.content-box{
 			width:100px;
 			flex:1;
+			min-width: var(--flow-expandable-content-box-min-width);
 		}
-		.content{margin:5px 5px 5px 10px;}
+		.content{
+			margin:var(--flow-expandable-content-margin,5px 5px 5px 10px);
+			
+		}
 
 		.info-box{
 			flex:1;

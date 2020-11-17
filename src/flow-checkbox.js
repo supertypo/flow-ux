@@ -42,6 +42,7 @@ export class FlowCheckbox extends BaseElement {
 			:host(.block){
 				display: block;
 				width: max-content;
+				margin-bottom: var(--flow-checkbox-margin-bottom);
 			}
 			:host(:not([disabled]):not([readonly])) .checkbox{
 				cursor:pointer;

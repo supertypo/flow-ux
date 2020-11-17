@@ -53,7 +53,7 @@ export class FlowBtn extends BaseElement {
 				display:inline-block;
 				margin: var(--flow-btn-margin);
 				padding:var(--flow-btn-padding, 5px);
-				border: 2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+				border: var(--flow-btn-border, 2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1))));
 				border-radius:var(--flow-btn-radius, 8px);
 				border-width:var(--flow-btn-border-width, 2px);
 				font-family:var(--flow-btn-font-family, var(--flow-font-family, initial));

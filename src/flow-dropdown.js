@@ -57,6 +57,7 @@ export class FlowDropdown extends BaseElement {
 			display:inline-block;margin:5px 0px;
 			vertical-align:middle;
 			color:var(--flow-color, #000);
+			
 		}
 		.trigger{
 			background-color:var(--flow-dropdown-trigger-bg, var(--flow-primary-color, #3498DB));

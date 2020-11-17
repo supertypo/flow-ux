@@ -41,7 +41,7 @@ export class FlowSelect extends FlowMenu {
 		return {
 			label:{type:String},
 			textAttr:{type:String},
-			hidefilter:{type:Boolean},
+			showfilter:{type:Boolean},
 			filterText:{type:String},
 			searchIcon:{type:String},
 			disabled:{type:Boolean, reflect:true},
@@ -77,6 +77,7 @@ export class FlowSelect extends FlowMenu {
 				/*justify-content:center;*/
 				margin-top:var(--flow-select-wrapper-margin-top,-0.5rem);
 				
+				
 			}
 			label{
 				/*font-size:0.7rem;
@@ -105,6 +106,7 @@ export class FlowSelect extends FlowMenu {
 				line-height:var(--flow-input-line-height, 1.2);
 				text-align:left;
 				height:var(--flow-select-input-height);
+				width:var(--flow-select-input-width);
 			}
 			.input:focus{outline:none}
 			.input::-webkit-input-placeholder { color: var(--flow-input-placeholder, #888 ); }
@@ -115,6 +117,7 @@ export class FlowSelect extends FlowMenu {
 				position:relative;
 				box-shadow:var(--flow-input-box-shadow);
 				height:var(--flow-select-selected-height);	
+				width:var(--flow-select-selected-width);
 			}
 			:host(:not([disabled])) .input.selected::after{
 				content:"";display:inline-block;
@@ -171,7 +174,7 @@ export class FlowSelect extends FlowMenu {
 				</div>
 				
 			</div><div class="dd">
-				<div class="filter-box" ?hidden=${this.hidefilter}>
+				<div class="filter-box" ?hidden=${!this.showfilter}>
 					<svg class="icon">
 						<use href="${iconSrc}"></use>
 					</svg>
