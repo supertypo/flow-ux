@@ -111,7 +111,8 @@ export class FlowInput extends BaseElement {
 				border-color:var(--flow-border-hover-color, var(--flow-primary-color, rgba(0,151,115,1)))
 			}
 			.input{
-				width:100px;flex:1;box-sizing:border-box;
+				width:var(--flow-input-input-width,100px);
+				flex:1;box-sizing:border-box;
 				height:var(--flow-input-height);
 				border: var(--flow-input-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:var(--flow-input-border-radius, 8px);
@@ -121,6 +122,7 @@ export class FlowInput extends BaseElement {
 				color:var(--flow-input-color, inherit);
 				font-size:var(--flow-input-font-size, 1rem);
 				font-weight:var(--flow-input-font-weight, 400);
+				font-family:var(--flow-input-font-family);
 				line-height:var(--flow-input-line-height, 1.2);
 				box-shadow:var(--flow-input-box-shadow);
 				text-align:var(--flow-input-text-align);
