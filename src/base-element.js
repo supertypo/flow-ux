@@ -131,8 +131,8 @@ export class BaseElement extends LitElement{
 		cmp.classList.remove(...cls);
 		
 		//temporarily remove XSS size for accounts panel
-		if(clsToAdd == "XXS")
-			clsToAdd = "TINY";
+		// if(clsToAdd == "XXS")
+		// 	clsToAdd = "TINY";
 		//console.log("foundfoundfound:adding cls", cls, clsToAdd, cmp)
 		cmp.classList.add(clsToAdd);
 		cmp.sizeCls = clsToAdd;
