@@ -38,9 +38,10 @@ export class FlowClockWidget extends BaseElement {
 			}
 			.time { 
 				font-size: var(--flow-clock-widget-time-font-size, 14px);
+				font-family: var(--flow-clock-widget-time-font-family, "Consolas");	
 			}
 			.suffix {
-				font-size: var(--flow-clock-widget-suffix-font-size, 10px);
+				font-size: var(--flow-clock-widget-suffix-font-size, 10px);				
 			}
 		`;
 	}
@@ -72,7 +73,7 @@ export class FlowClockWidget extends BaseElement {
 		if(this.tz.includes(':')) {
 
 			let parts = this.tz.split(':');
-			console.log("TIMEZONE",this.tz,parts);
+			//console.log("TIMEZONE",this.tz,parts);
 			timeZone = parts.shift();
 			city = parts.shift();
 		} else {
