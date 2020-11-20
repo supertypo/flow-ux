@@ -63,7 +63,7 @@ export class FlowTabs extends BaseElement {
 				-webkit-app-region:drag;
 			}
 			.tabs-outer{
-				flex:1;
+				width:100%;
 				display:flex;
 				position:relative;
 			}
@@ -174,8 +174,8 @@ export class FlowTabs extends BaseElement {
 				return this.requestUpdate("tabs");
 			}
 		}
-		let root = this.tabs ? this.shadowRoot : this;
-		root = root.querySelector(".tab-items.front");
+		//let root = this.tabs ? this.shadowRoot : this;
+		let root = this.tabs? this.shadowRoot.querySelector(".tab-items.front"):this;
 		if(!root)
 			return
 
@@ -190,11 +190,13 @@ export class FlowTabs extends BaseElement {
 		}
 
 		let activeIsSet = false;
-		tabs.forEach((tab) => {
+		let activeIndex = -1;
+		tabs.forEach((tab, index) => {
 			let target = document.querySelector(`tab-content[for="${tab.id}"]`);
 			if(!tab.getAttribute('hidden') && tab.id == this.active) {
 				tab.active = true;
 				activeIsSet = true;
+				activeIndex = index;
 				//tab.style['z-index'] = 2;
 				if(target){
 					target.style.display = target.getAttribute('data-active-display') || this['target-display'];
@@ -206,6 +208,17 @@ export class FlowTabs extends BaseElement {
 				target && (target.style.display = 'none');
 			}
 		});
+
+		if(!this.tabs){
+			let zIndex = activeIndex>-1 ? tabs.slice(activeIndex).length+2 : 2;
+			tabs.forEach((t, i)=>{
+				if(activeIndex >-1 && i >= activeIndex){
+					t.style['z-index'] = zIndex--;
+				}else{
+					t.style['z-index'] = 1;
+				}
+			})
+		}
 
 
 		if(!activeIsSet)
@@ -227,7 +240,7 @@ export class FlowTabs extends BaseElement {
 			}
 			*/
 			//console.log("updateRows", this.active)
-			if(this.active){
+			if(this.active && this.tabs){
 				this.updateRows();
 				setTimeout(()=>{
 					this.updateRows();
