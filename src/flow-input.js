@@ -135,6 +135,15 @@ export class FlowInput extends BaseElement {
 				border-bottom-right-radius: 0px;
 			}
 
+			:host([outer-border]) .input{
+				border:0px;
+				height:calc(var(--flow-input-height) - 4px);
+			}
+			:host([outer-border]) .wrapper{
+				border:var(--flow-input-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+				border-radius:var(--flow-input-border-radius, 8px);
+			}
+
 
 			.input:focus{outline:none}
 			.input::-webkit-input-placeholder { color: var(--flow-input-placeholder, #888 ); }
