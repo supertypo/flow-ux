@@ -63,7 +63,7 @@ export class FlowTabs extends BaseElement {
 				-webkit-app-region:drag;
 			}
 			.tabs-outer{
-				flex:1;
+				width:100%;
 				display:flex;
 				position:relative;
 			}
