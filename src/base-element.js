@@ -80,18 +80,18 @@ export class BaseElement extends LitElement{
 		return el;
 	}
 
-	static setLocalSetting(name, value){
+	static setLocalSetting(name, value, prefix='flow-'){
 		if(!window.localStorage)
 			return
 
-		window.localStorage['flow-'+name] = value;
+		window.localStorage[prefix+name] = value;
 	}
 
-	static getLocalSetting(name, defaults){
+	static getLocalSetting(name, defaults, prefix='flow-'){
 		if(!window.localStorage)
 			return defaults;
 
-		let value = window.localStorage['flow-'+name];
+		let value = window.localStorage[prefix+name];
 		if(typeof(value) == 'undefined')
 			return defaults
 
