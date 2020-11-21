@@ -179,7 +179,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 				width:var(--flow-sunburst-graph-color-box-width, 20px);
 				min-width:var(--flow-sunburst-graph-color-box-width, 20px);
 				height:var(--flow-sunburst-graph-color-box-height, 20px);
-				opacity:var(--flow-sunburst-graph-color-box-opacity, 0.6);
+				opacity:var(--flow-sunburst-graph-color-box-opacity, 1);
 			}
 		`];
 	}
@@ -368,7 +368,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 					//console.log("d.datad.data", d.data)
 					return d.data.color || color(d.data.name);
 				})
-				.attr("fill-opacity", d => self.arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
+				//.attr("fill-opacity", d => self.arcVisible(d.current) ? (d.children ? 1 : 0.4) : 0)
 				.attr("d", d => arc(d.current));
 		
 		path.filter(d => d.children)
