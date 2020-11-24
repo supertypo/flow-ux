@@ -170,7 +170,12 @@ export class FlowGraph extends Flowd3Element {
 	onElementResize(){
 		super.onElementResize();
 		dpc(()=>{
-			this.requestUpdate();
+			super.onElementResize();
+			this.requestUpdate("element-resize", null);
+		})
+		dpc(1000, ()=>{
+			super.onElementResize();
+			this.requestUpdate("element-resize", null);
 		})
 	}
 
