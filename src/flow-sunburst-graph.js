@@ -83,7 +83,8 @@ export class FlowSunburstGraph extends Flowd3Element {
 		return {
 			noZoom:{type:Boolean},
 			data:{type:Object},
-			updatenum:{type:Number}
+			updatenum:{type:Number},
+			d3margin:{type:Number}
 		}
 	}
 
@@ -220,6 +221,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 		super();
 		this.sampler = '';
 		this.svgPreserveAspectRatio = 'xMaxYMax meet';
+		this.d3margin = 10;
 	}
 
 	firstUpdated(){
@@ -236,8 +238,8 @@ export class FlowSunburstGraph extends Flowd3Element {
 		let {width:lWidth} = this.el_legends.getBoundingClientRect();
 		width -= lWidth;
 		let size = width>height? height:width;
-		this.el_d3.style.width = size+"px";
-		this.el_d3.style.height = size+"px";
+		this.el_d3.style.width = (size-this.d3margin)+"px";
+		this.el_d3.style.height = (size-this.d3margin)+"px";
 		this.el_d3Rect = this.getBoundingClientRect.call(this.el_d3);
 	}
 
