@@ -217,6 +217,11 @@ class FlowGridStackKlass extends base{
 				border:var(--flow-gridstack-placeholder-content-border, 0px);
 			}
 			.${uid}.grid-stack.hide-w-opacity{opacity:0}
+			.${uid} .grid-stack-item.ui-resizable-resizing:after{
+				content:"";position:absolute;top:0px;left:0px;right:0px;bottom:0px;
+				/*background:#F00;*/
+				z-index:89;
+			}
 			${this.customCss(uid)}
 		`
 		console.log("this.resizableHandles", this.resizableHandles)
