@@ -129,10 +129,16 @@ export class FlowInput extends BaseElement {
 				
 			}
 
-			:host([apply-btn]) .input{
+			:host([apply-btn]) .input,
+			:host([sufix-btn]) .input{
 			    border-right-width:0px;
 				border-top-right-radius: 0px;
 				border-bottom-right-radius: 0px;
+			}
+			:host([sufix-btn]) ::slotted([slot="sufix"]){
+				border-top-left-radius: 0px;
+				border-bottom-left-radius: 0px;
+				margin-bottom:0px;
 			}
 
 			:host([outer-border]) .input{

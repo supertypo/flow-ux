@@ -1,12 +1,6 @@
 import {BaseElement, html, css, baseUrl} from './base-element.js';
 import { dpc } from './helpers.js';
 
-if(!window.__FLOW__QRCODE__){
-	let qrcode = document.createElement("script");
-	qrcode.src = baseUrl+'resources/extern/qrcode/qrcode.js';
-	document.head.appendChild(qrcode);
-}
-
 
 /**
 * @class FlowQRCode
@@ -64,29 +58,17 @@ export class FlowQRCode extends BaseElement {
 	}
 
 	render() {
-
 		if(!window.qrcode) {
 			dpc(128, () => {
 				this.requestUpdate();
 			});
 			return 'QR';
 		}
-
 		if(!this.qr || this.data != this.data_last_) {
-			//this.qrdata = this.qrcode.createDataURL(width,height,getPixel)
-			//this.qr = this.create_qrcode(this.data);
-			
 			this.data_last_ = this.data;
-
 			this.qr = this.createQRCode(this.data, this.ntype, this.ecl, this.mode, this.multibyte);
-
-
-			// let template = document.createElement('template');
-			// template.innerHTML = qr.trim();
-			// this.qr = template.content.firstChild.cloneNode(true);
-			//this.svg = template.content.firstChild.cloneNode(true);
 		}
-		return this.qr; //html`${this.qr}`;
+		return this.qr;
 	}
 
 	createQRCode(text, typeNumber,
@@ -103,33 +85,24 @@ export class FlowQRCode extends BaseElement {
 
 		return html`<img src="${qr.createDataURL(cellSize, margin)}">`;
 	}
-	
 
-/*
+	/*
+	var draw_qrcode = function(text, typeNumber, errorCorrectionLevel) {
+	  document.write(create_qrcode(text, typeNumber, errorCorrectionLevel) );
+	};
 
-
-
-var draw_qrcode = function(text, typeNumber, errorCorrectionLevel) {
-  document.write(create_qrcode(text, typeNumber, errorCorrectionLevel) );
-};
-
-
-var update_qrcode = function() {
-  var form = document.forms['qrForm'];
-  var text = form.elements['msg'].value.
-    replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
-  var t = form.elements['t'].value;
-  var e = form.elements['e'].value;
-  var m = form.elements['m'].value;
-  var mb = form.elements['mb'].value;
-  document.getElementById('qr').innerHTML =
-    create_qrcode(text, t, e, m, mb);
-};
-
-*/
-
-
-
+	var update_qrcode = function() {
+	  var form = document.forms['qrForm'];
+	  var text = form.elements['msg'].value.
+	    replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
+	  var t = form.elements['t'].value;
+	  var e = form.elements['e'].value;
+	  var m = form.elements['m'].value;
+	  var mb = form.elements['mb'].value;
+	  document.getElementById('qr').innerHTML =
+	    create_qrcode(text, t, e, m, mb);
+	};
+	*/
 }
 
-FlowQRCode.define('flow-qrcode');
+FlowQRCode.define('flow-qrcode', [baseUrl+'resources/extern/qrcode/qrcode.js']);

@@ -174,6 +174,7 @@ export class FlowContextElement extends ContextElement{
 	}
 }
 
+//window.FlowContextWorkspaces = FlowContextWorkspaces;
 export class FlowContextWorkspaceElement extends ContextElement{
 	static get properties(){
 		return {
@@ -188,7 +189,7 @@ export class FlowContextWorkspaceElement extends ContextElement{
 	static init(){
 		this.config = this.props;
 		let {code} = this.config;
-		console.log("FlowContextWorkspaceElement:init", code, this.properties)
+		console.log("FlowContextWorkspaceElement:init", code, this.config, this.properties)
 		if(code){
 			if(!FlowContextWorkspaces.has(code)){
 				FlowContextWorkspaces.set(code, this);
