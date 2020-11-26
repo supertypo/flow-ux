@@ -191,23 +191,6 @@ export class FlowSunburstGraph extends Flowd3Element {
 			this.draw();
 		})
 
-		/*let value = '';
-		//this.log("render flow-graph");
-		if(this.sampler) {
-			let idents = this.sampler.split(':');
-			let ident = idents.shift(); 
-			let sampler =  FlowSampler.get(ident);
-			value = sampler.last() || '';
-			if(value !== undefined) { 
-				value = FlowFormat[this.format || 'default'](value || 0, this);
-			}
-		}
-		else {
-			console.log("no sampler", this);
-		}
-		*/
-
-
 		return html`
 			<div class='wrapper'>
 				<div class="d3-holder">${super.render()}</div>
@@ -363,7 +346,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 		    .selectAll("path")
 		    .data(root.descendants().slice(1))
 		    .join("path")
-				.attr("fill", d => { 
+				.attr("fill", d => {
 					//c = d.data.color;
 					//while (d.depth > 1)
 					//	d = d.parent;
