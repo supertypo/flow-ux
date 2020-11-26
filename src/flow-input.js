@@ -49,7 +49,8 @@ export class FlowInput extends BaseElement {
 			validator:{type:Function},
 			placeholder:{type:String},
 			label:{type:String},
-			readonly:{type:Boolean}
+			readonly:{type:Boolean},
+			"clear-btn":{type:Boolean, reflect:true}
 		}
 	}
 
@@ -126,7 +127,7 @@ export class FlowInput extends BaseElement {
 				line-height:var(--flow-input-line-height, 1.2);
 				box-shadow:var(--flow-input-box-shadow);
 				text-align:var(--flow-input-text-align);
-				
+				min-width:var(--flow-input-input-min-width, 10px);
 			}
 
 			:host([apply-btn]) .input,
@@ -141,13 +142,20 @@ export class FlowInput extends BaseElement {
 				margin-bottom:0px;
 			}
 
-			:host([outer-border]) .input{
+			:host([outer-border]) .input,
+			:host([clear-btn]) .input{
 				border:0px;
 				height:calc(var(--flow-input-height) - 4px);
+				background-color:transparent;
+				box-shadow:none;
 			}
-			:host([outer-border]) .wrapper{
+			:host([outer-border]) .wrapper,
+			:host([clear-btn]) .wrapper{
 				border:var(--flow-input-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:var(--flow-input-border-radius, 8px);
+				background-color:var(--flow-input-bg, inherit);
+				color:var(--flow-input-color, inherit);
+				box-shadow:var(--flow-input-box-shadow);
 			}
 
 
@@ -156,24 +164,21 @@ export class FlowInput extends BaseElement {
 			:host([disabled]) .value{
 				padding-right:10px;
 			}
-			.clear-btn{
-				font-style: normal;
-			    font-size: 25px;
-			    padding: 0px 10px 0px 10px;
-			    cursor: pointer;
-			    display:none;
-			    position: absolute;
-			    right: 0px;
-			    z-index: 1;
-			}
-			:host(:not([disabled])) [has-value] .clear-btn{display:block;}
+			.clear-btn{margin:5px 10px;align-self:center;cursor:pointer}
 			:host(.invalid) .input{color:var(--flow-input-invalid-color, red)}
+			.wrapper:not([has-value]) ::slotted([hide-on-empty]),
+			.wrapper:not([has-value]) .clear-btn{
+				display:none
+			}
 		`;
     }
     constructor() {
         super();
         this.type = 'text';
         this.value = '';
+        this.renderRoot.addEventListener("click", (e)=>{
+        	this._onClick(e);
+        })
     }
 	render() {
 		return html`<label ?hidden=${!this.label}>${this.label||""}</label>
@@ -185,10 +190,15 @@ export class FlowInput extends BaseElement {
 				?readonly=${this.readonly}
 				?disabled=${this.disabled} 
 				@change=${this.onChange}
+				@input=${this.onInput}
 				.value="${this.value}" />
 			<div class="btn">
 				<div class="text"><flow-i18n text="${this.btnText || 'Apply'}"></flow-i18n></div>
 			</div>
+			${this['clear-btn']?html`
+				<fa-icon clear-input class="clear-btn"
+						slot="sufix" icon="times"></fa-icon>
+			`:''}
 			<slot name="sufix"></slot>
 		</div>
 		`;
@@ -198,7 +208,13 @@ export class FlowInput extends BaseElement {
 		this.setValue("");
 	}
 
-	onClick() {
+	_onClick(e){
+		if(e.target.closest("[clear-input]")){
+			this.clear();
+		}
+	}
+
+	onClick(e) {
 		this.fire("flow-input-click", {el:this})
 	}
 
@@ -220,8 +236,15 @@ export class FlowInput extends BaseElement {
 		return true;
 	}
 
+	clear(){
+		let value = "";
+		this.value = value;
+		this.fire("changed", {el:this, value});
+		this.fire("inputted", {el:this, value})
+	}
+
 	onChange(e) {
-		let value = this.shadowRoot.querySelector("input").value;
+		let value = this.renderRoot.querySelector("input").value;
 		if(!this.validate(value)){
 			this.classList.add("invalid")
 			return
@@ -232,11 +255,26 @@ export class FlowInput extends BaseElement {
 		this.value = value;
 		this.fire("changed", {el:this, value})
 	}
+	onInput(e) {
+		let value = this.renderRoot.querySelector("input").value;
+		if(!this.validate(value)){
+			this.classList.add("invalid")
+			return
+		}
+		this.classList.remove("invalid")
+		//this.log("value", value)
+
+		this.value = value;
+		this.fire("inputted", {el:this, value})
+	}
 
 	setValue(value){
 		this.value = value;
-		this.shadowRoot.querySelector("input").value = "";
+		this.renderRoot.querySelector("input").value = "";
 		this.fire("changed", {el:this, value:this.value})
+	}
+	getInputValue(){
+		return this.renderRoot.querySelector("input").value
 	}
 }
 
