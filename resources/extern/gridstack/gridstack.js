@@ -1530,7 +1530,8 @@ class GridStack {
                 return el.matches(selector);
             }
         })
-            .on(this.el, 'dropover', (event, el) => {
+        .on(this.el, 'dropover', (event, el) => {
+            console.log("dropoverdropover")
             let width, height;
             // see if we already have a node with widget/height and check for attributes
             let node = el.gridstackNode;
@@ -1558,7 +1559,7 @@ class GridStack {
             this.dd.on(el, 'drag', onDrag);
             return false; // prevent parent from receiving msg (which may be grid as well)
         })
-            .on(this.el, 'dropout', (event, el) => {
+        .on(this.el, 'dropout', (event, el) => {
             // jquery-ui bug. Must verify widget is being dropped out
             // check node variable that gets set when widget is out of grid
             let node = el.gridstackNode;
@@ -1575,7 +1576,7 @@ class GridStack {
             el.gridstackNode = el._gridstackNodeOrig;
             return false; // prevent parent from receiving msg (which may be grid as well)
         })
-            .on(this.el, 'drop', (event, el, helper) => {
+        .on(this.el, 'drop', (event, el, helper) => {
             this.placeholder.remove();
             // notify of removal from prev grid...
             let origNode = el._gridstackNodeOrig;

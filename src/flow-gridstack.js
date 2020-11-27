@@ -27,6 +27,7 @@ class FlowGridStackKlass extends base{
 			items:{type:Array, value:[]},
 			hidetools:{type:Boolean},
 			dragInOptions:{type:Object},
+			dragIn:{type:String},
 			minWidth:{type:Number, value:400},
 			removeTimeout:{type:Number, value:1000}
 		}
@@ -90,8 +91,8 @@ class FlowGridStackKlass extends base{
 		        $.ui.ddmanager.prepareOffsets( draggable, event );
 		      }
 		    } );
-
-		    draggable.element.parent()[0].gridstack._onResizeHandler();
+		    const {gridstack} = draggable.element.parent()[0];
+		    gridstack?._onResizeHandler();
 
 		    
 		    $.each( $.ui.ddmanager.droppables[ draggable.options.scope ] || [], function() {
@@ -237,8 +238,8 @@ class FlowGridStackKlass extends base{
 			column:this.column,
 			minWidth:this.minWidth,
 			removeTimeout:this.removeTimeout,
-			dragIn: '.sidebar .grid-stack-item',
-			acceptWidgets:this.acceptWidgets||function(el) {console.log("acceptWidgets", this, el); return true; },
+			dragIn: this.dragIn ||'.sidebar .grid-stack-item',
+			acceptWidgets:this.acceptWidgets||function(el) {/*console.log("acceptWidgets", this, el);*/return true; },
 			dragInOptions:this.dragInOptions|| {
 				revert: 'invalid',
 				scroll: false,
@@ -430,7 +431,7 @@ class FlowGridStackKlass extends base{
 	}
 	addWidget(item){
 		let nodeName = item.nodeName || 'div';
-		let el = this.grid.addWidget(`<div data-gs-id="${item.id}">
+		let el = this.grid.addWidget(`<div class="grid-stack-item" data-gs-id="${item.id}">
 			<${nodeName} class="grid-stack-item-content"></${nodeName}></div>`, item);
 		this.sendSerializeDataToPanel(el, item.serializedData);
 	}
