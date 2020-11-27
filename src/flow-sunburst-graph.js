@@ -182,6 +182,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 				height:var(--flow-sunburst-graph-color-box-height, 20px);
 				opacity:var(--flow-sunburst-graph-color-box-opacity, 1);
 			}
+			.tip{opacity:0;zIndex:-1;transition:opacity 0.5s ease;display:inline-block}
 		`];
 	}
 
@@ -451,7 +452,8 @@ export class FlowSunburstGraph extends Flowd3Element {
 		}
 
 		function hideTip(){
-			el_tip.style.display = "none";
+			el_tip.style.opacity = "0";
+			el_tip.style.zIndex = "-1";
 		}
 		function mouseenter(...args) {
 			self.buildTip(...args);
@@ -510,7 +512,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 		const {el_tip} = this;
 		
 		el_tip.style.opacity = "0";
-		el_tip.style.display = "inline-block";
+		el_tip.style.zIndex = "-1";
 		let r = x+el_tip.offsetWidth;
 		let b = y+el_tip.offsetHeight;
 		let tipLeft, tipTop;
@@ -535,7 +537,8 @@ export class FlowSunburstGraph extends Flowd3Element {
 
 		el_tip.style.left = `${tipLeft}px`;
 		el_tip.style.top = `${tipTop}px`;
-		el_tip.style.opacity = "1";	
+		el_tip.style.opacity = "1";
+		el_tip.style.zIndex = "1";
 	}
 	buildTip(d, ...args){
 		//console.log("buildTip",  d, ...args)
