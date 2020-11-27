@@ -152,7 +152,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 				position:absolute;border:1px solid var(--flow-primary-color,#333);
 				box-sizing:border-box;display:none;
 				width:var(--flow-sunburst-graph-tip-width, unset);
-				max-width:var(--flow-sunburst-graph-tip-width, 45%);
+				max-width:var(--flow-sunburst-graph-tip-width, 95%);
 				padding:var(--flow-sunburst-graph-tip-padding, 10px);
 				min-width:var(--flow-sunburst-graph-tip-min-width, 100px);
 				min-height:var(--flow-sunburst-graph-tip-min-height, unset);
@@ -506,25 +506,35 @@ export class FlowSunburstGraph extends Flowd3Element {
 		if(!this.outerBox)
 			this.outerBox = this.el_wrapper.getBoundingClientRect();
 		let {left, top, right, width, height} = this.outerBox;
-		let x = pageX-left+10, y = pageY-top+10;
+		let x = pageX-left+15, y = pageY-top+15;
 		const {el_tip} = this;
 		
 		el_tip.style.opacity = "0";
 		el_tip.style.display = "inline-block";
 		let r = x+el_tip.offsetWidth;
-		let t = y+el_tip.offsetHeight;
+		let b = y+el_tip.offsetHeight;
+		let tipLeft, tipTop;
 		//console.log("showTip",  {x, y}, el_tip.offsetWidth, right, width, r)
 		if(r>width){
-			el_tip.style.left = (x-el_tip.offsetWidth-20)+"px";
+			tipLeft = width-el_tip.offsetWidth-5;
 		}else{
-			el_tip.style.left = x+"px";
+			tipLeft = x;
 		}
 
-		if(t>height){
-			el_tip.style.top = (y-el_tip.offsetHeight-20)+"px";
+		if(b>height){
+			tipTop = height-el_tip.offsetHeight-5;
 		}else{
-			el_tip.style.top = y+"px";
+			tipTop = y;
 		}
+
+		if(tipLeft<x && tipTop<y){
+			if(y > height/2){
+				tipTop = y - el_tip.offsetHeight - 20;
+			}
+		}
+
+		el_tip.style.left = `${tipLeft}px`;
+		el_tip.style.top = `${tipTop}px`;
 		el_tip.style.opacity = "1";	
 	}
 	buildTip(d, ...args){
