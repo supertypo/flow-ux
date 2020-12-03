@@ -64,11 +64,11 @@ export const FlowAppMixin = (baseClass)=>{
 			setTheme(theme);
 		}
 
-		initSocketIORPC(){
+		initSocketIORPC(options={}){
 			return new Promise((resolve, reject) => {
-				this.rpc = new FlowSocketIORPC({
+				this.rpc = new FlowSocketIORPC(Object.assign({
 					path:"/rpc"
-				});
+				}, options||{}));
 
 				this.rpc.on("init", ()=>{
 					this.log("RPC:init");
