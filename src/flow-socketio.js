@@ -39,7 +39,7 @@ export class FlowSocketIO {
 		this.events.emitAsync('rpc-connecting');
 		let io = this.options.io || window.io;
 		this.socket = io(this.options.origin+this.options.path, this.options.args || {});
-		//console.log("this.options.args"+this.options.args)
+		//console.log("this.options", this.options)
 		this.socket.on('ready', ()=>{
 			this.online = true;
 		})
@@ -48,6 +48,7 @@ export class FlowSocketIO {
 			this.events.emit('connect');
 		})
 		this.socket.on('connect_error', (err)=>{
+			console.log("RPC connect_error", err);
 			this.events.emit('connect.error', err);
 		})
 		this.socket.on('error', (...args)=>{ 

@@ -54,10 +54,9 @@ export class FlowDropdown extends BaseElement {
 	static get styles() {
 		return [ScrollbarStyle, css`
 		:host{
-			display:inline-block;margin:5px 0px;
+			display:var(--flow-dropdown-display, inline-block);margin:5px 0px;
 			vertical-align:middle;
 			color:var(--flow-color, #000);
-			
 		}
 		.trigger{
 			background-color:var(--flow-dropdown-trigger-bg, var(--flow-primary-color, #3498DB));
