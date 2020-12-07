@@ -94,7 +94,7 @@ export class FlowRSS extends BaseElement {
 		let node = this._tpl.content.firstChild;
 		//console.log("htmlContent", htmlContent, this._tpl.innerHTML, node)
 		node.querySelectorAll("script"+(this.enablePictures?"":",img")).forEach(el=>{
-			console.log("fetchFeed:script,img:el", el)
+			//console.log("fetchFeed:script,img:el", el)
 			el.remove();
 		})
 		return node;
