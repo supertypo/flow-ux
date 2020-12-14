@@ -21,7 +21,6 @@
   "_resolved": "https://registry.npmjs.org/js-nuid/-/js-nuid-1.1.1-6.tgz",
   "_shasum": "b9d3d8ab26f2c0cb5152434f2554629bf3b149c9",
   "_spec": "js-nuid@^1.1.1-4",
-  "_where": "C:\\dev\\finfr\\node_modules\\nats.ws",
   "author": {
     "name": "NATS Authors"
   },

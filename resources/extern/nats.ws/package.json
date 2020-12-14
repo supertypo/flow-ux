@@ -22,7 +22,6 @@
   "_resolved": "https://registry.npmjs.org/nats.ws/-/nats.ws-1.0.0-17.tgz",
   "_shasum": "67f56ef38b51c02b82b7bcb9eb8a82a5cfb486b1",
   "_spec": "nats.ws@next",
-  "_where": "C:\\dev\\finfr",
   "author": {
     "name": "The NATS Authors"
   },
