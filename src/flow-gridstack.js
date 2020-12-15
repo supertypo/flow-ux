@@ -37,9 +37,13 @@ class FlowGridStackKlass extends base{
 		if(deps){
 			BaseElement.define.call(this, name, deps)
 		}else{
-			this.addGridStackHelpers();
-			BaseElement.define.call(this, name);
+			this.defineElement(name);
 		}
+	}
+
+	static defineElement(name){
+		this.addGridStackHelpers();
+		BaseElement.defineElement.call(this, name);
 	}
 
 	static addGridStackHelpers(){
