@@ -70,14 +70,14 @@ export class FlowGroupBtns extends BaseElement {
 				--flow-btn-border-width:0px;
 				--flow-btn-radius:0px;
 				--flow-btn-wrapper-margin:5px;
-				--flow-btn-hover-color:var(--flow-group-btns-active-color, var(--flow-primary-invert-color));
+				--flow-btn-hover-color:var(--flow-group-btns-active-color-hover, var(--flow-primary-invert-color));
 				border-right:var(--flow-group-btns-border-width, 1px) solid var(--flow-group-btns-border-color, var(--flow-primary-color, rgba(0,151,115,1)))
 			}
 
 			:host ::slotted(flow-btn.active){
 				--flow-btn-bg-color:var(--flow-group-btns-active-bg-color, var(--flow-primary-color));
 				--flow-btn-color:var(--flow-group-btns-active-color, var(--flow-primary-invert-color));
-				--flow-btn-hover-color:var(--flow-group-btns-active-color, var(--flow-primary-invert-color));
+				--flow-btn-hover-color:var(--flow-group-btns-active-color-hover, var(--flow-primary-invert-color));
 			}
 
 			:host ::slotted(flow-btn:last-child){
