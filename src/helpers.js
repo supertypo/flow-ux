@@ -226,12 +226,12 @@ export const DeferComponent = (ctor, name, deps) => {
             el.onload = ()=>{
                 count--;
                 if(!count)
-                    ctor.define(name);
+                    ctor.defineElement(name);
             }        
         }
 	}
 	else
-		ctor.define(name);
+		ctor.defineElement(name);
 }
 
 export const sizeClsMap = new Map();

@@ -54,7 +54,11 @@ export class BaseElement extends LitElement{
 			DeferComponent(this,name,deps);
 		}
 		else
-			customElements.define(name, this);
+			this.defineElement(name);
+	}
+
+	static defineElement(name){
+		customElements.define(name, this);
 	}
 
 	static get svgStyle(){
