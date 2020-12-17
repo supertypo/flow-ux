@@ -76,7 +76,7 @@ export class FlowBtn extends BaseElement {
 			:host(:not([disabled])){
 				cursor:pointer;
 				background-color:var(--flow-btn-bg-color, inherit);
-				border-color:var(--flow-border-color, inherit);
+				border-color:var(--flow-btn-border-color, inherit);
 				color:var(--flow-btn-color, inherit);
 			}
 			:host(:not([disabled]):hover){
@@ -94,6 +94,7 @@ export class FlowBtn extends BaseElement {
 			:host([primary]:not([disabled]):hover),
 			:host(.primary:not([disabled]):hover){
 				background-color:var(--flow-btn-hover-primary-bg-color, var(--flow-btn-hover-border-color, var(--flow-primary-color, rgba(0,151,115,1))));
+				color: var(--flow-btn-hover-primary-color);
 			}
 
 			:host(.secondary){
