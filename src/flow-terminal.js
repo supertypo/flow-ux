@@ -569,8 +569,8 @@ export class FlowTerminal extends BaseElement {
 		this.buffer = '';
 
 		let prompt = this.prompt_;
-		this.term.write(prompt);
-		this.promptLength = prompt.length;
+		this.term.write("\r\n"+prompt);
+		this.promptLength = ("\r\n"+prompt).length;
 	}
 
 	enableResidentMode(length) {
