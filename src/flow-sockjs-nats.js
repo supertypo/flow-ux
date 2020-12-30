@@ -1,7 +1,7 @@
-import {FlowSocketIO} from './flow-socketio.js';
+import {FlowSockjs} from './flow-sockjs.js';
 import {dpc, UID} from './helpers.js';
 
-export class FlowSocketIONATS extends FlowSocketIO {
+export class FlowSockjsNATS extends FlowSockjs {
 	constructor(options) {
 		super(options);
 		this.trace = false;
@@ -124,7 +124,7 @@ export class FlowSocketIONATS extends FlowSocketIO {
 		}
 
 		if(!callback)
-			throw new Error(`FlowSocketIONATS::request() - callback required`);
+			throw new Error(`FlowSockjsNATS::request() - callback required`);
 
 		let rid = UID();
 

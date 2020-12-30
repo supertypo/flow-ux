@@ -2,7 +2,7 @@ import {FlowEvents} from './flow-events.js';
 import {dpc, UID} from './helpers.js';
 
 export * from './flow-events.js';
-export class FlowSocketIO {
+export class FlowSockjs {
 	constructor(options){
 		this.online = false;
 		

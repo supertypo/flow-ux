@@ -1,7 +1,7 @@
-import {FlowSocketIO} from './flow-socketio.js';
+import {FlowSockjs} from './flow-sockjs.js';
 import {dpc, UID} from './helpers.js';
 
-export class FlowSocketIORPC extends FlowSocketIO {
+export class FlowSockjsRPC extends FlowSockjs {
 	constructor(options) {
 		super(options);
 	}
