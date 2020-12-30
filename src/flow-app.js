@@ -64,7 +64,7 @@ export const FlowAppMixin = (baseClass)=>{
 			setTheme(theme);
 		}
 
-		initSocketIORPC(options={}){
+		initSockjsRPC(options={}){
 			return new Promise((resolve, reject) => {
 				this.rpc = new FlowSockjsRPC(Object.assign({
 					path:"/rpc"
@@ -88,7 +88,7 @@ export const FlowAppMixin = (baseClass)=>{
 			return window.dispatchEvent(ev);
 		}
 	
-		initSocketIONATS(options={}){
+		initSockjsNATS(options={}){
 			return new Promise((resolve, reject) => {
 				this.nats = new FlowSockjsNATS(Object.assign({
 					path:"/nats"
