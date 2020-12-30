@@ -37,29 +37,45 @@ export class FlowSocketIO {
 			return;
 		this._connected = true;
 		this.events.emitAsync('rpc-connecting');
-		let io = this.options.io || window.io;
-		this.socket = io(this.options.origin+this.options.path, this.options.args || {});
-		//console.log("this.options", this.options)
-		this.socket.on('ready', ()=>{
+		let io = this.options.io || window.SockJS;
+		this.socket = new FlowEvents();
+		this.sockjs = io(this.options.origin+this.options.path, this.options.args || {});
+		this.sockjs.onopen=(event)=>{
 			this.online = true;
-		})
-		this.socket.on('connect', ()=>{
 			console.log("RPC connected");
 			this.events.emit('connect');
-		})
-		this.socket.on('connect_error', (err)=>{
+		}
+		this.sockjs.onerror=(err)=>{
 			console.log("RPC connect_error", err);
 			this.events.emit('connect.error', err);
+		}
+		this.sockjs.onmessage=(msg)=>{
+			let [ event, data ] = JSON.parse(msg.data);
+			this.socket.emit(event, data);
+		}
+		this.socket.on('auth::setcookie', (msg)=>{
+			document.cookie = msg.cookie;
 		})
-		this.socket.on('error', (...args)=>{ 
-			console.log("RPC error", args);
-			this.events.emit('error', args);
+		this.socket.on('auth::getcookie', (msg)=>{
+			console.log("cookie get", msg);
+			this.sockjs.send(JSON.stringify(['auth::cookie', document.cookie]));
 		})
-		this.socket.on('offline', ()=>{
-			//window.location.reload();
-			this.events.emit('offline');
+		this.socket.on('message', (message)=>{
+			this.sockjs.send(JSON.stringify(['message', message]));
 		})
-		this.socket.on('disconnect', ()=>{ 
+		this.socket.on('request', (request)=>{
+			this.sockjs.send(JSON.stringify(['request', request]));
+		})
+		this.socket.on('publish', (publish)=>{
+			this.sockjs.send(JSON.stringify(['publish', publish]));
+		})
+		this.socket.on('unsubscribe', (unsubscribe)=>{
+			this.sockjs.send(JSON.stringify(['unsubscribe', unsubscribe]));
+		})
+		this.socket.on('rpc.req', (req)=>{
+			this.sockjs.send(JSON.stringify(['rpc.req', req]));
+		})
+		this.sockjs.onclose=(event)=>{
 			this.online = false;
 			console.log("RPC disconnected", arguments);
 			this.events.emit('disconnect');
@@ -69,7 +85,7 @@ export class FlowSocketIO {
 			});
 
 			this.pending.clear();
-		});
+		};
 
 		await this.initSocketHandlers();
 
