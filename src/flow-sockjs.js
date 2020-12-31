@@ -56,9 +56,12 @@ export class FlowSockjs {
 		this.socket.on('auth::setcookie', (msg)=>{
 			document.cookie = msg.cookie;
 		})
-		this.socket.on('auth::getcookie', (msg)=>{
-			console.log("cookie get", msg);
-			this.sockjs.send(JSON.stringify(['auth::cookie', document.cookie]));
+		this.socket.on('auth::getcookie', ()=>{
+			let cookie = (document.cookie.length === 0) ? null : document.cookie;
+			let response = {
+				cookie: cookie
+			}
+			this.sockjs.send(JSON.stringify(['auth::cookie', response]));
 		})
 		this.socket.on('message', (message)=>{
 			this.sockjs.send(JSON.stringify(['message', message]));
