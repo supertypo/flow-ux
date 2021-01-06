@@ -83,7 +83,7 @@ export class FlowInput extends BaseElement {
 				margin-top:var(--flow-input-wrapper-margin-top,-0.5rem);
 				height:var(--flow-input-wrapper-height);
 			}
-			label{
+			label{		
 				font-size:var(--flow-input-label-font-size, 0.7rem);
 				padding:var(--flow-input-label-padding,2px 5px);
 				border: var(--flow-input-label-border, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
@@ -184,7 +184,7 @@ export class FlowInput extends BaseElement {
 		return html`<label ?hidden=${!this.label}>${this.label||""}</label>
 		<div class="wrapper" @click=${this.onClick} ?has-value=${!!this.value}>
 			<slot name="prefix"></slot>
-			<input class="input" type="${this.type}" 
+			<input class="input" type="${this.type}" spellcheck="false"
 				placeholder="${this.placeholder || ''}"
 				pattern="${this.pattern||''}"
 				?readonly=${this.readonly}
