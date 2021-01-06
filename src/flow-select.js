@@ -248,7 +248,7 @@ export class FlowSelect extends FlowMenu {
 		}, 200)
 	}
 	filterList(text){
-		const rg = new RegExp(`^${text}`, 'i');
+		const rg = new RegExp(`${text}`, 'i');
 		this.list.forEach(item=>{
 			let text = item.getAttribute(this.textAttr) || item.innerText;
 			let value = item.getAttribute(this.valueAttr);
