@@ -38,12 +38,16 @@ export class FlowSockjs {
 		this._connected = true;
 		this.events.emitAsync('rpc-connecting');
 		let io = this.options.io || window.SockJS;
-		this.socket = new FlowEvents();
+		this.intake = new FlowEvents();
+		this.socket = {
+			on : (...args) => { this.intake.on(...args); },
+			emit : (subject, msg) => { this.sockjs.send(JSON.stringify([subject,msg])); }
+		}
 		this.sockjs = io(this.options.origin+this.options.path, this.options.args || {});
 		this.sockjs.onopen=(event)=>{
 			this.online = true;
 			console.log("RPC connected");
-			this.events.emit('connect');
+			this.events.emit('open');
 		}
 		this.sockjs.onerror=(err)=>{
 			console.log("RPC connect_error", err);
@@ -51,30 +55,22 @@ export class FlowSockjs {
 		}
 		this.sockjs.onmessage=(msg)=>{
 			let [ event, data ] = JSON.parse(msg.data);
-			this.socket.emit(event, data);
+			this.intake.emit(event, data);
 		}
 		this.socket.on('auth::setcookie', (msg)=>{
 			document.cookie = msg.cookie;
 		})
-		this.socket.on('auth::getcookie', (msg)=>{
-			console.log("cookie get", msg);
-			this.sockjs.send(JSON.stringify(['auth::cookie', document.cookie]));
+		this.socket.on('auth::getcookie', ()=>{
+			let cookie = (document.cookie.length === 0) ? null : document.cookie;
+			let response = {
+				cookie: cookie
+			}
+			this.sockjs.send(JSON.stringify(['auth::cookie', response]));
 		})
-		this.socket.on('message', (message)=>{
-			this.sockjs.send(JSON.stringify(['message', message]));
+		this.socket.on('ready', () => {
+			this.events.emit('connect');
 		})
-		this.socket.on('request', (request)=>{
-			this.sockjs.send(JSON.stringify(['request', request]));
-		})
-		this.socket.on('publish', (publish)=>{
-			this.sockjs.send(JSON.stringify(['publish', publish]));
-		})
-		this.socket.on('unsubscribe', (unsubscribe)=>{
-			this.sockjs.send(JSON.stringify(['unsubscribe', unsubscribe]));
-		})
-		this.socket.on('rpc.req', (req)=>{
-			this.sockjs.send(JSON.stringify(['rpc.req', req]));
-		})
+
 		this.sockjs.onclose=(event)=>{
 			this.online = false;
 			console.log("RPC disconnected", arguments);

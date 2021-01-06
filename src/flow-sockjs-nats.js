@@ -170,7 +170,8 @@ export class FlowSockjsNATS extends FlowSockjs {
 			this.pending.set(rid, {
 				ts:Date.now(),
 				callback:(err, data)=>{
-
+					if(err)
+						console.error('subscribe failure for subject:',subject);
 					// TODO - Data should be a token...
 					return err?reject(err):resolve(data);
 				}
