@@ -1,9 +1,12 @@
 import {FlowSockjs} from './flow-sockjs.js';
 import {dpc, UID} from './helpers.js';
+import {AsyncQueueSubscriberMap} from './flow-async.js';
 
 export class FlowSockjsRPC extends FlowSockjs {
 	constructor(options) {
 		super(options);
+
+		this.asyncSubscribers = new AsyncQueueSubscriberMap();
 	}
 
 	initSocketHandlers() {
@@ -19,9 +22,11 @@ export class FlowSockjsRPC extends FlowSockjs {
 					console.log('RPC ['+this.id+']:', subject);
 				else
 				if(this.trace === 2)
-					console.log('RPC ['+this.id+']:', subject, data);                
+					console.log('RPC ['+this.id+']:', subject, data);
 			}
-			this.events.emit(subject, data);
+			// this.events.emit(subject, data);
+			this.asyncSubscribers.post(subject, data);
+
 		})
 
 		this.socket.on('rpc::response', (msg)=>{
@@ -38,32 +43,42 @@ export class FlowSockjsRPC extends FlowSockjs {
 		return Promise.resolve();
 	}
 
-	dispatch(subject, data, callback) {
-		if(subject.op){//<-- old way
-			callback = data;
-			data = subject;
-			subject = subject.op;
-		}else{
-			if(typeof(data)=='function'){
+	subscribe(subject) {
+		return this.asyncSubscribers.subscribe(subject);
+	}
+
+	publish(subject, data) {
+		return this.socket.emit('message', {subject, data});
+	}
+
+	request(subject, data, callback) {
+		return new Promise((resolve, reject) => {
+
+			if(typeof(data)=='function') {
 				callback = data;
 				data = undefined;
 			}
-		}
 
-		if(!callback)
-			return this.socket.emit('message', {subject, data});
+			let rid = UID();
 
-		let rid = UID();
+			this.pending.set(rid, {
+				ts:Date.now(),
+				callback : (err, resp) => {
+					if(callback)
+						callback(err,resp);
 
-		this.pending.set(rid, {
-			ts:Date.now(),
-			callback
+					if(err)
+						reject(err);
+					else
+						resolve(data);
+				}
+			});
+
+			this.socket.emit('rpc.req', {
+				rid,
+				req : {subject, data}
+			});
 		})
-
-		this.socket.emit('rpc.req', { 
-			rid,
-			req : {subject, data}
-		});
 	}
 
 }

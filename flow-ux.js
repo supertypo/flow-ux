@@ -1,5 +1,6 @@
 export * from './src/svg.js';
 export * from './src/flow-anchor.js';
+export * from './src/flow-async.js';
 export * from './src/flow-caption-bar.js';
 export * from './src/flow-checkbox-styled.js';
 export * from './src/flow-checkbox.js';
