@@ -32,18 +32,9 @@ export class FlowSockjs {
 		this.events = new FlowEvents();
 	}
 
-	async connect(){
-		if (this._connected || !this.options.path)
-			return;
-		this._connected = true;
-		this.events.emitAsync('rpc-connecting');
-		let io = this.options.io || window.SockJS;
-		this.intake = new FlowEvents();
-		this.socket = {
-			on : (...args) => { this.intake.on(...args); },
-			emit : (subject, msg) => { this.sockjs.send(JSON.stringify([subject,msg])); }
-		}
-		this.sockjs = io(this.options.origin+this.options.path, this.options.args || {});
+	connect_impl() {
+
+		this.sockjs = SockJS(this.options.origin+this.options.path, this.options.args || {});
 		this.sockjs.onopen=(event)=>{
 			this.online = true;
 			console.log("RPC connected");
@@ -52,6 +43,7 @@ export class FlowSockjs {
 		this.sockjs.onerror=(err)=>{
 			console.log("RPC connect_error", err);
 			this.events.emit('connect.error', err);
+			this.reconnect_impl();
 		}
 		this.sockjs.onmessage=(msg)=>{
 			let [ event, data ] = JSON.parse(msg.data);
@@ -73,7 +65,7 @@ export class FlowSockjs {
 
 		this.sockjs.onclose=(event)=>{
 			this.online = false;
-			console.log("RPC disconnected", arguments);
+			console.log("RPC disconnected");
 			this.events.emit('disconnect');
 
 			this.pending.forEach((info, id)=>{
@@ -81,7 +73,30 @@ export class FlowSockjs {
 			});
 
 			this.pending.clear();
+
+			this.reconnect_impl();
 		};
+	}
+
+	reconnect_impl() {
+		dpc(1000, ()=>{
+			this.connect_impl();
+		})
+	}
+
+	async connect(){
+		if (this._connected || !this.options.path)
+			return;
+		this._connected = true;
+		this.events.emitAsync('rpc-connecting');
+		//let io = this.options.io || window.SockJS;
+		this.intake = new FlowEvents();
+		this.socket = {
+			on : (...args) => { this.intake.on(...args); },
+			emit : (subject, msg) => { this.sockjs.send(JSON.stringify([subject,msg])); }
+		}
+
+		this.connect_impl();
 
 		await this.initSocketHandlers();
 
