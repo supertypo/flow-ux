@@ -43,26 +43,13 @@ export class FlowSockjs {
 		this.sockjs.onerror=(err)=>{
 			console.log("RPC connect_error", err);
 			this.events.emit('connect.error', err);
-			this.reconnect_impl();
+			this.sockjs.close();
+//			this.reconnect_impl();
 		}
 		this.sockjs.onmessage=(msg)=>{
 			let [ event, data ] = JSON.parse(msg.data);
 			this.intake.emit(event, data);
 		}
-		this.socket.on('auth::setcookie', (msg)=>{
-			document.cookie = msg.cookie;
-		})
-		this.socket.on('auth::getcookie', ()=>{
-			let cookie = (document.cookie.length === 0) ? null : document.cookie;
-			let response = {
-				cookie: cookie
-			}
-			this.sockjs.send(JSON.stringify(['auth::cookie', response]));
-		})
-		this.socket.on('ready', () => {
-			this.events.emit('connect');
-		})
-
 		this.sockjs.onclose=(event)=>{
 			this.online = false;
 			console.log("RPC disconnected");
@@ -95,6 +82,19 @@ export class FlowSockjs {
 			on : (...args) => { this.intake.on(...args); },
 			emit : (subject, msg) => { this.sockjs.send(JSON.stringify([subject,msg])); }
 		}
+		this.socket.on('auth::setcookie', (msg)=>{
+			document.cookie = msg.cookie;
+		})
+		this.socket.on('auth::getcookie', ()=>{
+			let cookie = (document.cookie.length === 0) ? null : document.cookie;
+			let response = {
+				cookie: cookie
+			}
+			this.sockjs.send(JSON.stringify(['auth::cookie', response]));
+		})
+		this.socket.on('ready', () => {
+			this.events.emit('connect');
+		})
 
 		this.connect_impl();
 
