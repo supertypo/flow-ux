@@ -82,15 +82,15 @@ export class FlowSockjs {
 			on : (...args) => { this.intake.on(...args); },
 			emit : (subject, msg) => { this.sockjs.send(JSON.stringify([subject,msg])); }
 		}
-		this.socket.on('auth::setcookie', (msg)=>{
+		this.socket.on('auth.setcookie', (msg)=>{
 			document.cookie = msg.cookie;
 		})
-		this.socket.on('auth::getcookie', ()=>{
+		this.socket.on('auth.getcookie', ()=>{
 			let cookie = (document.cookie.length === 0) ? null : document.cookie;
 			let response = {
 				cookie: cookie
 			}
-			this.sockjs.send(JSON.stringify(['auth::cookie', response]));
+			this.sockjs.send(JSON.stringify(['auth.cookie', response]));
 		})
 		this.socket.on('ready', () => {
 			this.events.emit('connect');
