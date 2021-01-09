@@ -13,10 +13,6 @@ export class FlowSockjsRPC extends FlowSockjs {
 
 		this.socket.on('message', msg=>{
 			let {subject, data} = msg;
-			// if(msg.op){
-			// 	subject = msg.op;
-			// 	data = msg;
-			// }
 			if(this.trace) {
 				if(this.trace === 1 || this.trace === true)
 					console.log('RPC ['+this.id+']:', subject);
@@ -24,9 +20,7 @@ export class FlowSockjsRPC extends FlowSockjs {
 				if(this.trace === 2)
 					console.log('RPC ['+this.id+']:', subject, data);
 			}
-			// this.events.emit(subject, data);
-			this.asyncSubscribers.post(subject, data);
-
+			this.asyncSubscribers.post(subject, {data});
 		})
 
 		this.socket.on('rpc::response', (msg)=>{
