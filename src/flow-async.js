@@ -17,7 +17,7 @@ export class AsyncQueue {
 		this.max = opt?.max || 0;
 	}
 	[Symbol.asyncIterator]() { return this.iterator(); }
-	push(v) {
+	post(v) {
 		if(this.done)
 			return;
 		if(this.max) {
@@ -116,7 +116,7 @@ export class AsyncQueueSubscriberMap {
 	post(subject, msg) {
 		let subscribers = this.map.get(subject);
 		if(subscribers)
-			for(const subscriber in subscribers)
+			for(const subscriber of subscribers)
 				subscriber.post(msg);
 	}
 
