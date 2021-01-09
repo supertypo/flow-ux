@@ -1,4 +1,4 @@
-import {dpc, UID, setTheme, getTheme} from './helpers.js';
+import {dpc, UID, setTheme, getTheme, flow} from './helpers.js';
 import {FlowSockjsRPC} from './flow-sockjs-rpc.js';
 import {FlowSockjsNATS} from './flow-sockjs-nats.js';
 
@@ -54,6 +54,7 @@ export const FlowAppMixin = (baseClass)=>{
 			super(...args)
 			this.uid = UID();
 			this.setTheme(this.getTheme("light"));
+			flow.app = this;
 		}
 
 		getTheme(defaultTheme){
@@ -70,8 +71,9 @@ export const FlowAppMixin = (baseClass)=>{
 					path:"/rpc"
 				}, options||{}));
 
-				this.rpc.on("init", ()=>{
+				this.rpc.events.on("connect", ()=>{
 					this.log("RPC:init");
+					console.log("READY!!!!!")
 					this.onNetworkIfaceOnline();
 					resolve();
 					// this.rpc.dispatch("rpc-test-1", {key:"value-1"});
@@ -94,7 +96,7 @@ export const FlowAppMixin = (baseClass)=>{
 					path:"/nats"
 				}, options));
 
-				this.nats.on("init", ()=>{
+				this.nats.events.on("connect", ()=>{
 					this.log("NATS:init");
 					this.onNetworkIfaceOnline();
 					resolve();
@@ -104,7 +106,7 @@ export const FlowAppMixin = (baseClass)=>{
 					// })
 				})
 
-				this.nats.on('disconnected', () => {
+				this.nats.events.on('disconnected', () => {
 					console.log("disconnected...");
 					this.onNetworkIfaceOffline();
 				})
@@ -174,6 +176,7 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 				--flow-dropdown-trigger-width:20px;
 				--flow-dropdown-trigger-padding:0px;
 			}
+			:host([no-header]) .header{display:none}
 			.header-sm{display:none}
 			.header ::slotted(.logo){
 				height:100%;
