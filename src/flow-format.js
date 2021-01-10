@@ -2,9 +2,9 @@ import {flow, dpc} from './base-element.js';
 
 export class FlowFormat {
 	static 'duration'(v) {
-		let hrs = Math.floor(v/60/60);
-		let min = Math.floor(v/60%60);
-		let sec = Math.floor(v%60);
+		let hrs = Math.floor(v/1000/60/60);
+		let min = Math.floor(v/1000/60%60);
+		let sec = Math.floor(v/1000%60);
 		if(!hrs && !min && !sec)
 			return _C(v);
 		let t = '';
@@ -24,7 +24,16 @@ export class FlowFormat {
 		return FlowFormat.commas(v, precision || 0);
 	}
 	static 'fiat'(v) { return this.commas(v,2); }
-	static 'crypto'(v) { return this.commas(v,8); }
+	static 'crypto'(v, opt) { 
+		let result = this.commas(v,8); 
+		if(opt?.noTrailingZeros) {
+			let [int,frac] = result.split('.');
+			frac = frac.replace(/0+$/,'');
+			return frac ? `${int}.${frac}` : int;
+		}
+		return result;
+
+	}
 	static 'int'(v) { return this.commas(parseInt(v)); }
 	static 'file-size-si'(v) { return parseFloat(v).toFileSize(true); }
 	static 'file-size'(v) { return parseFloat(v).toFileSize(); }

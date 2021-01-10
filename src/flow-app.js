@@ -76,11 +76,12 @@ export const FlowAppMixin = (baseClass)=>{
 					console.log("READY!!!!!")
 					this.onNetworkIfaceOnline();
 					resolve();
-					// this.rpc.dispatch("rpc-test-1", {key:"value-1"});
-					// this.rpc.dispatch("rpc-test-2", {key:"value-2"}, (err, data)=>{
-					// 	console.log("rpc-test-2: err, data", err, data)
-					// })
 				})
+				this.rpc.events.on('disconnect', () => {
+					console.log("disconnected...");
+					this.onNetworkIfaceOffline();
+				})
+
 			})
 		}
 
@@ -100,13 +101,9 @@ export const FlowAppMixin = (baseClass)=>{
 					this.log("NATS:init");
 					this.onNetworkIfaceOnline();
 					resolve();
-					// this.rpc.dispatch("rpc-test-1", {key:"value-1"});
-					// this.nats.request("nats.hello", {key:"origin-client-init"}, (err, data)=>{
-					// 	console.log("nats-test-reponse: err, data", err, data);
-					// })
-				})
+					})
 
-				this.nats.events.on('disconnected', () => {
+				this.nats.events.on('disconnect', () => {
 					console.log("disconnected...");
 					this.onNetworkIfaceOffline();
 				})
@@ -134,8 +131,10 @@ export const FlowAppMixin = (baseClass)=>{
 			this.fireEvent('network-iface-online');
 		}
 		onNetworkIfaceOffline(){
-			this._online = false;
-			this.fireEvent('network-iface-offline');
+			if(this._online) {
+				this._online = false;
+				this.fireEvent('network-iface-offline');
+			}
 		}
 
 		isOnline(){

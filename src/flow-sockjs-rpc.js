@@ -60,7 +60,7 @@ export class FlowSockjsRPC extends FlowSockjs {
 				callback : (err, resp) => {
 					if(callback)
 						callback(err,resp);
-
+					else
 					if(err)
 						reject(err);
 					else
