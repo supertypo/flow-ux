@@ -289,6 +289,137 @@ flow-gridstack div.grid-stack-item-content{background:#DDD}
 flow-gridstack .gridstack-json{width:90%;height:200px;}
 
 
+/*** flow-app-layout **
+flow-app-layout{
+    display:flex;
+    flex-direction:column;
+    width:var(--flow-app-width, 100vw);
+    height:var(--flow-app-height, 100vh);
+}
+flow-app-layout .flow-app-layout-header{
+    display:flex;flex-direction:row;
+    align-items:var(--flow-app-header-align-items, center);
+    height:var(--flow-app-header-height, 60px);
+    background-color:var(--flow-app-header-bg, #161926);
+    color:var(--flow-app-header-color, #91aec1);
+    padding:var(--flow-app-header-padding, 0px 100px);
+    --flow-dropdown-trigger-bg:var(--flow-app-header-bg, #161926);
+    --flow-dropdown-trigger-color:var(--flow-app-header-color, #91aec1);
+    --flow-dropdown-trigger-hover-bg:transparent;
+    --flow-dropdown-trigger-hover-color:var(--flow-app-header-color, #91aec1);
+    --flow-dropdown-trigger-width:20px;
+    --flow-dropdown-trigger-padding:0px;
+}
+flow-app-layout[no-header] .flow-app-layout-header{display:none}
+flow-app-layout .flow-app-layout-header-sm{display:none}
+flow-app-layout .flow-app-layout-header .logo{
+    height:100%;
+    max-height:80%;
+}
+flow-app-layout>.logo>.logo{
+    max-height:80%;
+}
+flow-app-layout .flow-app-layout-header ::slotted(a.link){
+    padding:var(--flow-app-header-link-padding, 0px 0px 0px 16px);
+    color:var(--flow-app-header-color, #91aec1);
+    text-decoration:none;
+}
+flow-app-layout .flow-app-layout-footer {
+    height: var(--flow-app-footer-height, initial);
+    color:var(--flow-app-footer-color, #000);
+    background:var(--flow-app-footer-bg, #91aec1);              
+}
+
+flow-app-layout .flow-app-layout-body{
+    flex:1;display:flex;flex-direction:row;
+    overflow:var(--flow-app-body-overflow, hidden);
+}
+flow-app-layout .flow-app-layout-drawer{
+    background-color:var(--flow-app-drawer-bg, var(--flow-background-color, inherit));
+    color:var(--flow-app-drawer-color, var(--flow-color, inherit));
+    width:var(--flow-app-drawer-width, 300px);
+    overflow:var(--flow-app-drawer-overflow, initial);
+    position:relative;
+}
+flow-app-layout[no-drawer] .flow-app-layout-drawer{display:none}
+flow-app-layout[floating-drawer] .flow-app-layout-drawer{
+    position:absolute;
+    left:0px;top:0px;bottom:0px;
+    transition:var(--flow-app-drawer-transition, left 0.5s ease);
+    z-index:var(--flow-app-drawer-z-index, 10001);
+}
+flow-app-layout[floating-drawer]:not([open-drawer]) .flow-app-layout-drawer{
+    left:var(--flow-app-drawer-hidden-left, -500px);
+}
+flow-app-layout[floating-drawer][right-drawer] .flow-app-layout-drawer{
+    left:initial;right:0px;
+    transition:var(--flow-app-drawer-transition, right 0.5s ease);
+}
+flow-app-layout[floating-drawer][right-drawer]:not([open-drawer]) .flow-app-layout-drawer{
+    right:var(--flow-app-drawer-hidden-right, -500px);
+}
+flow-app-layout .flow-app-layout-main{
+    flex:1;
+    overflow:var(--flow-app-main-overflow, hidden);
+    position:var(--flow-app-main-position, initial);
+    display:var(--flow-app-main-display, flex);
+    flex-direction:var(--flow-app-main-flex-direction, column);
+}
+
+flow-app-layout .flow-app-layout-wrapper {
+    height:var(--flow-app-wrapper-height, 100px);
+    overflow:var(--flow-app-wrapper-overflow, auto);
+    position:var(--flow-app-wrapper-position, initial);
+    display:var(--flow-app-wrapper-display, initial);
+    flex:var(--flow-app-wrapper-flex, 1);
+}
+flow-app-layout[main-v-box] .flow-app-layout-main{
+    display:flex;flex-direction:column;
+    align-items:var(--flow-app-main-align-items, stretch);
+    justify-content:var(--flow-app-main-align-justify-content, space-between);
+}
+flow-app-layout fa-icon{
+    --fa-icon-color:var(--flow-color);
+}
+
+flow-app-layout .flow-app-layout-menu-icon{
+    cursor:pointer;
+    --fa-icon-color:var(--flow-app-menu-icon-color, var(--flow-color));
+}
+flow-app-layout .flow-app-layout-drawer-top{
+    height:var(--flow-app-header-height, 60px);
+    display:flex;align-items:center;
+    padding:var(--flow-app-header-padding, 0px 100px);
+}
+flow-app-layout .flow-app-layout-main-mask{
+    position:absolute;z-index:var(--flow-app-body-mask-z-index, 10000);
+    left:0px;top:0px;right:0px;bottom:0px;width:100%;height:100%;
+    background-color:var(--flow-app-body-mask-bg, initial);
+}
+flow-app-layout[floating-drawer][open-drawer] .flow-app-layout-main{position:relative}
+flow-app-layout:not([floating-drawer]) .flow-app-layout-drawer-top,
+flow-app-layout:not([floating-drawer]) .flow-app-layout-main-mask,
+flow-app-layout:not([open-drawer]) .flow-app-layout-main-mask{display:none}
+flow-app-layout .flow-app-layout-drawer-close-icon{
+    cursor:pointer;
+    --fa-icon-color:var(--flow-app-drawer-close-icon-color, var(--flow-color));
+}
+
+@media(max-width:760px){
+    flow-app-layout[floating-drawer] .flow-app-layout-header-sm{display:flex}
+    flow-app-layout[floating-drawer] .flow-app-layout-header:not(.flow-app-layout-header-sm){display:none}
+    flow-app-layout .flow-app-layout-drawer-top,
+    flow-app-layout .flow-app-layout-header{
+        padding:var(--flow-app-header-sm-padding, 0px 15px);
+    }
+}
+
+
+
+flow-app-layout ::slotted(.flex){flex:1}
+*** *** *** *** *** *** ***/
+
+
 
 /* a {color:var(--flow-link-color, red);}
 a:hover {

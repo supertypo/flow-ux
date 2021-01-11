@@ -101,7 +101,7 @@ export const FlowAppMixin = (baseClass)=>{
 					this.log("NATS:init");
 					this.onNetworkIfaceOnline();
 					resolve();
-					})
+				})
 
 				this.nats.events.on('disconnect', () => {
 					console.log("disconnected...");
@@ -144,8 +144,7 @@ export const FlowAppMixin = (baseClass)=>{
 	return base;
 }
 
-
-export class FlowApp extends FlowAppMixin(BaseElement){
+export class FlowAppLayout extends BaseElement{
 	static get properties(){
 		return {
 			"menu-icon":{type:String},
@@ -289,14 +288,7 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 			::slotted(.flex){flex:1}
 		`]
 	}
-	constructor(...args){
-		super(...args);
-		this.registerListener("flow-network-and-user-state-get", (e)=>{
-			//e.detail = e.detail||{};
-			e.detail.online = this.isOnline();
-			e.detail.signedin = this.signedin;
-		})
-	}
+
 	render(){
 		return html`
 		<div class="header"><slot name="logo"></slot><slot name="header"></slot></div>
@@ -324,13 +316,41 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 		</div>
 		`
 	}
-	firstUpdated(){
-		this.setLoading(false);
-	}
+
 	toggleFloatingDrawer(){
 		if(!this['floating-drawer'])
 			return
 		this['open-drawer'] = !this['open-drawer'];
+	}
+}
+
+FlowAppLayout.define("flow-app-layout");
+
+
+export class FlowApp extends FlowAppMixin(BaseElement){
+	static get properties(){
+		return {
+			"menu-icon":{type:String},
+			"floating-drawer":{type:Boolean, reflect:true},
+			"open-drawer":{type:Boolean, reflect:true},
+		}
+	}
+	constructor(...args){
+		super(...args);
+		this.registerListener("flow-network-and-user-state-get", (e)=>{
+			//e.detail = e.detail||{};
+			e.detail.online = this.isOnline();
+			e.detail.signedin = this.signedin;
+		})
+	}
+	createRenderRoot(){
+		return this;
+	}
+	render(){
+		return html``;
+	}
+	firstUpdated(){
+		this.setLoading(false);
 	}
 	signinCallback(){
 		this.signedin = true;
