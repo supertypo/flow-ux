@@ -3,7 +3,7 @@ import {dpc, UID} from './helpers.js';
 
 export class FlowSockjsNATS extends FlowSockjs {
 	constructor(options) {
-		super(options);
+		super(Object.assign({},options,{websocketMode:'NATS'}));
 		this.trace = false;
 		this.subscribers = new Map();
 		this.subscriptionTokenMap = new Map();

@@ -92,7 +92,9 @@ export class FlowSockjs {
 			}
 			this.sockjs.send(JSON.stringify(['auth.cookie', response]));
 		})
-		this.socket.on('ready', () => {
+		this.socket.on('ready', (msg) => {
+			if(msg.websocketMode != this.options.websocketMode)
+				throw new Error(`Error - incompatible websocket mode: client ${this.options.websocketMode} server: ${msg.websocketMode}`);
 			this.events.emit('connect');
 		})
 

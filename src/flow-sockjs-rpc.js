@@ -4,14 +4,14 @@ import {AsyncQueueSubscriberMap} from './flow-async.js';
 
 export class FlowSockjsRPC extends FlowSockjs {
 	constructor(options) {
-		super(options);
+		super(Object.assign({},options,{websocketMode:'RPC'}));
 
 		this.asyncSubscribers = new AsyncQueueSubscriberMap();
 	}
 
 	initSocketHandlers() {
 
-		this.socket.on('message', msg=>{
+		this.socket.on('publish', msg=>{
 			let {subject, data} = msg;
 			if(this.trace) {
 				if(this.trace === 1 || this.trace === true)
@@ -23,7 +23,7 @@ export class FlowSockjsRPC extends FlowSockjs {
 			this.asyncSubscribers.post(subject, {data});
 		})
 
-		this.socket.on('rpc::response', (msg)=>{
+		this.socket.on('response', (msg)=>{
 			let {rid, error, data} = msg;
 			let info = rid && this.pending.get(rid);
 			if(info)
@@ -42,7 +42,7 @@ export class FlowSockjsRPC extends FlowSockjs {
 	}
 
 	publish(subject, data) {
-		return this.socket.emit('message', {subject, data});
+		return this.socket.emit('publish', {subject, data});
 	}
 
 	request(subject, data, callback) {
@@ -68,7 +68,7 @@ export class FlowSockjsRPC extends FlowSockjs {
 				}
 			});
 
-			this.socket.emit('rpc.req', {
+			this.socket.emit('request', {
 				rid,
 				req : {subject, data}
 			});
