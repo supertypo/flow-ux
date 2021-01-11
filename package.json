@@ -36,8 +36,7 @@
     "LICENSE",
     ".jsdoc.js",
     "resources",
-    "cssvar.js",
-    "category.js"
+    "extern"
   ],
   "readme": "AXY"
 }
