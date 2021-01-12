@@ -132,7 +132,7 @@ E.task('create-dirs', [], (callback)=>{
 	//return E.mkdirp(ROOT);
 });
 
-E.task('resources', ['create-dirs'], callback=>{
+E.task('ux-resources', ['create-dirs'], callback=>{
 	let uxFiles =  ['resources', 'flow-ux.js', 'flow-ux.css', 'src'];
 	let list = uxFiles.map(file => 
 		E.utils.copy(path.join(REPO, file), path.join(FLOW_UX, file))
@@ -157,7 +157,7 @@ E.task('resources', ['create-dirs'], callback=>{
 	return Promise.all(list);
 });
 
-E.task('node_modules', ['resources'], callback=>{
+E.task('node_modules', ['ux-resources'], callback=>{
 	return Promise.all(
 		['lit-element', 'lit-html']
 		.map(module=>{
@@ -170,7 +170,7 @@ E.task('node_modules', ['resources'], callback=>{
 	)
 });
 
-E.task('flow-src', ['resources'],  callback=>{
+E.task('flow-src', ['ux-resources'],  callback=>{
 	let SRC = FLOW_UX;//path.join(FLOW_UX, 'src');
 	return E.utils.iterateFolder(SRC, /\.js$/, file=>{
 		//console.log("file, folder", file, folder);
@@ -241,8 +241,9 @@ E.task('static', ['node_modules', 'flow-src', 'cleanup'], async () => {
 		const SYMLINK = path.join(LATEST,`flow-ux-static${E.flags.minify?'-min':''}`);
 		if(fs.existsSync(SYMLINK))
 			fs.unlinkSync(SYMLINK);
-		fs.symlinkSync(TARGET,SYMLINK,'dir');
-	}
+		fs.symlinkSync(TARGET,SYMLINK,PLATFORM.os == 'windows' ? 'junction' : 'dir');
+//			fs.symlinkSync(TARGET,SYMLINK,'dir');
+		}
 
 	if(E.flags.package) {
 		const FOLDER = FLOW_UX_STATIC;
