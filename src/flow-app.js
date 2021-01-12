@@ -333,6 +333,7 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 			"menu-icon":{type:String},
 			"floating-drawer":{type:Boolean, reflect:true},
 			"open-drawer":{type:Boolean, reflect:true},
+			"external-dom":{type:Boolean}
 		}
 	}
 	constructor(...args){
@@ -344,9 +345,16 @@ export class FlowApp extends FlowAppMixin(BaseElement){
 		})
 	}
 	createRenderRoot(){
+		this.usingExternalDom = this.getAttribute("external-dom")!=null 
+			|| this.querySelector("flow-app-layout, .flow-app-layout")
+		if(this.usingExternalDom)
+			return this.attachShadow({mode:"open"});
 		return this;
 	}
 	render(){
+		if(this.usingExternalDom)
+			return html`<slot></slot>`;
+
 		return html``;
 	}
 	firstUpdated(){
