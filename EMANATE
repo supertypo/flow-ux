@@ -241,7 +241,7 @@ E.task('static', ['node_modules', 'flow-src', 'cleanup'], async () => {
 		const SYMLINK = path.join(LATEST,`flow-ux-static${E.flags.minify?'-min':''}`);
 		if(fs.existsSync(SYMLINK))
 			fs.unlinkSync(SYMLINK);
-		fs.symlinkSync(TARGET,SYMLINK,PLATFORM.os == 'windows' ? 'junction' : 'dir');
+		fs.symlinkSync(TARGET,SYMLINK,E.PLATFORM == 'windows' ? 'junction' : 'dir');
 //			fs.symlinkSync(TARGET,SYMLINK,'dir');
 		}
 
