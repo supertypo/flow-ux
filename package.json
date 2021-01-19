@@ -1,6 +1,6 @@
 {
   "name": "@aspectron/flow-ux",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "User Interface Framework",
   "main": "flow-ux.js",
   "repository": {
