@@ -6,7 +6,7 @@ export class FlowFormat {
 		let min = Math.floor(v/1000/60%60);
 		let sec = Math.floor(v/1000%60);
 		if(!hrs && !min && !sec)
-			return _C(v);
+			return this.commas(v);
 		let t = '';
 		if(hrs) t += (hrs < 10 ? '0'+hrs : hrs) + ' h ';
 		if(hrs || min) t += (min < 10 ? '0'+min : min) + ' m ';
