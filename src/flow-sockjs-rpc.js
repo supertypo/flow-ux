@@ -26,10 +26,17 @@ export class FlowSockjsRPC extends FlowSockjs {
 		this.socket.on('response', (msg)=>{
 			let {rid, error, data} = msg;
 			let info = rid && this.pending.get(rid);
-			if(info)
-				info.callback.call(this, error, data);
-			else if(rid)
+			if(info) {
+				try {
+					info.callback.call(this, error, data);
+				} catch(ex) {
+					console.error('RPC handler error:', msg);
+					console.error(ex);
+				}
+			}
+			else if(rid) {
 				console.log("RPC received unknown rpc callback (strange server-side retransmit?)");
+			}
 
 			rid && this.pending.delete(rid);
 		})
