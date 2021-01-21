@@ -50,6 +50,7 @@ export class FlowInput extends BaseElement {
 			placeholder:{type:String},
 			label:{type:String},
 			readonly:{type:Boolean},
+			expression:{type:Boolean},
 			"clear-btn":{type:Boolean, reflect:true}
 		}
 	}
@@ -175,7 +176,8 @@ export class FlowInput extends BaseElement {
     constructor() {
         super();
         this.type = 'text';
-        this.value = '';
+		this.value = '';
+		this.expression = false;
         this.renderRoot.addEventListener("click", (e)=>{
         	this._onClick(e);
         })
@@ -245,6 +247,7 @@ export class FlowInput extends BaseElement {
 
 	onChange(e) {
 		let value = this.renderRoot.querySelector("input").value;
+		value = this.parseExpressionValue(value);
 		if(!this.validate(value)){
 			this.classList.add("invalid")
 			return
@@ -275,6 +278,25 @@ export class FlowInput extends BaseElement {
 	}
 	getInputValue(){
 		return this.renderRoot.querySelector("input").value
+	}
+
+	parseExpressionValue(value){
+		if(!this.expression)
+			return value;	
+		value = value.replace(/,/g,'');
+		value = value.replace(/\d+\.?\d*\s*[km]/ig,(v)=>{
+			if(/m/i.test(v))
+				v = parseFloat(v)*1_000_000;
+			else if(/k/i.test(v))
+				v = parseFloat(v)*1_000;
+			return v;
+		});
+		try{
+			value = eval(`(${value})`);
+		}catch(ex){
+			console.log(ex);
+		}
+		return value;
 	}
 }
 
