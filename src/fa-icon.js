@@ -26,8 +26,8 @@ export class FaIcon extends BaseElement {
 		return css`
 		:host {
 			display: inline-block;
-			padding: 0;
-			margin: 0;
+			padding: var(--fa-icon-padding, 0px);
+			margin: var(--fa-icon-margin, 0px);
 			width: var(--fa-icon-size, 19px);
 			height: var(--fa-icon-size, 19px);
 		}
