@@ -197,7 +197,7 @@ export class FlowInput extends BaseElement {
 				@change=${this.onChange}
 				@input=${this.onInput}
 				.value="${this.value}" />
-			<div class="btn">
+			<div class="btn" @click=${this.onBtnClick}>
 				<div class="text"><flow-i18n text="${this.btnText || 'Apply'}"></flow-i18n></div>
 			</div>
 			${this['clear-btn']?html`
@@ -221,6 +221,9 @@ export class FlowInput extends BaseElement {
 
 	onClick(e) {
 		this.fire("flow-input-click", {el:this})
+	}
+	onBtnClick(e){
+		this.fire("btn-click", {el:this, e})
 	}
 
 	validate(value){
