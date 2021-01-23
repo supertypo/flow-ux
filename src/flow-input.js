@@ -84,7 +84,7 @@ export class FlowInput extends BaseElement {
 				margin-top:var(--flow-input-wrapper-margin-top,-0.5rem);
 				height:var(--flow-input-wrapper-height);
 			}
-			label{		
+			label{
 				font-size:var(--flow-input-label-font-size, 0.7rem);
 				padding:var(--flow-input-label-padding,2px 5px);
 				border: var(--flow-input-label-border, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
@@ -129,6 +129,9 @@ export class FlowInput extends BaseElement {
 				box-shadow:var(--flow-input-box-shadow);
 				text-align:var(--flow-input-text-align);
 				min-width:var(--flow-input-input-min-width, 10px);
+			}
+			.btn .text{
+				font-size:var(--flow-input-btn-font-size, 1rem);
 			}
 
 			:host([apply-btn]) .input,
