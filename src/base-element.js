@@ -510,3 +510,13 @@ ScrollbarStyle.appendTo = styleAppendTo(ScrollbarStyle);
 let getLocalSetting = BaseElement.getLocalSetting;
 let setLocalSetting = BaseElement.setLocalSetting;
 export {getLocalSetting, setLocalSetting}
+
+export const SpinnerStyle = css`
+	@keyframes spinner-animation{0%{transform:rotate(0deg)}100%{transform:rotate(359deg)}}
+	.spinner{
+		webkit-animation: spinner-animation 2s linear infinite;
+	    animation: spinner-animation 2s linear infinite;
+	    transform-origin:center;
+	}
+	fa-icon.spinner:not([hidden]){display:inline-block;position:relative}
+`
