@@ -44,7 +44,7 @@ export class FlowInput extends BaseElement {
 			btnText:{type: String},
             value:{type:String},
             type:{type:String},
-			disabled:{type:Boolean},
+			disabled:{type:Boolean, reflect:true},
 			pattern:{type:String},
 			validator:{type:Function},
 			placeholder:{type:String},
@@ -223,6 +223,8 @@ export class FlowInput extends BaseElement {
 		this.fire("flow-input-click", {el:this})
 	}
 	onBtnClick(e){
+		if(this.disabled)
+			return
 		this.fire("btn-click", {el:this, e})
 	}
 
