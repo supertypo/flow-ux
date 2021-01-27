@@ -88,6 +88,7 @@ export class FlowBtn extends BaseElement {
 			:host([primary]),
 			:host(.primary){
 				background-color:var(--flow-btn-primary-bg-color, var(--flow-primary-color, rgba(0,151,115,1)));
+				border-color:var(--flow-btn-primary-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				color:var(--flow-btn-primary-invert-color, var(--flow-primary-invert-color, #FFF));
 				--fa-icon-color:var(--flow-btn-primary-invert-color, var(--flow-primary-invert-color, #FFF));
 			}
@@ -160,9 +161,8 @@ export class FlowBtn extends BaseElement {
 			.wrapper{
 				display:flex;
 				align-items:center;
-				margin:var(--flow-btn-wrapper-margin, 5px);
-				/*min-width:50px;*/
-				min-width: var(--flow-btn-wrapper-min-width,50px);
+				margin:var(--flow-btn-wrapper-margin,5px);
+				min-width:var(--flow-btn-wrapper-min-width,50px);
 				text-align:center;
 				justify-content:center;
 			}

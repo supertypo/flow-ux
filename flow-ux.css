@@ -181,7 +181,7 @@ flow-dialog dialog>.close-btn[hide],
 flow-dialog[hide-close-btn] dialog>.close-btn,
 flow-dialog.hide-close-btn dialog>.close-btn{display:none;}
 flow-dialog dialog .buttons:not([hide]){display:flex;}
-flow-dialog dialog .buttons flow-btn{margin:0px 5px;align-items:center;display:flex;}
+flow-dialog dialog .buttons flow-btn{margin:0px 5px;align-items:center;display:flex;padding:var(--flow-dialog-btn-padding)}
 flow-dialog dialog textarea,
 flow-dialog dialog input[type="text"],
 flow-dialog dialog input:not([type]),
