@@ -1,11 +1,10 @@
-import {FlowSockjs} from './flow-sockjs.js';
+import {FlowSocket} from './flow-socket.js';
 import {dpc, UID} from './helpers.js';
 import {AsyncQueueSubscriberMap} from './flow-async.js';
 
-export class FlowSockjsRPC extends FlowSockjs {
+export class FlowSocketRPC extends FlowSocket {
 	constructor(options) {
 		super(Object.assign({},options,{websocketMode:'RPC'}));
-
 		this.asyncSubscribers = new AsyncQueueSubscriberMap();
 	}
 

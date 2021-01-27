@@ -2,7 +2,7 @@ import {FlowEvents} from './flow-events.js';
 import {dpc, UID} from './helpers.js';
 
 export * from './flow-events.js';
-export class FlowSockjs {
+export class FlowSocket {
 	constructor(options){
 		this.online = false;
 		
@@ -16,6 +16,7 @@ export class FlowSockjs {
 
 		this.timeout  = this.options.timeout;
 		this.id = this.options.id;
+		this.transport = this.options.transport || 'native';
 
 		this.init();
 	}
@@ -34,23 +35,34 @@ export class FlowSockjs {
 
 	connect_impl() {
 
-		this.sockjs = SockJS(this.options.origin+this.options.path, this.options.args || {});
-		this.sockjs.onopen=(event)=>{
+		switch(this.transport) {
+			case 'native': {
+				const url = this.options.origin.replace(/^http/,'ws')+this.options.path;
+				// console.log('WS connecting to',url);
+				this.socket_impl = new WebSocket(this.options.origin.replace(/^http/,'ws')+this.options.path);
+			} break;
+
+			case 'sockjs': {
+				this.socket_impl = SockJS(this.options.origin+this.options.path, this.options.args || {});
+			} break;
+		}
+
+		this.socket_impl.onopen=(event)=>{
 			this.online = true;
 			console.log("RPC connected");
 			this.events.emit('open');
 		}
-		this.sockjs.onerror=(err)=>{
+		this.socket_impl.onerror=(err)=>{
 			console.log("RPC connect_error", err);
 			this.events.emit('connect.error', err);
-			this.sockjs.close();
+			this.socket_impl.close();
 //			this.reconnect_impl();
 		}
-		this.sockjs.onmessage=(msg)=>{
+		this.socket_impl.onmessage=(msg)=>{
 			let [ event, data ] = JSON.parse(msg.data);
 			this.intake.emit(event, data);
 		}
-		this.sockjs.onclose=(event)=>{
+		this.socket_impl.onclose=(event)=>{
 			this.online = false;
 			console.log("RPC disconnected");
 			this.events.emit('disconnect');
@@ -80,7 +92,7 @@ export class FlowSockjs {
 		this.intake = new FlowEvents();
 		this.socket = {
 			on : (...args) => { this.intake.on(...args); },
-			emit : (subject, msg) => { this.sockjs.send(JSON.stringify([subject,msg])); }
+			emit : (subject, msg) => { this.socket_impl.send(JSON.stringify([subject,msg])); }
 		}
 		this.socket.on('auth.setcookie', (msg)=>{
 			document.cookie = msg.cookie;
@@ -90,7 +102,7 @@ export class FlowSockjs {
 			let response = {
 				cookie: cookie
 			}
-			this.sockjs.send(JSON.stringify(['auth.cookie', response]));
+			this.socket_impl.send(JSON.stringify(['auth.cookie', response]));
 		})
 		this.socket.on('ready', (msg) => {
 			if(msg.websocketMode != this.options.websocketMode)

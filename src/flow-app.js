@@ -1,6 +1,6 @@
 import {dpc, UID, setTheme, getTheme, flow} from './helpers.js';
-import {FlowSockjsRPC} from './flow-sockjs-rpc.js';
-import {FlowSockjsNATS} from './flow-sockjs-nats.js';
+import {FlowSocketRPC} from './flow-socket-rpc.js';
+import {FlowSocketNATS} from './flow-socket-nats.js';
 
 import {BaseElement, ScrollbarStyle, html, css} from './base-element.js';
 
@@ -65,9 +65,9 @@ export const FlowAppMixin = (baseClass)=>{
 			setTheme(theme);
 		}
 
-		initSockjsRPC(options={}){
+		initSocketRPC(options={}){
 			return new Promise((resolve, reject) => {
-				this.rpc = new FlowSockjsRPC(Object.assign({
+				this.rpc = new FlowSocketRPC(Object.assign({
 					path:"/rpc"
 				}, options||{}));
 
@@ -91,9 +91,9 @@ export const FlowAppMixin = (baseClass)=>{
 			return window.dispatchEvent(ev);
 		}
 	
-		initSockjsNATS(options={}){
+		initSocketNATS(options={}){
 			return new Promise((resolve, reject) => {
-				this.nats = new FlowSockjsNATS(Object.assign({
+				this.nats = new FlowSocketNATS(Object.assign({
 					path:"/nats"
 				}, options));
 

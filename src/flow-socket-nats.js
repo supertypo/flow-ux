@@ -1,7 +1,7 @@
-import {FlowSockjs} from './flow-sockjs.js';
+import {FlowSocket} from './flow-socket.js';
 import {dpc, UID} from './helpers.js';
 
-export class FlowSockjsNATS extends FlowSockjs {
+export class FlowSocketNATS extends FlowSocket {
 	constructor(options) {
 		super(Object.assign({},options,{websocketMode:'NATS'}));
 		this.trace = false;
