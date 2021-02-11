@@ -3,6 +3,7 @@
   "version": "0.1.16",
   "description": "User Interface Framework",
   "main": "flow-ux.js",
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/aspectron/flow-ux"

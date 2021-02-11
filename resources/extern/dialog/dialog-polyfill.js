@@ -791,7 +791,7 @@
 
     }, false);
   }
-
+  window.dialogPolyfill = dialogPolyfill;
   return dialogPolyfill;
 
 })));
