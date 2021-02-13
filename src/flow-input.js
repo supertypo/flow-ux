@@ -135,12 +135,14 @@ export class FlowInput extends BaseElement {
 			}
 
 			:host([apply-btn]) .input,
-			:host([sufix-btn]) .input{
+			:host([sufix-btn]) .input,
+			:host([suffix-btn]) .input{
 			    border-right-width:0px;
 				border-top-right-radius: 0px;
 				border-bottom-right-radius: 0px;
 			}
-			:host([sufix-btn]) ::slotted([slot="sufix"]){
+			:host([sufix-btn]) ::slotted([slot="sufix"]),
+			:host([suffix-btn]) ::slotted([slot="suffix"]){
 				border-top-left-radius: 0px;
 				border-bottom-left-radius: 0px;
 				margin-bottom:0px;
@@ -202,9 +204,10 @@ export class FlowInput extends BaseElement {
 			</div>
 			${this['clear-btn']?html`
 				<fa-icon clear-input class="clear-btn"
-						slot="sufix" icon="times"></fa-icon>
+					icon="times"></fa-icon>
 			`:''}
 			<slot name="sufix"></slot>
+			<slot name="suffix"></slot>
 		</div>
 		`;
 	}

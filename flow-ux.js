@@ -58,5 +58,6 @@ export * from './src/flow-download-badge.js';
 export * from './src/flow-color-picker.js';
 export * from './src/flow-rss.js';
 export * from './src/flow-sunburst-graph.js';
+export * from './src/flow-t9.js';
 export * from './src/colors.js';
 
