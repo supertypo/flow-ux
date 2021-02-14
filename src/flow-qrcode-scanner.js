@@ -26,35 +26,40 @@ export class FlowQRCodeScanner extends BaseElement {
 				max-height:80vh;
 			}
 			.error{
-				font-size:var(--flow-qrscanner-error-font-size, 0.8rem);
-				color:var(--flow-qrscanner-error-color, #F00);
-				padding:var(--flow-qrscanner-error-padding, 10px);
+				font-size:var(--flow-qrcode-scanner-error-font-size, 0.8rem);
+				color:var(--flow-qrcode-scanner-error-color, #F00);
+				padding:var(--flow-qrcode-scanner-error-padding, 10px);
 			}
 			.wait-msg, .select-msg{
-				font-size:var(--flow-qrscanner-msg-font-size, 1rem);
+				font-size:var(--flow-qrcode-scanner-msg-font-size, 1rem);
 			}
 			.video{border:0px solid #000000;display:none;}
 			.view{
 				border:1px solid #000000;display:block;margin:5px auto;
-				width:var(--flow-qrscanner-canvas-width, 200px);
-				height:var(--flow-qrscanner-canvas-height, 200px);
+				width:var(--flow-qrcode-scanner-canvas-width, 200px);
+				height:var(--flow-qrcode-scanner-canvas-height, 200px);
 				object-fit:contain;
 			}
 			.render-canvas{
 				position:absolute;border:0px solid #000;display:none
 			}
+			.code-box{
+				display:flex;
+				flex-direction:var(--flow-qrcode-scanner-code-box-flex-direction, column);
+				align-items:var(--flow-qrcode-scanner-code-box-align-items, center);
+			}
 			.code{
 				border:0px;-webkit-appearance:none;outline:none;
-				margin:var(--flow-qrscanner-code-margin, 10px);
+				margin:var(--flow-qrcode-scanner-code-margin, 10px);
 				overflow:hidden;text-overflow:ellipsis;
-				font-size:var(--flow-qrscanner-code-font-size, 1rem);
+				font-size:var(--flow-qrcode-scanner-code-font-size, 1rem);
 				background-color:transparent;color:var(--flow-primary-color);
-				font-family:var(--flow-qrscanner-code-font-family, "Exo 2");
+				font-family:var(--flow-qrcode-scanner-code-font-family, "Exo 2");
 				word-wrap:break-word;
 				max-width:100%;
-				width:var(--flow-qrscanner-code-width, 300px);
-				height:var(--flow-qrscanner-code-height, auto);
-				/*max-height:var(--flow-qrscanner-code-max-height, 100px);*/
+				width:var(--flow-qrcode-scanner-code-width, 300px);
+				height:var(--flow-qrcode-scanner-code-height, auto);
+				/*max-height:var(--flow-qrcode-scanner-code-max-height, 100px);*/
 				resize:none;
 				display:block;
 			}
@@ -115,9 +120,11 @@ export class FlowQRCodeScanner extends BaseElement {
 		if(!qrCode)
 			return '';
 		return html`
-			<div>QRCODE:</div>
-			<div class="code">${qrCode}</div>
-			<flow-btn @click="${this.clearCode}">Clear</flow-btn>
+			<div class="code-box">
+				<!--div class="label">QR code:</div-->
+				<div class="code">QR code: ${qrCode}</div>
+				<flow-btn @click="${this.clearCode}">Clear</flow-btn>
+			</div>
 		`;
 	}
 	clearCode(){
