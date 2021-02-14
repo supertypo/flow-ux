@@ -4,3 +4,4 @@ docs
 dist
 docs_
 src/__flow-context.js
+resources/extern/html5-qrcode
