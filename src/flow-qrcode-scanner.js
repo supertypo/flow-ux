@@ -125,13 +125,7 @@ export class FlowQRCodeScanner extends BaseElement {
 	}
 	setQRCode(qrCode){
 		this.qrCode = qrCode;
-		/*let textarea = this.renderRoot.querySelector(".code");
-		if(textarea){
-			textarea.style.height = 'auto';
-			let style = window.getComputedStyle(textarea);
-			let border = 2;
-			textarea.style.height = (textarea.scrollHeight+border)+'px';
-		}*/
+		this.fire("changed", {code: qrCode})
 	}
 
 	firstUpdated(){
