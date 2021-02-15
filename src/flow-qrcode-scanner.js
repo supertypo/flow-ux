@@ -9,7 +9,9 @@ export class FlowQRCodeScanner extends BaseElement {
 			cameras:{type:Array},
 			selectedCamera:{type:Object},
 			qrCode:{type:String},
-			errorMessage:{type:String}
+			errorMessage:{type:String},
+			hideCode:{type:Boolean, reflect:true},
+			stoped:{type:Boolean}
 		}
 	}
 
@@ -63,6 +65,7 @@ export class FlowQRCodeScanner extends BaseElement {
 				resize:none;
 				display:block;
 			}
+			:host([hidecode]) .code-box{display:none}
 			.logs{width:90%;height:100px;}
 			:host(:not([logs])) .logs{display:none} 
 		`;
@@ -84,8 +87,8 @@ export class FlowQRCodeScanner extends BaseElement {
 	}
 
 	renderCameraSelection(){
-		const {cameras, selectedCamera, discoveryCamera} = this;
-		if(discoveryCamera === false)
+		const {cameras, selectedCamera, cameraDiscovery} = this;
+		if(cameraDiscovery === false)
 			return '';
 		if(!cameras)
 			return html`<div class="wait-msg">Please wait. Getting cameras.</div>`;
@@ -148,8 +151,17 @@ export class FlowQRCodeScanner extends BaseElement {
 		let input = this.renderRoot.querySelector(".logs");
 		input.value += `\n--------------\n${title}\n`+JSON.stringify(data)
 	}
+	stop(){
+		this.stoped = true;
+		let {video} = this;
+		this.closeActiveStreams(video?.srcObject)
+	}
+	start(){
+		this.stoped = false;
+		this.scanning = false;
+	}
 	initScanning(){
-		if(this.qrCode)
+		if(this.qrCode || this.stoped)
 			return
 		let canvas = this.renderRoot.querySelector(".render-canvas");
 		let video = this.renderRoot.querySelector(".video")
@@ -160,9 +172,7 @@ export class FlowQRCodeScanner extends BaseElement {
 
 		if(this.scanning == selectedCamera.id)
 			return
-		if(video.srcObject){
-			this.closeActiveStreams(video.srcObject)
-		}
+		this.closeActiveStreams(video.srcObject)
 		this.scanning = selectedCamera.id;
 		this.video = video;
 
@@ -216,10 +226,12 @@ export class FlowQRCodeScanner extends BaseElement {
 			console.log("getCameras:error", e)
 			this.setError(html`Camera discovery process failed.
 				<br />Make sure you have given Camera permission.`)
-			this.discoveryCamera = false
+			this.cameraDiscovery = false
 		}
 	}
 	closeActiveStreams(stream){
+		if(!stream)
+			return
 		const tracks = stream.getVideoTracks();
 		for (var i = 0; i < tracks.length; i++) {
 			const track = tracks[i];
