@@ -130,6 +130,7 @@ export class FlowInput extends BaseElement {
 				box-shadow:var(--flow-input-box-shadow);
 				text-align:var(--flow-input-text-align);
 				min-width:var(--flow-input-input-min-width, 10px);
+				letter-spacing:var(--flow-input-letter-spacing, inherit);
 			}
 			.btn .text{
 				font-size:var(--flow-input-btn-font-size, 1rem);
