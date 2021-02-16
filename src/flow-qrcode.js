@@ -1,4 +1,4 @@
-import {BaseElement, html, css, baseUrl} from './base-element.js';
+import {BaseElement, svg, html, css, baseUrl} from './base-element.js';
 import { dpc } from './helpers.js';
 
 
@@ -9,7 +9,6 @@ import { dpc } from './helpers.js';
 * @property {String} [type]
 * @example
 *   <flow-qrcode></flow-qrcode>
-*
 *
 */
 
@@ -29,18 +28,13 @@ export class FlowQRCode extends BaseElement {
 		return css`
 			:host {
 				display : block;
-				/*
-				min-width: 32px;
-				min-height: 32px;
-				*/
 			}
 
-			img {
+			svg {
 				width: 100%;
 				height: 100%;
-				object-fit: contain;
-				image-rendering: pixelated;
 			}
+			
 			:host(.left-img) img{
 				object-position:left;
 			}
@@ -82,27 +76,11 @@ export class FlowQRCode extends BaseElement {
 		let cellSize = 2;
 		let margin = cellSize * 4;
 
-
-		return html`<img src="${qr.createDataURL(cellSize, margin)}">`;
+		let el = document.createElement('div');
+		el.innerHTML = qr.createSvgTag(cellSize, margin);
+		return el;
 	}
 
-	/*
-	var draw_qrcode = function(text, typeNumber, errorCorrectionLevel) {
-	  document.write(create_qrcode(text, typeNumber, errorCorrectionLevel) );
-	};
-
-	var update_qrcode = function() {
-	  var form = document.forms['qrForm'];
-	  var text = form.elements['msg'].value.
-	    replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
-	  var t = form.elements['t'].value;
-	  var e = form.elements['e'].value;
-	  var m = form.elements['m'].value;
-	  var mb = form.elements['mb'].value;
-	  document.getElementById('qr').innerHTML =
-	    create_qrcode(text, t, e, m, mb);
-	};
-	*/
 }
 
 FlowQRCode.define('flow-qrcode', [baseUrl+'resources/extern/qrcode/qrcode.js']);
