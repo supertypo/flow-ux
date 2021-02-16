@@ -73,6 +73,7 @@ export class FlowQRCodeScanner extends BaseElement {
 
 	constructor() {
 		super();
+		this.stoped = true;
 	}
 
 	render() {
@@ -87,8 +88,8 @@ export class FlowQRCodeScanner extends BaseElement {
 	}
 
 	renderCameraSelection(){
-		const {cameras, selectedCamera, cameraDiscovery} = this;
-		if(cameraDiscovery === false)
+		const {cameras, selectedCamera, cameraDiscovery, stoped} = this;
+		if(cameraDiscovery === false || stoped)
 			return '';
 		if(!cameras)
 			return html`<div class="wait-msg">Please wait. Getting cameras.</div>`;
@@ -159,6 +160,7 @@ export class FlowQRCodeScanner extends BaseElement {
 	start(){
 		this.stoped = false;
 		this.scanning = false;
+		this.init();
 	}
 	initScanning(){
 		if(this.qrCode || this.stoped)
@@ -218,6 +220,8 @@ export class FlowQRCodeScanner extends BaseElement {
 	}
 
 	async init(){
+		if(this.stoped)
+			return
 		try{
 			let cameras = await this.getCameras();
 			this.cameras = cameras;

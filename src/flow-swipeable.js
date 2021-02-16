@@ -136,7 +136,7 @@ export class FlowSwipeable{
 
 
 		//console.log("i, count, width, x", {dx, i, f, s})
-		if ((i > 0 || s < 0) && (i < count - 1 || s > 0) && f > 0.2) {
+		if ((i > 0 || s < 0) && (i < count - 1 || s > 0) && f > 0.1) {
 			el.style.setProperty("--swipeable-i", (i -= s));
 			f = 1 - f;
 		}
