@@ -70,7 +70,7 @@ export class FlowSocketRPC extends FlowSocket {
 					if(err)
 						reject(err);
 					else
-						resolve(data);
+						resolve(resp);
 				}
 			});
 
