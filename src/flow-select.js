@@ -57,6 +57,7 @@ export class FlowSelect extends FlowMenu {
 				padding:var(--flow-select-padding, 0px);
 				margin:var(--flow-select-margin, 5px);
 				width:var(--flow-select-width);
+				max-width:var(--flow-select-max-width, 100%);
 				height:var(--flow-select-height);
 				--flow-dropdown-border:var(--flow-select-dropdown-border, 1px solid var(--flow-primary-color, #000));
 				--flow-dropdown-trigger-bg:var(--flow-select-trigger-bg, transparent);
@@ -119,7 +120,10 @@ export class FlowSelect extends FlowMenu {
 				box-shadow:var(--flow-input-box-shadow);
 				height:var(--flow-select-selected-height);	
 				width:var(--flow-select-selected-width);
+				overflow: hidden;
+    			text-overflow: ellipsis;
 			}
+
 			:host(:not([disabled])) .input.selected::after{
 				content:"";display:inline-block;
 				position:absolute;right:10px;
