@@ -61,6 +61,7 @@ export class FlowBtn extends BaseElement {
 				font-weight:var(--flow-btn-font-weight, var(--flow-font-weight, bold));
 				font-size:var(--flow-btn-font-size, initial);
 				line-height:var(--flow-btn-line-height, inherit);
+				text-transform:var(--flow-btn-text-transform, inherit);
 				user-select: none;
 				--fa-icon-size-temp:var(--fa-icon-size);
 			}
