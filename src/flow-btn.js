@@ -43,7 +43,8 @@ export class FlowBtn extends BaseElement {
 	static get properties() {
 		return {
 			disabled:{type:Boolean, reflect: true},
-			'on-click':{type:Function}
+			'on-click':{type:Function},
+			icon:{type:String, reflect:true}
 		}
 	}
 
@@ -61,6 +62,14 @@ export class FlowBtn extends BaseElement {
 				font-size:var(--flow-btn-font-size, initial);
 				line-height:var(--flow-btn-line-height, inherit);
 				user-select: none;
+				--fa-icon-size-temp:var(--fa-icon-size);
+			}
+			:host([icon]){
+				padding:var(--flow-iconbtn-padding, var(--flow-btn-padding, 5px));
+			}
+			fa-icon{
+
+				--fa-icon-size:var(--flow-btn-icon-size, var(--fa-icon-size-temp, 20px))
 			}
 			:host([disabled]){
 				opacity:0.5;
@@ -166,7 +175,8 @@ export class FlowBtn extends BaseElement {
 				text-align:center;
 				justify-content:center;
 			}
-			:host([full-height-wrapper]) .wrapper{
+			:host([full-height-wrapper]) .wrapper,
+			:host([icon]) .wrapper{
 				height:100%;box-sizing:border-box;
 				margin:0px;
 			}
@@ -180,11 +190,9 @@ export class FlowBtn extends BaseElement {
 		})
 	}
 	render() {
-		return html`
-		<div class="wrapper">
-			<slot></slot>
-		</div>
-		`;
+		let {icon=''} = this;
+		return html`<div 
+			class="wrapper">${icon?html`<fa-icon icon=${icon}></fa-icon>`:''} <slot></slot></div>`;
 	}
 
 	click() {

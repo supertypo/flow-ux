@@ -52,7 +52,7 @@ export class FlowSelect extends FlowMenu {
 	static get styles() {
 		return [super.styles, css`
 			:host{
-				display:inline-block;vertical-align:middle;
+				display:var(--flow-select-display, inline-block);vertical-align:middle;
 				font-family:var(--flow-font-family, "Julius Sans One");
 				padding:var(--flow-select-padding, 0px);
 				margin:var(--flow-select-margin, 5px);

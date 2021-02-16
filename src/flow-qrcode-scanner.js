@@ -72,12 +72,14 @@ export class FlowQRCodeScanner extends BaseElement {
 			.camera-selection{
 				display:flex;
 			}
+			/*
 			.camera-selection flow-select{
-				max-width:var(--flow-qrcode-scanner-select-max-width, 300px);
-				--flow-dropdown-display:var(--flow-qrcode-scanner-select-display, block);
-				--flow-select-width:var(--flow-qrcode-scanner-select-width, 100%);
-				--flow-select-margin:var(--flow-qrcode-scanner-select-margin, 10px auto);
+				max-width:var(--flow-qrcode-scanner-s-max-width, 400px);
+				--flow-dropdown-display:var(--flow-qrcode-scanner-s-display, block);
+				--flow-select-width:var(--flow-qrcode-scanner-sw, var(--flow-select-width, 100%));
+				--flow-select-margin:var(--flow-qrcode-scanner-sm, var(--flow-select-margin, 10px auto));
 			}
+			*/
 		`;
 	}
 

@@ -58,7 +58,8 @@ export class FlowInput extends BaseElement {
 	static get styles(){
 		return css`
 			:host{
-				display:inline-block;vertical-align:middle;
+				display:var(--flow-input-display, inline-block);
+				vertical-align:middle;
 				font-family:var(--flow-font-family, "Julius Sans One");
 				font-weight:var(--flow-font-weight, bold);
 				width:var(--flow-input-width, 100%);
