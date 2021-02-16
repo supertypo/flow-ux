@@ -22,10 +22,10 @@ export class FlowQRCodeScanner extends BaseElement {
 				min-width: 100px;
 				min-height: 100px;
 				/*max-width: 400px;*/
-				overflow:auto;
+				/*overflow:auto;*/
 				margin:auto;
 				position:relative;
-				max-height:80vh;
+				/*max-height:80vh;*/
 			}
 			.error{
 				font-size:var(--flow-qrcode-scanner-error-font-size, 0.8rem);
@@ -34,6 +34,7 @@ export class FlowQRCodeScanner extends BaseElement {
 			}
 			.wait-msg, .select-msg{
 				font-size:var(--flow-qrcode-scanner-msg-font-size, 1rem);
+				text-align:center;padding:10px;
 			}
 			.video{border:0px solid #000000;display:none;}
 			.view{
@@ -67,7 +68,16 @@ export class FlowQRCodeScanner extends BaseElement {
 			}
 			:host([hidecode]) .code-box{display:none}
 			.logs{width:90%;height:100px;}
-			:host(:not([logs])) .logs{display:none} 
+			:host(:not([logs])) .logs{display:none}
+			.camera-selection{
+				display:flex;
+			}
+			.camera-selection flow-select{
+				max-width:var(--flow-qrcode-scanner-select-max-width, 300px);
+				--flow-dropdown-display:var(--flow-qrcode-scanner-select-display, block);
+				--flow-select-width:var(--flow-qrcode-scanner-select-width, 100%);
+				--flow-select-margin:var(--flow-qrcode-scanner-select-margin, 10px auto);
+			}
 		`;
 	}
 
@@ -81,8 +91,8 @@ export class FlowQRCodeScanner extends BaseElement {
 		return html`
 			<textarea class="logs"></textarea>
 			<div class="error">${errorMessage}</div>
-			${this.renderCameraSelection()}
 			${this.renderScanning()}
+			${this.renderCameraSelection()}
 			${this.renderCode()}
 		`;
 	}
@@ -98,13 +108,16 @@ export class FlowQRCodeScanner extends BaseElement {
 
 		let selected = selectedCamera?.id||'';
 		return html`
-		<div class="select-msg">Please select cameras</div>
-		<flow-menu @select="${this.onCameraSelect}" selected="${selected}">
-		${cameras.map(c=>{
-			return html`<flow-menu-item
-				value="${c.id}">${c.label}</flow-menu-item>`
-		})}
-		</flow-menu>
+		<div class="camera-selection">
+			<!--div class="select-msg">Select cameras</div-->
+			<flow-select label="Select cameras"
+				@select="${this.onCameraSelect}" selected="${selected}">
+				${cameras.map(c=>{
+					return html`<flow-menu-item
+						value="${c.id}">${c.label}</flow-menu-item>`
+				})}
+			</flow-select>
+		</div>
 		`
 	}
 	renderScanning(){
@@ -225,12 +238,18 @@ export class FlowQRCodeScanner extends BaseElement {
 		try{
 			let cameras = await this.getCameras();
 			this.cameras = cameras;
+			let backCameras =  cameras.find(c=>!c.label.toLowerCase().includes("front"))
+			if(backCameras.length){
+				this.selectedCamera = backCameras[0];
+			}else if(cameras.length){
+				this.selectedCamera = cameras[0];
+			}
 			this.log("cameras", cameras)
 		}catch(e){
 			console.log("getCameras:error", e)
 			this.setError(html`Camera discovery process failed.
 				<br />Make sure you have given Camera permission.`)
-			this.cameraDiscovery = false
+			this.cameraDiscovery = false;
 		}
 	}
 	closeActiveStreams(stream){
