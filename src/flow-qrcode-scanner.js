@@ -39,8 +39,8 @@ export class FlowQRCodeScanner extends BaseElement {
 			.video{border:0px solid #000000;display:none;}
 			.view{
 				border:1px solid #000000;display:block;margin:5px auto;
-				width:var(--flow-qrcode-scanner-canvas-width, 200px);
-				height:var(--flow-qrcode-scanner-canvas-height, 200px);
+				width:var(--flow-qrcode-scanner-canvas-width, 280px);
+				height:var(--flow-qrcode-scanner-canvas-height, 280px);
 				object-fit:contain;
 			}
 			.render-canvas{
@@ -403,10 +403,4 @@ export class FlowQRCodeScanner extends BaseElement {
 
 }
 
-FlowQRCodeScanner.define('flow-qrcode-scanner')/*, [
-	/*
-	baseUrl+'resources/extern/html5-qrcode/lazar-soft-scanner.js',
-	baseUrl+'resources/extern/html5-qrcode/html5-qrcode-scanner.js',
-	baseUrl+'resources/extern/html5-qrcode/html5-qrcode.js'
-	* /
-]);*/
+FlowQRCodeScanner.define('flow-qrcode-scanner');
