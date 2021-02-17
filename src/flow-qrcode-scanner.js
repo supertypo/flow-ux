@@ -282,10 +282,11 @@ export class FlowQRCodeScanner extends BaseElement {
 					navigator.mediaDevices.enumerateDevices()
 						.then(devices => {
 							const results = [];
+							//alert("devices:"+JSON.stringify(devices))
 							for (var i = 0; i < devices.length; i++) {
 								const device = devices[i];
 								if (device.kind == "videoinput") {
-									if(!/back/.test(device.label) || devices.length == 1) {
+									if(/back/.test(device.label) || devices.length == 1) {
 										results.push({
 											id: device.deviceId,
 											label: device.label
