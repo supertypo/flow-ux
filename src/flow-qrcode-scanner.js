@@ -285,10 +285,12 @@ export class FlowQRCodeScanner extends BaseElement {
 							for (var i = 0; i < devices.length; i++) {
 								const device = devices[i];
 								if (device.kind == "videoinput") {
-									results.push({
-										id: device.deviceId,
-										label: device.label
-									});
+									if(!/back/.test(device.label) || devices.length == 1) {
+										results.push({
+											id: device.deviceId,
+											label: device.label
+										});
+									}
 								}
 							}
 							this.log(`${results.length} results found`);
