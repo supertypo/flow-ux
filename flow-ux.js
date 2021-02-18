@@ -62,5 +62,6 @@ export * from './src/flow-sunburst-graph.js';
 export * from './src/flow-swipeable.js';
 export * from './src/flow-t9.js';
 export * from './src/flow-progressbar.js';
+export * from './src/flow-add-to-home.js';
 export * from './src/colors.js';
 

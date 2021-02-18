@@ -16,6 +16,7 @@ export class FaIcon extends BaseElement {
 			color:String,
 			src: String,
 			style: String,
+			css: String,
 			size:Number,
 			w:Number,
 			h:Number,
@@ -31,17 +32,19 @@ export class FaIcon extends BaseElement {
 			width: var(--fa-icon-size, 19px);
 			height: var(--fa-icon-size, 19px);
 		}
-		svg{
+		svg,img{
 			width: var(--fa-icon-size, 19px);
 			height: var(--fa-icon-size, 19px);
 			fill: var(--fa-icon-color);
 		}
+		img{object-fit:contain;}
 		`;
 	}
 	constructor() {
 		super();
 		this.src = '';
 		this.style = '';
+		this.css = '';
 		//this.size = 19;
 		this.color = '';
 	}
@@ -56,6 +59,10 @@ export class FaIcon extends BaseElement {
 		w = (w||size)?`width:${w||size}px;`:'';
 		h = (h||size)?`height:${h||size}px;`:'';
 		color = color?`fill:${color};`:'';
+		let ext = this.src.split(/\?#/)[0].split(".").pop().toLowerCase();
+		if(['png', 'jpeg', 'jpg'].includes(ext)){
+			return html`<img style="${w}${h}${color}${this.css||''}" src="${this.src}" />`;
+		}
 		return html`
 		<svg style="${w}${h}${color}${this.style}"><use href="${this.src}"></use></svg>
 		`;
