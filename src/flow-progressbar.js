@@ -32,7 +32,8 @@ export class FlowProgressbar extends BaseElement {
 			easing:{type: String},
 			svgStyle:{type: String},
 			shape:{type:String},
-			opt:{type: Object}
+			opt:{type: Object},
+			text:{type:String}
 		}
 	}
 
@@ -48,6 +49,11 @@ export class FlowProgressbar extends BaseElement {
 				*/
 			}
 			.container{width:100%;height:100%;}
+			.progressbar-text{
+				font-size:var(--flow-progressbar-font-size, 0.9rem);
+				font-weight:var(--flow-progressbar-font-weight, normal);
+				font-family:var(--flow-progressbar-font-family, inhert);
+			}
 		`;
 	}
 
@@ -58,6 +64,7 @@ export class FlowProgressbar extends BaseElement {
 		super.updated();
 		let {
 			value=0, opt={},
+			text='',
 			strokeWidth, color, easing,
 			duration, trailColor, trailWidth, svgStyle,
 			shape="Circle"
@@ -88,7 +95,7 @@ export class FlowProgressbar extends BaseElement {
 			//this.progress.path.setAttribute('stroke', options.color);
 		});
 
-		//this.progress.path.setAttribute('stroke', options.color);
+		this.progress.setText(text);
 	}
 }
 
