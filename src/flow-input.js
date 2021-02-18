@@ -132,6 +132,11 @@ export class FlowInput extends BaseElement {
 				min-width:var(--flow-input-input-min-width, 10px);
 				letter-spacing:var(--flow-input-letter-spacing, inherit);
 			}
+			/*
+			:host(:not([outer-border])) .input{
+				box-shadow:var(--flow-input-box-shadow);
+			}
+			*/
 			.btn .text{
 				font-size:var(--flow-input-btn-font-size, 1rem);
 			}
@@ -163,6 +168,8 @@ export class FlowInput extends BaseElement {
 				border-radius:var(--flow-input-border-radius, 8px);
 				background-color:var(--flow-input-bg, inherit);
 				color:var(--flow-input-color, inherit);
+			}
+			:host([outer-border]) .wrapper{
 				box-shadow:var(--flow-input-box-shadow);
 			}
 
