@@ -158,7 +158,7 @@ flow-checkbox.block{margin:5px 0px;}
 flow-dialog{display:block;}
 flow-dialog [hide]{display:none}
 flow-dialog dialog{
-    margin:10% auto;min-width:200px;border-radius:3px;
+    /*margin:10% auto;*/min-width:200px;border-radius:3px;
     background-color:var(--flow-dialog-background-color, var(--flow-background-color));
     color:var(--flow-dialog-color, var(--flow-color));
     box-shadow:var(--flow-box-shadow);

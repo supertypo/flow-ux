@@ -5,3 +5,5 @@ dist
 docs_
 src/__flow-context.js
 resources/extern/html5-qrcode
+__flow-ux.css
+resources/extern/dialog/__dialog-polyfill.css

@@ -41,7 +41,7 @@ export class FlowDialog extends BaseElement {
 		if(!args.handler && typeof(handler) == 'function')
 			args.handler = handler
 
-		console.log("args", args)
+		//console.log("args", args)
 
 		return args;
 	}
@@ -74,8 +74,16 @@ export class FlowDialog extends BaseElement {
 					dg.destroy();
 				}
 			}
+			let onWindoResize = e=>{
+				//console.log("onWindoResize22: dg.dialog", dg._isPolyfill)
+				if(dg._isPolyfill){
+					//console.log("onWindoResize: dg.dialog", dg.dialog)
+					dialogPolyfill.reposition(dg.dialog)
+				}
+			}
 			let removeWinEventListener = ()=>{
 				window.removeEventListener("click", onWindoClick)
+				window.removeEventListener("resize", onWindoResize)
 			}
 			let _resolve = (result)=>{
 				if(resolved)
@@ -120,6 +128,9 @@ export class FlowDialog extends BaseElement {
 				if(autoClose){
 					window.addEventListener("click", onWindoClick)
 				}
+				//console.log("onWindoResize:1")
+				window.addEventListener("resize", onWindoResize)
+
 			}, 100)
 			
 		})
@@ -224,6 +235,7 @@ export class FlowDialog extends BaseElement {
 
 	firstUpdated(){
 		this.dialog = this.renderRoot.querySelector('dialog');
+		this._isPolyfill = !this.dialog.showModal
 		dialogPolyfill.registerDialog(this.dialog)
 		if(this._show)
 			this[this._show]();

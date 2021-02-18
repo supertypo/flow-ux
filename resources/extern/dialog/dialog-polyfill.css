@@ -13,6 +13,8 @@ dialog {
   background: white;
   color: black;
   display: block;
+  max-height: calc((100% - 6px) - 2em);
+  overflow: auto;
 }
 
 dialog:not([open]) {

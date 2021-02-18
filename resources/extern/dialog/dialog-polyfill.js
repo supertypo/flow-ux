@@ -66,11 +66,16 @@
    * @return {HTMLDialogElement} dialog found
    */
   function findNearestDialog(el) {
+    //return el?.closest("dialog");
     while (el) {
+      if(el instanceof ShadowRoot){
+        el = el.host;
+        continue;
+      }
       if (el.localName === 'dialog') {
         return /** @type {HTMLDialogElement} */ (el);
       }
-      el = el.parentElement;
+      el = el.parentElement || el.parentNode;
     }
     return null;
   }
@@ -571,24 +576,32 @@
     }
   };
 
+
   /**
    * @param {Element} candidate to check if contained or is the top-most modal dialog
    * @return {boolean} whether candidate is contained in top dialog
    */
-  dialogPolyfill.DialogManager.prototype.containedByTopDialog_ = function(candidate) {
-    while (candidate = findNearestDialog(candidate)) {
+  dialogPolyfill.DialogManager.prototype.containedByTopDialog_ = function(_candidate) {
+    let candidate = findNearestDialog(_candidate)
+    //console.log("this.pendingDialogStack", _candidate.closest('dialog'), this.pendingDialogStack, _candidate, candidate)
+    //if(!this.pendingDialogStack.length && candidate)
+    //  return true;
+    while (candidate) {
       for (var i = 0, dpi; dpi = this.pendingDialogStack[i]; ++i) {
+        //console.log("dpi.dialog === candidate", dpi.dialog , candidate)
         if (dpi.dialog === candidate) {
           return i === 0;  // only valid if top-most
         }
       }
-      candidate = candidate.parentElement;
+      candidate = findNearestDialog(candidate.parentElement);
+      
     }
     return false;
   };
 
   dialogPolyfill.DialogManager.prototype.handleFocus_ = function(event) {
     var target = event.composedPath ? event.composedPath()[0] : event.target;
+    //console.log("eventeventevent", event, target, this.containedByTopDialog_(target))
 
     if (this.containedByTopDialog_(target)) { return; }
 
