@@ -11,7 +11,6 @@ export class FlowQRCodeScanner extends BaseElement {
 			qrCode:{type:String},
 			errorMessage:{type:String},
 			hideCode:{type:Boolean, reflect:true},
-			seq:{type:Number},
 //			stopped:{type:Boolean}
 		}
 	}
@@ -88,7 +87,6 @@ export class FlowQRCodeScanner extends BaseElement {
 		super();
 		this.stopped = true;
 
-		this.seq = 0;
 	}
 
 	render() {
@@ -99,7 +97,6 @@ export class FlowQRCodeScanner extends BaseElement {
 			${this.renderScanning()}
 			${this.renderCameraSelection()}
 			${this.renderCode()}
-			${this.seq}
 		`;
 	}
 
@@ -347,7 +344,6 @@ export class FlowQRCodeScanner extends BaseElement {
 	}
 
 	videoTick({video, trackInfo, canvasCtx, canvas, cameraId}) {
-		this.seq++;
 		if(cameraId != this.selectedCamera?.id)
 			return
 		let next = ()=>{
