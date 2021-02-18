@@ -168,9 +168,10 @@ export class FlowInput extends BaseElement {
 				border-radius:var(--flow-input-border-radius, 8px);
 				background-color:var(--flow-input-bg, inherit);
 				color:var(--flow-input-color, inherit);
+				box-shadow:var(--flow-input-wrapper-box-shadow);
 			}
 			:host([outer-border]) .wrapper{
-				box-shadow:var(--flow-input-box-shadow);
+				box-shadow:var(--flow-input-wrapper-box-shadow, var(--flow-input-box-shadow));
 			}
 
 
