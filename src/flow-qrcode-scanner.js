@@ -11,7 +11,8 @@ export class FlowQRCodeScanner extends BaseElement {
 			qrCode:{type:String},
 			errorMessage:{type:String},
 			hideCode:{type:Boolean, reflect:true},
-			stoped:{type:Boolean}
+			seq:{type:Number},
+//			stopped:{type:Boolean}
 		}
 	}
 
@@ -85,7 +86,9 @@ export class FlowQRCodeScanner extends BaseElement {
 
 	constructor() {
 		super();
-		this.stoped = true;
+		this.stopped = true;
+
+		this.seq = 0;
 	}
 
 	render() {
@@ -96,12 +99,13 @@ export class FlowQRCodeScanner extends BaseElement {
 			${this.renderScanning()}
 			${this.renderCameraSelection()}
 			${this.renderCode()}
+			${this.seq}
 		`;
 	}
 
 	renderCameraSelection(){
-		const {cameras, selectedCamera, cameraDiscovery, stoped} = this;
-		if(cameraDiscovery === false || stoped)
+		const {cameras, selectedCamera, cameraDiscovery, stopped} = this;
+		if(cameraDiscovery === false || stopped)
 			return '';
 		if(!cameras)
 			return html`<div class="wait-msg">Please wait. Getting cameras.</div>`;
@@ -168,17 +172,17 @@ export class FlowQRCodeScanner extends BaseElement {
 		input.value += `\n--------------\n${title}\n`+JSON.stringify(data)
 	}
 	stop(){
-		this.stoped = true;
+		this.stopped = true;
 		let {video} = this;
 		this.closeActiveStreams(video?.srcObject)
 	}
 	start(){
-		this.stoped = false;
+		this.stopped = false;
 		this.scanning = false;
 		this.init();
 	}
 	initScanning(){
-		if(this.qrCode || this.stoped)
+		if(this.qrCode || this.stopped)
 			return
 		let canvas = this.renderRoot.querySelector(".render-canvas");
 		let video = this.renderRoot.querySelector(".video")
@@ -235,7 +239,7 @@ export class FlowQRCodeScanner extends BaseElement {
 	}
 
 	async init(){
-		if(this.stoped)
+		if(this.stopped)
 			return
 		try{
 			let cameras = await this.getCameras();
@@ -257,6 +261,9 @@ export class FlowQRCodeScanner extends BaseElement {
 	closeActiveStreams(stream){
 		if(!stream)
 			return
+
+		// 	alert('stopping');
+		// return;
 		const tracks = stream.getVideoTracks();
 		for (var i = 0; i < tracks.length; i++) {
 			const track = tracks[i];
@@ -340,6 +347,7 @@ export class FlowQRCodeScanner extends BaseElement {
 	}
 
 	videoTick({video, trackInfo, canvasCtx, canvas, cameraId}) {
+		this.seq++;
 		if(cameraId != this.selectedCamera?.id)
 			return
 		let next = ()=>{
@@ -347,6 +355,9 @@ export class FlowQRCodeScanner extends BaseElement {
 				this.stopScanning()
 				return
 			}
+			if(this.stopped)
+				return;
+				
 			requestAnimationFrame(()=>{
 				this.videoTick({video, trackInfo, canvas, canvasCtx, cameraId})
 			});
