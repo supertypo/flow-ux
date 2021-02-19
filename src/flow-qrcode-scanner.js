@@ -11,7 +11,8 @@ export class FlowQRCodeScanner extends BaseElement {
 			qrCode:{type:String},
 			errorMessage:{type:String},
 			hideCode:{type:Boolean, reflect:true},
-//			stopped:{type:Boolean}
+			boxColor:{type:String},
+			renderAfter:{type:Number}
 		}
 	}
 
@@ -90,7 +91,7 @@ export class FlowQRCodeScanner extends BaseElement {
 	constructor() {
 		super();
 		this.stopped = true;
-
+		this.renderAfter = 10;
 	}
 
 	render() {
@@ -182,11 +183,24 @@ export class FlowQRCodeScanner extends BaseElement {
 		this.scanning = false;
 		this.init();
 	}
+	getVideoElement(){
+		if(this._video)
+			return this._video;
+		this._video = document.createElement("video");
+		return this._video;
+	}
+	getCanvasElement(){
+		if(this._canvas)
+			return this._canvas;
+		this._canvas = document.createElement("canvas");
+		return this._canvas;
+	}
 	initScanning(){
+		this.__render = 0;
 		if(this.qrCode || this.stopped)
 			return
-		let canvas = this.renderRoot.querySelector(".render-canvas");
-		let video = this.renderRoot.querySelector(".video")
+		let canvas = this.getCanvasElement();//this.renderRoot.querySelector(".render-canvas");
+		let video = this.getVideoElement()//this.renderRoot.querySelector(".video")
 		let {selectedCamera} = this;
 		this._log("initScanning", {canvas:!!canvas, video:!!video, selectedCamera, scanning:this.scanning})
 		if(!canvas || !video || !selectedCamera)
@@ -198,7 +212,7 @@ export class FlowQRCodeScanner extends BaseElement {
 		this.scanning = selectedCamera.id;
 		this.video = video;
 
-		const canvasCtx = canvas.getContext('2d');
+		const canvasCtx = canvas.getContext('2d', {alpha: false});
 		//const desiredWidth = 1280;
 		//const desiredHeight = 720;
 
@@ -219,13 +233,32 @@ export class FlowQRCodeScanner extends BaseElement {
 			video.srcObject = stream;
 			const track = stream.getVideoTracks()[0];
 			const trackInfo = track.getSettings();
-			let {width, height} = trackInfo;
+			//let {width, height} = trackInfo;
 			// required to tell iOS safari we don't want fullscreen
 			video.setAttribute("playsinline", true);
 			video.play();
+
+			let box = this.getBoundingClientRect();
+
+			//console.log(actualSettings.width, actualSettings.height)
+			canvas.width = trackInfo.width;//200;//actualSettings.width;
+			canvas.height = trackInfo.height;//200;//actualSettings.height;
+
+			canvasCtx.lineWidth = 4;
+			canvasCtx.strokeStyle = this.boxColor || "#FF3B58";
+
+			let { 
+				offsetX, offsetY, width, height
+			} = contain(canvas.width, canvas.height, trackInfo.width, trackInfo.height);
+
+			offsetX = Math.floor(offsetX)
+			offsetY = Math.floor(offsetY)
+			width = Math.floor(width)
+			height = Math.floor(height)
+
 			requestAnimationFrame(()=>{
 				this.videoTick({
-					video, trackInfo:{width, height}, canvas, canvasCtx,
+					video, box:{offsetX, offsetY, width, height}, canvas, canvasCtx,
 					cameraId : selectedCamera.id
 				})
 			});
@@ -347,9 +380,10 @@ export class FlowQRCodeScanner extends BaseElement {
 		this.scanning = false;
 	}
 
-	videoTick({video, trackInfo, canvasCtx, canvas, cameraId}) {
+	videoTick({video, box, canvasCtx, canvas, cameraId}) {
 		if(cameraId != this.selectedCamera?.id)
 			return
+
 		let next = ()=>{
 			if(this.qrCode){
 				this.stopScanning()
@@ -359,34 +393,23 @@ export class FlowQRCodeScanner extends BaseElement {
 				return;
 				
 			requestAnimationFrame(()=>{
-				this.videoTick({video, trackInfo, canvas, canvasCtx, cameraId})
+				this.videoTick({video, box, canvas, canvasCtx, cameraId})
 			});
 		}
 
+		this.__render++;
+		if(this.__render<this.renderAfter)
+			return next();
 
-		//loadingMessage.innerText = "⌛ Loading video..."
+		this.__render = 0;
+
+
 		if (video.readyState !== video.HAVE_ENOUGH_DATA)
 			return next();
 
-		const drawLine = (ctx, begin, end, color="#FF3B58")=>{
-			ctx.beginPath();
-			ctx.moveTo(begin.x, begin.y);
-			ctx.lineTo(end.x, end.y);
-			ctx.lineWidth = 4;
-			ctx.strokeStyle = color;
-			ctx.stroke();
-		}
-
-		//console.log(actualSettings.width, actualSettings.height)
-		canvas.width = trackInfo.width;//200;//actualSettings.width;
-		canvas.height = trackInfo.height;//200;//actualSettings.height;
-
-		const { 
-			offsetX, offsetY, width, height
-		} = contain(canvas.width, canvas.height, trackInfo.width, trackInfo.height);
-
-		canvasCtx.drawImage(video, offsetX, offsetY, width, height);
-		let imageData = canvasCtx.getImageData(0, 0, canvas.width, canvas.height);
+		canvasCtx.fillRect(0, 0, box.width, box.height);
+		canvasCtx.drawImage(video, box.offsetX, box.offsetY, box.width, box.height);
+		let imageData = canvasCtx.getImageData(0, 0, box.width, box.height);
 
 		let code = jsQR(imageData.data, imageData.width, imageData.height, {
 			inversionAttempts: "dontInvert",
@@ -394,10 +417,10 @@ export class FlowQRCodeScanner extends BaseElement {
 
 		if (code) {
 			let loc = code.location;
-			drawLine(canvasCtx, loc.topLeftCorner, loc.topRightCorner);
-			drawLine(canvasCtx, loc.topRightCorner, loc.bottomRightCorner);
-			drawLine(canvasCtx, loc.bottomRightCorner, loc.bottomLeftCorner);
-			drawLine(canvasCtx, loc.bottomLeftCorner, loc.topLeftCorner);
+			this.drawLine(canvasCtx, loc.topLeftCorner, loc.topRightCorner);
+			this.drawLine(canvasCtx, loc.topRightCorner, loc.bottomRightCorner);
+			this.drawLine(canvasCtx, loc.bottomRightCorner, loc.bottomLeftCorner);
+			this.drawLine(canvasCtx, loc.bottomLeftCorner, loc.topLeftCorner);
 			this.setQRCode(code.data);
 		}
 
@@ -405,6 +428,13 @@ export class FlowQRCodeScanner extends BaseElement {
 
 		next();
 		
+	}
+
+	drawLine(ctx, begin, end){
+		ctx.beginPath();
+		ctx.moveTo(begin.x, begin.y);
+		ctx.lineTo(end.x, end.y);
+		ctx.stroke();
 	}
 
 	onCameraSelect(e){
