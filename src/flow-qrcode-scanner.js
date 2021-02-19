@@ -241,7 +241,7 @@ export class FlowQRCodeScanner extends BaseElement {
 		try{
 			let cameras = await this.getCameras();
 			this.cameras = cameras;
-			let backCameras =  cameras.find(c=>!c.label.toLowerCase().includes("front"))
+			let backCameras =  cameras.filter(c=>!c.label.toLowerCase().includes("front"))
 			if(backCameras.length){
 				this.selectedCamera = backCameras[0];
 			}else if(cameras.length){
