@@ -117,13 +117,13 @@ export class FlowAddToHome extends BaseElement {
 			return
 		this.fire("add", {el:this})
 		this.deferredPrompt.prompt();
-		deferredPrompt.userChoice.then((choiceResult) => {
+		this.deferredPrompt.userChoice.then((choiceResult) => {
 			if (choiceResult.outcome === 'accepted') {
 				console.log('User accepted the A2HS prompt');
 			} else {
 				console.log('User dismissed the A2HS prompt');
 			}
-			deferredPrompt = null;
+			this.deferredPrompt = null;
 			this.close(choiceResult.outcome);
 		});
 	}
