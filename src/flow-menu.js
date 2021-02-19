@@ -160,6 +160,7 @@ export class FlowMenu extends BaseElement {
 	updateList(){
 		this.list.forEach(item=>{
 			let value = item.getAttribute(this.valueAttr)
+			item.onclick = ()=>{};//<--- iphone issue
 			item.classList.toggle("selected", this.isSelected(value));
 		});
 	}
