@@ -398,10 +398,12 @@ export class FlowQRCodeScanner extends BaseElement {
 		}
 
 		this.__render++;
-		if(this.__render<this.renderAfter)
-			return next();
+		if(this.__render != 1){
+			if(this.__render<this.renderAfter)
+				return next();
 
-		this.__render = 0;
+			this.__render = 0;
+		}
 
 
 		if (video.readyState !== video.HAVE_ENOUGH_DATA)
