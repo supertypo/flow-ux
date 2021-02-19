@@ -12,7 +12,8 @@ export const swipeableStyle = css`
 	width: 100%; /* fallback */
 	width: calc(var(--swipeable-n) * 100%);
 	/*max-height: 100vh;*/
-	transform: translateX(calc(var(--swipeable-tx, 0px) + var(--swipeable-i, 0) / var(--swipeable-n) * -100%));
+	--swipeable-transform-x: calc(var(--swipeable-tx, 0px) + var(--swipeable-i, 0) / var(--swipeable-n) * -100%);
+	transform: translateX(var(--swipeable-transform-x));
 }
 .flow-swipeable-row .flow-swipeable{
 	width: 100%; /* fallback */
@@ -52,6 +53,7 @@ export class FlowSwipeable{
 	init(){
 		let el = this.element;
 		el.style.setProperty("--swipeable-n", this.count);
+		this.updateFixedPositionsOffset();
 
 		let onResize = this.onResize.bind(this);
 		let onTouchStart = this.onTouchStart.bind(this);
@@ -70,6 +72,13 @@ export class FlowSwipeable{
 		el.addEventListener("touchend", onTouchEnd, false);
 
 		this.startResizeListener();
+	}
+	updateFixedPositionsOffset(){
+		let {width, top} = this.container.getBoundingClientRect();
+		[...this.element.children].map((c, index)=>{
+			c.style.setProperty('--flow-transform-translate-x', `${index * width}px`);
+			c.style.setProperty('--flow-transform-translate-y', `${-top}px`)
+		})
 	}
 	setActive(index){
 		this.element.style.setProperty("--swipeable-i", index);
@@ -101,6 +110,7 @@ export class FlowSwipeable{
 
 	onResize() {
 		this.width = this.container.getBoundingClientRect().width;
+		this.updateFixedPositionsOffset();
 	}
 
 	onTouchStart(e) {

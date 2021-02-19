@@ -44,6 +44,7 @@ export class FlowMenu extends BaseElement {
 			margin:var(--flow-menu-item-margin-internal);
 			background-color:var(--flow-menu-item-bg, var(--flow-background-color));
 			color:var(--flow-menu-item-color, var(--flow-color));
+			pointer-events:auto;
 		}
 		::slotted(flow-menu-item:hover),
 		::slotted(.menu-item:hover),

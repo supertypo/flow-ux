@@ -92,6 +92,7 @@ export class FlowDropdown extends BaseElement {
 			padding:var(--flow-dropdown-content-padding, 5px);
 			border:var(--flow-dropdown-border, none);
 			box-sizing:border-box;
+			transform:translate(var(--flow-transform-translate-x), var(--flow-transform-translate-y));
 		}
 		:host([opened]) .dropdown-content{display:block;}
 		:host(.right-align) .dropdown-content,
