@@ -72,6 +72,10 @@ export class FlowQRCodeScanner extends BaseElement {
 			.camera-selection{
 				display:flex;
 			}
+			:host([debug]) .render-canvas,
+			:host([debug]) .video{
+				display:block;position:relative;margin:auto;
+			}
 			/*
 			.camera-selection flow-select{
 				max-width:var(--flow-qrcode-scanner-s-max-width, 400px);
@@ -130,8 +134,8 @@ export class FlowQRCodeScanner extends BaseElement {
 
 		return html`
 			<video class="video" width="320" height="240" autoplay></video>
-			<img class="view">
 			<canvas class="render-canvas"></canvas>
+			<img class="view">
 		`
 	}
 
