@@ -174,7 +174,11 @@ export class FlowDialog extends BaseElement {
 	}
 
 	static alert(...args){
-		return this._show(this.buildArgs(...args))
+		args = this.buildArgs(...args)
+		if(!args.btns){
+			args.btns = ['Ok:primary']
+		}
+		return this._show(args)
 	}
 	static show(...args){
 		return this._show(this.buildArgs(...args))
