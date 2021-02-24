@@ -16,7 +16,7 @@ export class FlowSocket {
 
 		this.timeout  = this.options.timeout;
 		this.id = this.options.id;
-		this.transport = this.options.transport || 'native';
+		this.transport = this.options.transport || 'ws';
 
 		this.init();
 	}
@@ -36,7 +36,7 @@ export class FlowSocket {
 	connect_impl() {
 
 		switch(this.transport) {
-			case 'native': {
+			case 'ws': {
 				const url = this.options.origin.replace(/^http/,'ws')+this.options.path;
 				// console.log('WS connecting to',url);
 				this.socket_impl = new WebSocket(this.options.origin.replace(/^http/,'ws')+this.options.path);
