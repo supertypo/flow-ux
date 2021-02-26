@@ -1001,7 +1001,9 @@ export class FlowContextManager extends BaseElement{
 	}
 }
 
-FlowContextManager.define(FlowContextManager._tagName);
+FlowContextManager.define(FlowContextManager._tagName, {
+	'window.dialogPolyfill': baseUrl+'/resources/extern/dialog/dialog-polyfill.js'
+});
 
 
 export const FlowLoadWorkspaces = (workspaces)=>{
