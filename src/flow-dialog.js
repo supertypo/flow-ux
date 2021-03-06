@@ -107,7 +107,7 @@ export class FlowDialog extends BaseElement {
 
 			dg.addEventListener("btn-click", onBtnClicked)
 			if(cls)
-				dg.classList.add(cls);
+				dg.classList.add(...cls.split(" "));
 			if(btns)
 				dg.btns = btns;
 			if(body)
