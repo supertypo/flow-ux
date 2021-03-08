@@ -1,5 +1,6 @@
 import {FlowSocket} from './flow-socket.js';
 import {dpc, UID} from './helpers.js';
+import {AsyncQueueSubscriberMap} from './flow-async.js';
 
 export class FlowSocketNATS extends FlowSocket {
 	constructor(options) {
@@ -8,9 +9,17 @@ export class FlowSocketNATS extends FlowSocket {
 		this.subscribers = new Map();
 		this.subscriptionTokenMap = new Map();
 		this.handlers = new Map();
+
+		this.asyncSubscribers = new AsyncQueueSubscriberMap();
 	}
 
 	initSocketHandlers() {
+
+		this.on('connect', ()=>{
+			// reconnect subscribers
+			this.connectSubscribers(this.asyncSubscribers);
+		});
+
 		this.socket.on('message', msg=>{
 			this.trace && console.log("sio/message",msg);
 			let {subject, data} = msg;
@@ -53,7 +62,8 @@ export class FlowSocketNATS extends FlowSocket {
 						subscribers = new Map();
 						this.subscribers.set(subject, subscribers)
 					}
-					subscribers.set(rid, {token, handler});
+					//subscribers.set(rid, {token, handler});
+					subscribers.set(token, {token, handler});
 					this.handlers.delete(rid);
 					this.subscriptionTokenMap.set(token, { subscribers, rid });
 				}
@@ -87,12 +97,23 @@ export class FlowSocketNATS extends FlowSocket {
 
 		this.socket.on('publish', (msg)=>{
 			this.trace && console.log("sio/publish",msg);
-			let { subject, data } = msg;
-			this.events.emit(subject, data);
+			let { subject, data,  token} = msg;
+
+//			console.log("PUBLISH",msg);
+
+			//this.events.emit(subject, data);
 			const subscribers = this.subscribers.get(subject);
-			if(subscribers)
-				subscribers.forEach(subscriber=>subscriber.handler(data));
+			if(subscribers){
+				const target = subscribers.get(token);
+				if(target){
+					//console.log("PUBLISHING     SUBJECT::::", subject, "  TOKEN:", token, "    DATA:", data);
+					target.handler(data);
+				}
+				//subscribers.forEach(subscriber=>subscriber.handler(data));
+			}
 			// TODO - check this.events for handlers
+
+			this.asyncSubscribers.post(subject, {data});
 		})
 
 		this.socket.on('response', (msg)=>{
@@ -163,17 +184,52 @@ export class FlowSocketNATS extends FlowSocket {
 		})	
 	}
 
-	subscribe(subject, handler, opt) {
+
+	subscribe(subject, opt) {
+
+		//this.create_nats_subscription_(subject);
+
+		let subscriber = this.asyncSubscribers.subscribe(subject);
+
+		subscriber.on('subscribe',(subject)=>{
+			this.registerSubscriptionWithNATS_(subject, subscriber, opt);	
+		})
+
+		subscriber.on('unsubscribe',(subject)=>{
+			this.unsubscribe(subscriber);	
+		})
+
+//		this.registerSubscriptionWithNATS_(subject, subscriber, opt);
+		// console.log("NATS SUBSCRIPTION:", subject);
+		return subscriber;
+	}
+
+	connectSubscribers(subscribers) {
+
+		// this.asyncSubscribers
+		subscribers.forEach((subscriber)=>{
+			const { subject } = subscriber;
+			subscriber.ready = this.registerSubscriptionWithNATS_(subject, subscriber);
+		});
+
+	}
+
+
+	registerSubscriptionWithNATS_(subject, subscriber, opt = { }) {
+		subscriber.state = 'connecting';
 		let rid = UID();
 		let p = new Promise((resolve, reject)=>{
-			this.handlers.set(rid, handler);
+			// if(handler)
+			// 	this.handlers.set(rid, handler);
 			this.pending.set(rid, {
 				ts:Date.now(),
-				callback:(err, data)=>{
+				callback:(err, token)=>{
 					if(err)
 						console.error('subscribe failure for subject:',subject);
-					// TODO - Data should be a token...
-					return err?reject(err):resolve(data);
+					subscriber.token = token;
+					subscriber.state = 'connected';
+					console.log("NATS - SUCCESSFUL SUBSCRIPTION to",subject,token,subscriber.state);
+					return err?reject(err):resolve(subscriber);
 				}
 			});
 
@@ -186,9 +242,12 @@ export class FlowSocketNATS extends FlowSocket {
 		return p;
 	}
 
-	unsubscribe(token) {
-		this.unsubscribe_local_refs(token);
 
+	unsubscribe(subscriber) {
+//		this.unsubscribe_local_refs(token);
+//		if(subscriber.state == 'connecting')
+
+		const { token } = subscriber;
 		let rid = UID();
 		let p = new Promise((resolve, reject)=>{
 			this.pending.set(rid, {
@@ -207,7 +266,7 @@ export class FlowSocketNATS extends FlowSocket {
 		return p;
 	}
 
-
+/*
 	unsubscribe_local_refs(token) {
 		// this.subscriptionTokenMap.set(token, { subscribers, rid });
 		let rec = this.subscriptionTokenMap.get(token);
@@ -222,6 +281,6 @@ export class FlowSocketNATS extends FlowSocket {
 			subscribers.delete(rid);
 		})
 	}
-
+*/
 }
 

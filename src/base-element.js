@@ -1,9 +1,10 @@
 import {LitElement, html, css} from 'lit-element';
+import { AsyncQueueSubscriber } from './flow-async.js';
 
 export * from 'lit-element';
 export * from 'lit-html/lit-html.js';
 
-import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon, FlowStates, DeferComponent} from './helpers.js';
+import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon, FlowStates, DeferComponent, flow} from './helpers.js';
 import {styleAppendTo, sizeClsMap} from "./helpers.js";
 export * from './helpers.js';
 export * from './flow-html.js';
@@ -377,6 +378,24 @@ export class BaseElement extends LitElement{
 			})
 		}
 
+		if(this.socketSubscriptions) {
+			this.socketSubscriptions.forEach((subscription) => {
+				subscription.resubscribe();
+			})
+		}
+
+	}
+
+	onlineCallback() {
+		super.onlineCallback?.();
+		if(this.pendingSocketSubscriptions) {
+			this.pendingSocketSubscriptions.forEach((subscription) => {
+				const { subject } = subscription;
+				this.subscribe(subject, subscription);
+				//subscription.resubscribe();
+			})
+		}
+
 	}
 
 	disconnectedCallback() {
@@ -405,6 +424,12 @@ export class BaseElement extends LitElement{
 		if(this.registeredListeners) {
 			this.registeredListeners.forEach(({ name, handler }) => {
 				window.removeEventListener(name, handler);
+			})
+		}
+
+		if(this.socketSubscriptions) {
+			this.socketSubscriptions.forEach((subscription)=>{
+				subscription.unsubscribe();
 			})
 		}
 	}
@@ -482,6 +507,24 @@ export class BaseElement extends LitElement{
 	}
 	deserialize(){
 		//
+	}
+	subscribe(subject, subscriber){
+		if(!flow.app.defaultRPC) {
+			subscriber = new AsyncQueueSubscriber(null,subject);
+			if(!this.pendingSocketSubscriptions)
+				this.pendingSocketSubscriptions = [];
+			this.pendingSocketSubscriptions.push(subscriber);
+			return subscriber;
+		} else {
+			subscriber = flow.app.defaultRPC.subscribe(subject, subscriber);
+			if(!this.socketSubscriptions)
+				this.socketSubscriptions = new Map();
+			this.socketSubscriptions.set(subscriber.uid, subscriber);
+			return subscriber;
+		}
+	}
+	request(subject, data, callback){
+		return flow.app.defaultRPC.request(subject, data, callback);
 	}
 }
 

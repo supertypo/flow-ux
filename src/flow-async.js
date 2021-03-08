@@ -1,3 +1,4 @@
+import { UID } from './helpers.js';
 
 const deferred = () => {
     let methods = {};
@@ -97,36 +98,147 @@ export class AsyncQueue {
 	}
 }
 
+export class AsyncQueueSubscriber {
+	constructor(manager, subject) {
+		this.uid = UID();
+		this.queue = new AsyncQueue();
+		this.manager = manager;
+		this.subject = subject;
+		this.events = { };
+//		this.connectHandlers = [];
+	}
+
+	[Symbol.asyncIterator]() { return this.queue.iterator(); }
+
+
+	subscribe(subject) {
+		this.unsubscribe();
+		this.subject = subject;
+		this.manager.subscribe(subject, this);
+	}
+
+	unsubscribe() {
+		this.manager.remove(this);
+		let { subject, uid, queue } = this;
+		queue.clear();
+//		queue.stop();
+
+		this.event('unsubscribe');
+		// for(const handler of this.events.unsubscribe||[])
+		// 	handler();
+	}
+
+	resubscribe() {
+		this.manager.subscribe(this.subject, this);
+	}
+
+	close() {
+		this.unsubscribe();
+		//queue.clear();
+		this.queue.stop();
+	}
+
+	// changeSubject(subject) {
+	// 	this.manager.changeSubject(this, subject);
+	// }
+
+	// connect(connectHandler) {
+
+	// }
+
+	on(event, handler) {
+		if(!this.events[event])
+			this.events[event] = [];
+		this.events[event].push(handler);
+	}
+
+	event(name, subject) {
+		for(const handler of this.events[name]||[])
+			handler(subject);
+
+	}
+}
+
 export class AsyncQueueSubscriberMap {
 	constructor() {
 		this.map = new Map();
 	}
 
-	subscribe(subject, opt) {
+	subscribe(subject, subscriber = null) {
 		let subscribers = this.map.get(subject);
 		if(!subscribers) {
-			subscribers = [];
+			subscribers = new Map();
 			this.map.set(subject,subscribers);
 		}
-		let queue = new AsyncQueue();
-		subscribers.push(queue);
-		return queue;
+//		let queue = new AsyncQueue();
+		//let subscriber = 
+		if(!subscriber)
+			subscriber = new AsyncQueueSubscriber(this, subject);
+		else
+			subscriber.manager = this;
+		subscribers.set(subscriber.uid,subscriber);
+		subscriber.event('subscribe', subject);
+		return subscriber;
+	}
+
+	remove(subscriber) {
+		let { subject, uid } = subscriber;
+		let subscribers = this.map.get(subject);
+		if(subscribers) {
+			subscribers.delete(uid);
+			if(!subscribers.size)
+				this.map.delete(subject);
+		} else {
+			// console.trace('WARNING - no previous subscription for subject',subject,'uid:',uid);
+			console.log('note','no previous subscription for subject',subject);
+		}
+		
+		// let subscriber_ = this.subscribers.get(subscriber.uid);
+		// if(subscriber_) {
+		// 	this.subscribers.delete(subscriber.uid);
+		// }
 	}
 
 	post(subject, msg) {
 		let subscribers = this.map.get(subject);
-		if(subscribers)
-			for(const subscriber of subscribers)
-				subscriber.post(msg);
+		if(subscribers && subscribers.size)
+			subscribers.forEach((subscriber)=>{
+				subscriber.queue.post(msg);
+			});
 	}
 
 	shutdown() {
 		this.map.forEach((subscribers) => {
-			subscribers.forEach(queue => {
+			subscribers.forEach(subscriber => {
+				const { uid, queue } = subscriber;
+				// ???????????
 				queue.stop();
 				queue.clear();
 			});
 		});
 		this.map.clear();
 	}
+
+	forEach(iter) {
+		this.map.forEach((subscribers, subject)=>{
+			subscribers.forEach((subscriber)=>{
+				iter(subscriber);
+			})
+		});
+	}
+
+	/*
+	changeSubject(subscriber, newSubject) {
+		const { uid, subject } = subscriber;
+		let subscribers = this.map.get(subject);
+		if(subscribers)
+			subscribers.delete(uid);
+		subscribers = this.map.get(newSubject);
+		if(!subscribers) {
+			subscribers = new Map();
+			this.map.set(newSubject, subscribers);
+		}
+		subscribers.set(subscriber.uid, subscriber);
+	}
+	*/
 }

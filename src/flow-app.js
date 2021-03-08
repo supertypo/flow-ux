@@ -57,6 +57,8 @@ export const FlowAppMixin = (baseClass)=>{
 			flow.app = this;
 		}
 
+		getDefaultRPC() { return this.defaultRPC; }
+
 		getTheme(defaultTheme){
 			return getTheme(defaultTheme);
 		}
@@ -80,8 +82,9 @@ export const FlowAppMixin = (baseClass)=>{
 				this.rpc.events.on('disconnect', () => {
 					console.log("disconnected...");
 					this.onNetworkIfaceOffline();
-				})
+				});
 
+				this.defaultRPC = this.rpc;
 			})
 		}
 
@@ -107,6 +110,8 @@ export const FlowAppMixin = (baseClass)=>{
 					console.log("disconnected...");
 					this.onNetworkIfaceOffline();
 				})
+
+				this.defaultRPC = this.nats;
 			})
 		}
 
