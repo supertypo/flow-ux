@@ -83,6 +83,9 @@ export class FlowExpandable extends BaseElement {
 		:host([no-info]) .info-box{
 			display:none
 		}
+		:host([no-icon]) .icon-box{
+			display:none;
+		}
 		.info-box ::slotted(*){
 			margin:unset;
 		}

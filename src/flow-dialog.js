@@ -107,7 +107,7 @@ export class FlowDialog extends BaseElement {
 
 			dg.addEventListener("btn-click", onBtnClicked)
 			if(cls)
-				dg.classList.add(cls);
+				dg.classList.add(...cls.split(" "));
 			if(btns)
 				dg.btns = btns;
 			if(body)
@@ -310,7 +310,7 @@ export class FlowDialog extends BaseElement {
 
 window.FlowDialog = FlowDialog;
 
-FlowDialog.define('flow-dialog', [
-	baseUrl+'resources/extern/dialog/dialog-polyfill.css',
-	baseUrl+'/resources/extern/dialog/dialog-polyfill.js'
-]);
+FlowDialog.define('flow-dialog', {
+	'window.dialogPolyfill':baseUrl+'resources/extern/dialog/dialog-polyfill.css',
+	'window.dialogPolyfill':baseUrl+'/resources/extern/dialog/dialog-polyfill.js'
+});
