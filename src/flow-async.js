@@ -1,4 +1,4 @@
-import { UID } from './helpers.js';
+import { dpc, UID } from './helpers.js';
 
 const deferred = () => {
     let methods = {};
@@ -105,6 +105,7 @@ export class AsyncQueueSubscriber {
 		this.manager = manager;
 		this.subject = subject;
 		this.events = { };
+//		this.ready = false;
 //		this.connectHandlers = [];
 	}
 
@@ -153,9 +154,11 @@ export class AsyncQueueSubscriber {
 	}
 
 	event(name, subject) {
-		for(const handler of this.events[name]||[])
-			handler(subject);
-
+		console.log('EVENT:', name, subject);
+		dpc(()=>{
+			for(const handler of this.events[name]||[])
+				handler(subject);
+		})
 	}
 }
 
