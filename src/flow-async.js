@@ -1,11 +1,18 @@
 import { UID } from './helpers.js';
 
 const deferred = () => {
-    let methods = {};
-    const p = new Promise((resolve, reject) => {
-        methods = { resolve, reject };
+    //let methods = {};
+	let resolve;
+	let reject;
+    const p = new Promise((resolve_, reject_) => {
+		resolve = resolve_;
+		reject = reject_;
+        //methods = { resolve, reject };
     });
-    return Object.assign(p, methods);
+	p.resolve = resolve;
+	p.reject = reject;
+	return p;
+//    return Object.assign(p, methods);
 }
 
 export class AsyncQueue {
