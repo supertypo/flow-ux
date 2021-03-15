@@ -137,26 +137,30 @@ export class FlowSocketNATS extends FlowSocket {
 	on(op, callback) {
 		this.events.on(op, callback);
 	}
-	
+
 	request(subject, data, callback) {
-		if(typeof(data)=='function'){
-			callback = data;
-			data = undefined;
-		}
+		return new Promise((resolve, reject) => {
+			if(typeof(data)=='function'){
+				callback = data;
+				data = undefined;
+			}
 
-		if(!callback)
-			throw new Error(`FlowSockjsNATS::request() - callback required`);
+			let rid = UID();
+			this.pending.set(rid, {
+				ts:Date.now(),
+				callback : (error, data)=>{
+					callback && callback(error, data);
+					if(error)
+						reject(error);
+					else
+						resolve(data);
+				}
+			})
 
-		let rid = UID();
-
-		this.pending.set(rid, {
-			ts:Date.now(),
-			callback
-		})
-
-		this.socket.emit('request', { 
-			rid,
-			req : {subject, data}
+			this.socket.emit('request', {
+				rid,
+				req : {subject, data}
+			});
 		});
 	}
 
@@ -181,7 +185,7 @@ export class FlowSocketNATS extends FlowSocket {
 				rid,
 				ack
 			})
-		})	
+		});
 	}
 
 
