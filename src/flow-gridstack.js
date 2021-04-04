@@ -229,7 +229,7 @@ class FlowGridStackKlass extends base{
 			}
 			${this.customCss(uid)}
 		`
-		console.log("this.resizableHandles", this.resizableHandles)
+		//console.log("this.resizableHandles", this.resizableHandles)
 		let options = {
 			alwaysShowResizeHandle:false,// /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
 			//ddPlugin:GridStackDDJQueryUI,
@@ -353,7 +353,7 @@ class FlowGridStackKlass extends base{
 			this.log("JSON.parse:error", e)
 		}
 
-		console.log("loadGrid", this.debugEl.value, data)
+		//console.log("loadGrid", this.debugEl.value, data)
 
 		this.setGridItemsConfig(data);
 	}
@@ -409,13 +409,13 @@ class FlowGridStackKlass extends base{
 				this.addWidget(item)
 			});
 		} else {
-			console.log("items", items)
+			//console.log("items", items)
 			// else update existing nodes (instead of calling grid.removeAll())
 			let itemsIdMap = new Map();
 			items.forEach(item=>{
 				itemsIdMap.set(item.id, item);
 				let node = grid.engine.nodes.find(n=>n.id == item.id);
-				console.log("node", node, item)
+				//console.log("node", node, item)
 				if(node){
 					//console.log("sending serializedData00", node.el, item.serializedData)
 					grid.update(node.el, item.x, item.y, item.width, item.height);
@@ -505,7 +505,7 @@ class FlowGridStackKlass extends base{
     	let {panel} = e.detail;
     	if(!panel)
     		return
-    	console.log("onRemovePanelRequest:", panel)
+    	//console.log("onRemovePanelRequest:", panel)
     	/*
     	setTimeout(()=>{
     		e.preventDefault();
