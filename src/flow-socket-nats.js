@@ -150,8 +150,10 @@ export class FlowSocketNATS extends FlowSocket {
 				ts:Date.now(),
 				callback : (error, data)=>{
 					callback && callback(error, data);
-					if(error)
+					if(error) {
+						console.log('NATS request error - Subject:',subject,'Error:',error)
 						reject(error);
+					}
 					else
 						resolve(data);
 				}
