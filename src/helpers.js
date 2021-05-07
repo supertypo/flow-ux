@@ -33,7 +33,7 @@ window.UID = UID;
 
 if(!window.OnReCaptchaLoad){
 	window.OnReCaptchaLoad = ()=>{
-		console.log("OnReCaptchaLoad OnReCaptchaLoad OnReCaptchaLoad")
+		//console.log("OnReCaptchaLoad OnReCaptchaLoad OnReCaptchaLoad")
 		trigger("g-recaptcha-ready")
 		buildReCaptcha();
 	}

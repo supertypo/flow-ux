@@ -234,7 +234,7 @@ export class FlowSocketNATS extends FlowSocket {
 						console.error('subscribe failure for subject:',subject);
 					subscriber.token = token;
 					subscriber.state = 'connected';
-					console.log("NATS - SUCCESSFUL SUBSCRIPTION to",subject,token,subscriber.state);
+					//console.log("NATS - SUCCESSFUL SUBSCRIPTION to",subject,token,subscriber.state);
 					return err?reject(err):resolve(subscriber);
 				}
 			});

@@ -161,7 +161,7 @@ export class AsyncQueueSubscriber {
 	}
 
 	event(name, subject) {
-		console.log('EVENT:', name, subject);
+		//console.log('EVENT:', name, subject);
 		dpc(()=>{
 			for(const handler of this.events[name]||[])
 				handler(subject);
