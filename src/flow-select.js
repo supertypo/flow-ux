@@ -127,7 +127,7 @@ export class FlowSelect extends FlowMenu {
 			:host(:not([disabled])) .input.selected::after{
 				content:"";display:inline-block;
 				position:absolute;right:10px;
-				top:calc(50% - 2px);
+				top:var(--flow-select-dropdown-arrow, calc(50% - 2px));
 				width:0px;height:0px;
 				border:5px solid var(--flow-primary-color, #000);
 				border-left-color:transparent;
@@ -254,6 +254,7 @@ export class FlowSelect extends FlowMenu {
 	}
 	filterList(text){
 		const rg = new RegExp(`${text}`, 'i');
+		console.log("this.list", this.list);
 		this.list.forEach(item=>{
 			let text = item.getAttribute(this.textAttr) || item.innerText;
 			let value = item.getAttribute(this.valueAttr);
