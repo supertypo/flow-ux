@@ -518,13 +518,13 @@ export class FlowSunburstGraph extends Flowd3Element {
 		let tipLeft, tipTop;
 		//console.log("showTip",  {x, y}, el_tip.offsetWidth, right, width, r)
 		if(r>width){
-			tipLeft = width-el_tip.offsetWidth-5;
+			tipLeft = width-el_tip.offsetWidth;
 		}else{
 			tipLeft = x;
 		}
 
 		if(b>height){
-			tipTop = height-el_tip.offsetHeight-5;
+			tipTop = height-el_tip.offsetHeight;
 		}else{
 			tipTop = y;
 		}
