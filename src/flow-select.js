@@ -29,6 +29,7 @@ import {FlowMenu} from './flow-menu.js';
 * @cssvar {color} [--flow-select-trigger-hover-bg=transparent]
 * @cssvar {color} [--flow-select-trigger-hover-color=var(--flow-dropdown-trigger-color)]
 * @cssvar {height} [--flow-select-trigger-line-height=1]
+* @cssvar {margin} [--flow-select-input-margin=0px]
 
  * @example
  * <flow-select label="menu" selected="0">
@@ -99,7 +100,7 @@ export class FlowSelect extends FlowMenu {
 			    /*border:2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));*/
 				border: var(--flow-select-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:var(--flow-select-input-border-radius, var(--flow-input-border-radius, 8px));
-    			margin:0px;
+    			margin:var(--flow-select-input-margin, 0px);
     			padding:var(--flow-select-input-padding,16px 30px 10px 10px);
 				background-color:var(--flow-select-input-bg, var(--flow-input-bg, inherit));
 				color:var(--flow-input-color, inherit);
