@@ -92,7 +92,7 @@ export class FlowStatsD extends BaseElement {
         //searchParams.set("target", this.target);
         searchParams.set("hideLegend", false);
         searchParams.set("salt", time);
-        const url = "http://192.168.1.168/render/?"+searchParams.toString();
+        const url = "http://metrics.aspectron.com/render/?"+searchParams.toString();
 
 
 
