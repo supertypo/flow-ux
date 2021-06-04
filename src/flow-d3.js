@@ -62,9 +62,9 @@ export class Flowd3Element extends BaseElement {
     }
 
     onElementResize(){
-    	this.updateSVGSize();
     	if(this.el_d3)
     		this.el_d3Rect = this.getBoundingClientRect.call(this.el_d3);
+		this.updateSVGSize();
     }
 
     connectedCallback(){
