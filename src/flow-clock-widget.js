@@ -7,7 +7,7 @@ let Defaults = [
 	'Asia/Dubai',
 	'Asia/Hong_Kong',
 	'Asia/Tokyo',
-	'Asia/Tel_Aviv'
+//	'Asia/Tel_Aviv'
 ]
 
 export class FlowClockWidget extends BaseElement {
