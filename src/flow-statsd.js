@@ -16,6 +16,7 @@ export class FlowStatsD extends BaseElement {
 	static get properties(){
         return {
         
+            url:{type:String},
             target:{type:String},
             from:{type:String},
             prefix:{type:String}
@@ -44,7 +45,7 @@ export class FlowStatsD extends BaseElement {
 	constructor() {
 		super();
 
-		
+		this.url = "https://metrics.aspectron.com";
 	}
 
     onElementResize(){
@@ -92,7 +93,7 @@ export class FlowStatsD extends BaseElement {
         //searchParams.set("target", this.target);
         searchParams.set("hideLegend", false);
         searchParams.set("salt", time);
-        const url = "http://metrics.aspectron.com/render/?"+searchParams.toString();
+        const url = `${this.url}/render/?`+searchParams.toString();
 
 
 
