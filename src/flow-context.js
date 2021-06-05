@@ -789,9 +789,9 @@ export class FlowContextManager extends BaseElement{
 		return new Promise((resolve, reject)=>{
 			let data = JSON.parse(this.constructor.getLocalSetting("ctxworkspaces", "[]"))
 			//just to test delay in loading
-			setTimeout(()=>{
+			//setTimeout(()=>{
 				resolve(data)
-			}, 1000);
+			//}, 1000);
 		})
 	}
 	restoreWorkspaces(){
@@ -1007,7 +1007,7 @@ FlowContextManager.define(FlowContextManager._tagName, {
 
 
 export const FlowLoadWorkspaces = (workspaces)=>{
-	//console.log("loadWorkspacesConfig:workspaces", workspaces)
+	console.log("xxxxxxxxxxxxxxx FlowLoadWorkspaces", workspaces)
 	workspaces.forEach(workspace=>{
 		if(!workspace?.code)
 			return
