@@ -505,7 +505,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 
 	showTip(box, ...args){
 		let {pageX, pageY} = d3.event;
-		if(!this.outerBox)
+		//if(!this.outerBox)
 			this.outerBox = this.el_wrapper.getBoundingClientRect();
 		let {left, top, right, width, height} = this.outerBox;
 		let x = pageX-left+15, y = pageY-top+15;
@@ -535,6 +535,7 @@ export class FlowSunburstGraph extends Flowd3Element {
 			}
 		}
 
+		//console.log("this.outerBox", this.outerBox, tipLeft, tipTop)
 		el_tip.style.left = `${tipLeft}px`;
 		el_tip.style.top = `${tipTop}px`;
 		el_tip.style.opacity = "1";
