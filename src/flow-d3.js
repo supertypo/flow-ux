@@ -33,6 +33,18 @@ export class Flowd3Element extends BaseElement {
 
     firstUpdated() {
 		this.el_d3 = this.renderRoot.getElementById('d3');
+		if(this.el_d3){
+			this._firstUpdated();
+		}else{
+			this.debounce("_firstUpdated", ()=>{
+				this._firstUpdated()
+			}, 500)
+		}
+	}
+	_firstUpdated() {
+		this.el_d3 = this.renderRoot.getElementById('d3');
+		if(!this.el_d3)
+			return
 		this.el_d3Rect = this.getBoundingClientRect.call(this.el_d3);
 		this.el_d3.getBoundingClientRect = ()=>{
 			if(this.el_d3Rect.width==0 && this.el_d3Rect.height==0)
