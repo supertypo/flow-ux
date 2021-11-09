@@ -66,7 +66,7 @@ body{
     --flow-terminal-cursor:var(--flow-color);
     --flow-terminal-selection:rgba(0, 0, 0, 0.2);
     /* --flow-input-box-shadow:20px 20px 60px #489dcf, -20px -20px 60px #62d5ff; */
-    --flow-markdown-icon: url(resources/icons/svg/link.svg);
+    --flow-markdown-icon: url(./resources/icons/svg/link.svg);
 
     --flow-tooltip-text-bg:#DDD;
     --flow-tooltip-text-color:var(--flow-color);
@@ -92,7 +92,7 @@ body{
 }
 
 body.flow-theme-dark{
-    --flow-markdown-icon: url(resources/icons/svg/link.svg);
+    --flow-markdown-icon: url(./resources/icons/svg/link.svg);
     --flow-box-shadow:0 2px 2px 0 rgba(10,10,10,.14),
             0 3px 1px -2px rgba(10,10,10,.2),
             0 1px 5px 0 rgba(10,10,10,.12);
