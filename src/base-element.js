@@ -1,10 +1,15 @@
-import {LitElement, html, css} from 'lit-element';
+import {LitElement, html, css} from 'lit-element/lit-element.js';
+export * from 'lit-html/directive.js';
+export * from 'lit-html/async-directive.js';
 import { AsyncQueueSubscriber } from './flow-async.js';
 
-export * from 'lit-element';
+export * from 'lit-element/lit-element.js';
 export * from 'lit-html/lit-html.js';
 
-import {baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon, FlowStates, DeferComponent, flow} from './helpers.js';
+import {
+	baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon,
+	FlowStates, DeferComponent, flow
+} from './helpers.js';
 import {styleAppendTo, sizeClsMap} from "./helpers.js";
 export * from './helpers.js';
 export * from './flow-html.js';
@@ -152,7 +157,7 @@ export class BaseElement extends LitElement{
 	}
 
 	initPropertiesDefaultValues(props=null){
-		this.constructor._classProperties.forEach((v, key)=>{
+		this.constructor.elementProperties.forEach((v, key)=>{
 			//console.log("key, v", key, v)
 			let type = typeof v.value;
 			if(!['undefined', 'function'].includes(type))

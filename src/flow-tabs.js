@@ -114,10 +114,6 @@ export class FlowTabs extends BaseElement {
 		this.ident = Math.round((Math.random()*1e16)).toString(16);
 		this.tabs = null;
 		this['target-display'] = "block";
-
-		this.shadowRoot.addEventListener('flow-tab-select', (e) => {
-			this.active = e.detail.id;
-		})
 	}
 
 	onWindowResize(){
@@ -140,7 +136,7 @@ export class FlowTabs extends BaseElement {
 				(this.tabs || []).filter(t => !t.disable).map(t=>{
 					if(t.sep)
 						return html`<div class="line-break"></div>`;
-					return html`<flow-tab data-id='${t.id}' class="${t.cls||''}" part="${t.part||''}">${this.renderTab(t)}</flow-tab>`
+					return html`<flow-tab data-id="${t.id}" class="${t.cls||''}" part="${t.part||''}">${this.renderTab(t)}</flow-tab>`
 				})
 			}
 			</div>
@@ -418,6 +414,11 @@ export class FlowTabs extends BaseElement {
     	super.connectedCallback();
     	this._onWindowResize = this._onWindowResize || this.onWindowResize.bind(this);
 		window.addEventListener("resize", this._onWindowResize)
+		//console.log("this.renderRoot", this.renderRoot)
+		this.renderRoot.addEventListener('flow-tab-select', (e) => {
+			//console.log("eee", e)
+			this.active = e.detail.id;
+		})
     }
 
     disconnectedCallback() {

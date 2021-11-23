@@ -1,4 +1,4 @@
-import {BaseElement, html, css, svg, parts} from './base-element.js';
+import {BaseElement, html, css, svg/*, parts*/} from './base-element.js';
 /**
 * @typedef {Object} FlowTabConfig Plain Object with following properties
 * @prop {String} title text to display inside of tab
@@ -229,14 +229,14 @@ export class FlowTab extends BaseElement {
     }
 
     disconnectedCallback() {
-    	super.disconnectedCallback();
 		if(this.__resizeObserver){
 			this.__resizeObserver.unobserve(this);
 			this.__resizeObserver.disconnect();
-			delete this.__resizeObserver;
+			this.__resizeObserver = null;
 			//observer.observe(document.createElement("div"));
 		}
-		parts.delete(this.renderRoot)
+		//parts.delete(this.renderRoot)
+		super.disconnectedCallback();
 		
 		//if(this._onWindowResize)
 		//	window.removeEventListener("resize", this._onWindowResize)

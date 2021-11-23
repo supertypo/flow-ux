@@ -1,5 +1,6 @@
-import {BaseElement, html, css, directive, LitElement, parts as _parts} from './base-element.js';
-const stateMap = new WeakMap();
+import {BaseElement, html, css, /*directive,*/ LitElement/*, parts as _parts*/} from './base-element.js';
+import {directive, AsyncDirective, PartType} from './base-element.js';
+export const i18nDirMap = new Map();
 
 class i18n extends BaseElement{
 
@@ -139,7 +140,7 @@ class i18n extends BaseElement{
 	disconnectedCallback(){
 		super.disconnectedCallback();
 		this._cb && window.removeEventListener("flow-i18n-locale", this._cb)
-		_parts.delete(this.renderRoot)
+		//TODO MAYBE:: _parts.delete(this.renderRoot)
 	}
 
 	onLocaleChange(){
@@ -275,41 +276,35 @@ Mixin(HTMLParagraphElement, 'p')
 
 let parts = [];
 
-const T = directive((text) => (part) => {
-	let state = stateMap.get(part);
-	if (state === undefined) {
-		state = {};
-		if(part.startNode && part.startNode.nextSibling)
-			state.node = part.startNode.nextSibling
-		else
-			state.node = part.element||part.committer&&part.committer.element;
-		stateMap.set(part, state);
-		parts.push(part);
+class I18nDirective extends AsyncDirective{
+	constructor(...args){
+		super(...args);
+		i18nDirMap.set(this, {});
 	}
-	state.text = text;
-	//console.log("i18n:T", text, i18n.locale)
-	part.setValue(i18n.t(text));
-	part.commit();
-});
+	render(text) {
+		this.__text = text;
+		return i18n.t(text);
+	}
+
+	disconnected() {
+		i18nDirMap.delete(this);
+	}
+
+	reconnected() {
+		i18nDirMap.set(this, {});
+	}
+}
+
+const T = directive(I18nDirective);
 
 let onLocaleChange = ()=>{
 	let ce = new CustomEvent("flow-i18n-locale", {detail:{locale:i18n.locale}})
 	window.dispatchEvent(ce);
-	let state; 
-	let removed = [];
-	parts.forEach((p, i)=>{
-		state = stateMap.get(p);
-		if(!state || !state.node || !state.node.isConnected){
-			removed.push(p);
-			return
-		}
-		//console.log("i18n:T", i18n.t(state.text), i18n.locale, state.node && state.node.isConnected)
-		p.setValue(i18n.t(state.text));
-		p.commit();
-	})
 
-	if(removed.length)
-		parts = parts.filter(p=>!removed.includes(p));
+	i18nDirMap.forEach((v, dir)=>{
+		console.log("dir", dir)
+		dir.setValue(dir.__text?i18n.t(dir.__text):'')
+	})
 }
 
 i18n.setLocale(i18n.locale);
@@ -370,22 +365,19 @@ export class FlowI18nDialog{
 		let promise = FlowDialog.show({
 			body,
 			btns:[],
-			cls:"flow-menu",
+			cls:"flow-menu hide-close-btn",
 			modal:false
 		})
 
 		let {dialog} = promise;
 		this.dialog = dialog;
 		if(alignTarget){
-			let box = alignTarget.getBoundingClientRect();
 			let dialogBox = dialog.getBoundingClientRect();
-			let style = dialog.style;
-			style.top = (box.bottom+2)+"px";
-			style.left = (box.right-dialogBox.width)+"px";
-			dialog.addEventListener("updated", e=>{
-				let {dialog} = e.detail;
-				let dialogBox = dialog.getBoundingClientRect();
-				style.left = (box.right-dialogBox.width)+"px";
+			FlowDialog.alignTo(alignTarget, dialog, {
+				targetPos:'right-bottom',
+				dialogPos:'left-top',
+				hOffset: -dialogBox.width,
+				vOffset: 2
 			})
 		}
 
@@ -401,6 +393,11 @@ export class I18nTest extends LitElement{
 	static get styles(){
 		return css`:host{display:inline-block;border:1px solid #DDD;padding:10px;}`
 	}
+	static get properties(){
+		return {
+			loop:{type:Boolean}
+		}
+	}
 	constructor(){
 		super();
 		this.start();
@@ -410,9 +407,13 @@ export class I18nTest extends LitElement{
 		this.intervalId = setInterval(()=>{
 			let l = ls[i++];
 			if(!l){
-				//i=0;
-				//l = ls[i++];
-				this.remove();
+				if(this.loop){
+					i=0;
+					l = ls[i++];
+				}else{
+					this.remove();
+					clearInterval(this.intervalId);
+				}
 			}
 			i18n.setLocale(l)
 		}, 1000)

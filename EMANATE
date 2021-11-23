@@ -126,7 +126,7 @@ const DEMO = path.join(ROOT, 'demo');
 E.task('create-dirs', [], (callback)=>{
 	return Promise.all(
 		[
-		FLOW_UX_FOLDER, 'lit-element', 'lit-html', 'webcomponentsjs'
+		FLOW_UX_FOLDER, 'lit-element', 'lit-html', 'lit', '@lit', 'webcomponentsjs'
 		].map(f=>E.emptyDir(path.join(FLOW_UX_STATIC, f)))
 	);
 	//return E.mkdirp(ROOT);
@@ -138,7 +138,7 @@ E.task('ux-resources', ['create-dirs'], callback=>{
 		E.utils.copy(path.join(REPO, file), path.join(FLOW_UX, file))
 	);
 
-	let node_modules = ['lit-element', 'lit-html'];
+	let node_modules = ['lit-element', 'lit-html', 'lit', '@lit'];
 	list = list.concat(
 		node_modules.map(file => 
 			E.utils.copy(
@@ -159,7 +159,7 @@ E.task('ux-resources', ['create-dirs'], callback=>{
 
 E.task('node_modules', ['ux-resources'], callback=>{
 	return Promise.all(
-		['lit-element', 'lit-html']
+		['lit-element', 'lit-html', 'lit', '@lit']
 		.map(module=>{
 			let SRC = path.join(MODULES, module);
 			return E.utils.iterateFolder(SRC, /\.js$/, file=>{
@@ -180,7 +180,7 @@ E.task('flow-src', ['ux-resources'],  callback=>{
 
 E.task('cleanup', ['node_modules'], async(callback)=>{
 	let folders = new Map();
-	let list = ['lit-element', 'lit-html'].map(module=>{
+	let list = ['lit-element', 'lit-html', 'lit', '@lit'].map(module=>{
 		let SRC = path.join(MODULES, module);
 		return E.utils.iterateFolder(SRC, /(\.ts(\.map)?|tsconfig\.json)$/, file=>{
 			//console.log("file, folder", file);
@@ -230,6 +230,8 @@ E.task('cleanup', ['node_modules'], async(callback)=>{
 
 	digest(folders.get("lit-html"), path.join(MODULES, 'lit-html'))
 	digest(folders.get("lit-element"), path.join(MODULES, 'lit-element'))
+	digest(folders.get("lit"), path.join(MODULES, 'lit'))
+	digest(folders.get("@lit"), path.join(MODULES, '@lit'))
 	//console.log("list2", list)
 	//await Promise.all(list)
 });
@@ -269,6 +271,7 @@ E.task('demo-site', ['static'], async(callback)=>{
 	await E.emptyDir(path.join(DEMO, FLOW_UX_FOLDER));
 	await E.emptyDir(path.join(DEMO, 'lit-html'));
 	await E.emptyDir(path.join(DEMO, 'lit-element'));
+	await E.emptyDir(path.join(DEMO, '@lit'));
 	return E.utils.copy(FLOW_UX_STATIC, DEMO);
 })
 
@@ -277,11 +280,12 @@ let getFileContent = (filePath)=>{
 	let prefix = "../".repeat(Math.max(filePath_.split("/").length - 1, 0));
 
 	//console.log("filePath_", filePath_, filePath, prefix)
-	let regExp = /(import|export)([^'"].*)from[ ]*['"]([^'"].*)['"]/g;
+	let regExp = /(import|export)([^'"]*)from[ ]{0,}['"]([^'"]*)['"]/g;
 	let code = (fs.readFileSync(filePath)+"")
 		.replace(regExp, (a, imEx, modules, file)=>{
 		//'import $1 from "/node_modules/$2"'
-		//console.log("a, imEx, modules, file", a, imEx, modules, file)
+		//if(a.includes("@"))
+		//	console.log("input:"+a+"\n imEx, modules, file\n", imEx, modules, file)
 		if(!/\.js$/.test(file))
 			file += "/"+file.split("/").pop()+".js";
 		if(/^\./.test(file))
@@ -298,7 +302,11 @@ let getFileContent = (filePath)=>{
 		if(!/^\/node_modules/.test(file))
 			file = `${prefix}${file}`;
 
-		return `${imEx} ${modules} from "${file}"`;
+		let s = `${imEx} ${modules} from "${file}"`;
+
+		//if(a.includes("@"))
+		//	console.log("ss:", s+"\n\n")
+		return s;
 	});
 
 	if(!E.flags.minify)
