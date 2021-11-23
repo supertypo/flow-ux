@@ -22,7 +22,7 @@
     "flow-jsdoc-template": ">=1.2.11"
   },
   "scripts": {
-    "docs": "node_modules/.bin/jsdoc --configure .jsdoc.js --verbose"
+    "docs": "node_modules/.bin/jsdoc --configure .jsdoc.cjs --verbose"
   },
   "author": {
     "name": "ASPECTRON Inc.",
