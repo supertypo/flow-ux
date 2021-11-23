@@ -302,7 +302,7 @@ let onLocaleChange = ()=>{
 	window.dispatchEvent(ce);
 
 	i18nDirMap.forEach((v, dir)=>{
-		console.log("dir", dir)
+		//console.log("dir", dir)
 		dir.setValue(dir.__text?i18n.t(dir.__text):'')
 	})
 }
