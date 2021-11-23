@@ -1,3 +1,7 @@
+/*
+* Flow-UX: flow-ux.js
+* version: 1.0.0
+*/
 export * from './src/svg.js';
 export * from './src/flow-anchor.js';
 export * from './src/flow-async.js';

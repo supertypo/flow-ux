@@ -1,3 +1,8 @@
+/*
+* Flow-UX: src/base-element.js
+* version: 1.0.0
+*/
+
 import {LitElement, html, css} from 'lit-element/lit-element.js';
 export * from 'lit-html/directive.js';
 export * from 'lit-html/async-directive.js';

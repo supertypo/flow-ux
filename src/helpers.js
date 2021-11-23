@@ -1,3 +1,7 @@
+/*
+* Flow-UX: src/helper.js
+* version: 1.0.0
+*/
 const toString = Object.prototype.toString;
 const is = (obj, type) =>toString.call(obj)=='[object '+type+']'
 
