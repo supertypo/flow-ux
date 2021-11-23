@@ -1,5 +1,4 @@
-const pkg = require("./package.json");
-module.exports = {
+{
     "source": {
         "include": [
             "package.json", "README.md", "flow-ux.js", "src"
@@ -14,7 +13,7 @@ module.exports = {
     ],
     "opts": {
         "readme": "./README.md",
-        "destination": "docs",//+pkg.version,
+        "destination": "docs",
         "template": "./node_modules/flow-jsdoc-template"
     },
     "templates": {
