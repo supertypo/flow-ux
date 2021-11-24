@@ -156,8 +156,10 @@ class i18n extends BaseElement{
 	*/
 
 	render() {
-		if(this.innerHTML_ == undefined)
+		if(this.innerHTML_ == undefined){
 			this.innerHTML_ = this.innerHTML;
+			this.innerHTML = "";
+		}
 		//if(this.getAttribute("xx") == 1)
 		//this.log("innerHTML", i18n.locale, "inner:"+this.innerHTML_, " text:"+this.text)
 		return html([i18n.t(this.text || this.innerHTML_)]);
