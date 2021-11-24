@@ -129,7 +129,7 @@ export class AsyncQueueSubscriber {
 		this.manager.remove(this);
 		let { subject, uid, queue } = this;
 		queue.clear();
-//		queue.stop();
+		//queue.stop();
 
 		this.event('unsubscribe');
 		// for(const handler of this.events.unsubscribe||[])
@@ -143,6 +143,10 @@ export class AsyncQueueSubscriber {
 	close() {
 		this.unsubscribe();
 		//queue.clear();
+		this.queue.stop();
+	}
+
+	stop(){
 		this.queue.stop();
 	}
 
@@ -180,7 +184,7 @@ export class AsyncQueueSubscriberMap {
 			subscribers = new Map();
 			this.map.set(subject,subscribers);
 		}
-//		let queue = new AsyncQueue();
+		//let queue = new AsyncQueue();
 		//let subscriber = 
 		if(!subscriber)
 			subscriber = new AsyncQueueSubscriber(this, subject);
