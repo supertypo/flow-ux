@@ -193,9 +193,6 @@ export class FlowInput extends BaseElement {
         this.type = 'text';
 		this.value = '';
 		this.expression = false;
-        this.renderRoot.addEventListener("click", (e)=>{
-        	this._onClick(e);
-        })
     }
 	render() {
 		return html`<label ?hidden=${!this.label}>${this.label||""}</label>
@@ -220,6 +217,14 @@ export class FlowInput extends BaseElement {
 			<slot name="suffix"></slot>
 		</div>
 		`;
+	}
+
+	firstUpdated(...args){
+		super.firstUpdated(...args)
+
+		this.renderRoot.addEventListener("click", (e)=>{
+        	this._onClick(e);
+        })
 	}
 
 	setClear(){
