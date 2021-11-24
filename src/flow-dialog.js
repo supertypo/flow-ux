@@ -288,12 +288,12 @@ export class FlowDialog extends BaseElement {
 		this.dispatchEvent(new CustomEvent('closed', {detail}))
 	}
 	onBtnClick(e){
-		let btnEl = e.target;
-		let btn = btnEl.getAttribute("value");
+		let btnEl = e.target.closest("flow-btn");
+		let btn = btnEl?.getAttribute("value");
 		if(!btn)
 			return
 		let inputs = [...this.renderRoot.querySelectorAll(".input, flow-input, flow-checkbox, input, textarea, select,flow-menu")];
-		let values = {};
+		let values = {}, name;
 		inputs.forEach(input=>{
 			name = input.name||input.getAttribute("name")||input.getAttribute("data-name");
 			values[name] = input.value;
