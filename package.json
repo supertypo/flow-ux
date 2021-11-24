@@ -19,7 +19,7 @@
     "eslint": "*",
     "eslint-config-google": "*",
     "jsdoc": "*",
-    "flow-jsdoc-template": ">=1.2.11"
+    "flow-jsdoc-template": ">=2.0.0"
   },
   "scripts": {
     "docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
