@@ -249,20 +249,22 @@ export class FlowPages extends BaseElement {
 		let prevBtn = this.prevBtn;
 		let nextBtn = this.nextBtn;
 		let skipBtn = this.skipBtn;
-		let nextBtnSpan = nextBtn.querySelector("span");
+		let nextBtnSpan = nextBtn?.querySelector("span");
 		if(prevBtn){
 			if(index<=0)
 				prevBtn.setAttribute("disabled", true);
 			else
 				prevBtn.removeAttribute("disabled");
 
-			nextBtnSpan.innerText = 'NEXT';				
+			if(nextBtnSpan)
+				nextBtnSpan.innerText = 'NEXT';				
 			skipBtn.style.display = "block";
 		}
 		if(nextBtn){
 			if(index>=this.maxIndex) {
 				skipBtn.style.display = "none";
-				nextBtnSpan.innerText = 'FINISH';
+				if(nextBtnSpan)
+					nextBtnSpan.innerText = 'FINISH';
 			}
 			else
 				nextBtn.removeAttribute("disabled");
