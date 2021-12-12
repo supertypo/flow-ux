@@ -310,7 +310,7 @@ export class FlowDialog extends BaseElement {
 
 window.FlowDialog = FlowDialog;
 
-FlowDialog.define('flow-dialog', {
-	'window.dialogPolyfill':baseUrl+'resources/extern/dialog/dialog-polyfill.css',
-	'window.dialogPolyfill':baseUrl+'/resources/extern/dialog/dialog-polyfill.js'
-});
+FlowDialog.define('flow-dialog', [
+	()=>window.dialogPolyfill?null:baseUrl+'resources/extern/dialog/dialog-polyfill.css',
+	()=>window.dialogPolyfill?null:baseUrl+'/resources/extern/dialog/dialog-polyfill.js'
+]);
