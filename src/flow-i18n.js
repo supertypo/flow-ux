@@ -162,7 +162,9 @@ class i18n extends BaseElement{
 		}
 		//if(this.getAttribute("xx") == 1)
 		//this.log("innerHTML", i18n.locale, "inner:"+this.innerHTML_, " text:"+this.text)
-		return html([i18n.t(this.text || this.innerHTML_)]);
+		let strings = [i18n.t(this.text || this.innerHTML_)];
+		strings.raw = [];
+		return html(strings);
 	}  
 }
 
