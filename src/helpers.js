@@ -128,7 +128,8 @@ export const setTheme = theme=>{
 }
 
 //window.setTheme = setTheme;
-export const getTheme = (defaultTheme=((theme && theme.default) || "light"))=>{ 
+export const DefaultTheme = theme?.default||"light";
+export const getTheme = (defaultTheme=DefaultTheme)=>{
 	if(localStorage.flowtheme)
 		return localStorage.flowtheme;
 	const body = document.body;

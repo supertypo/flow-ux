@@ -124,8 +124,6 @@ export class FlowPages extends BaseElement {
 		`;
 	}
 	render(){
-		let prevIcon = this.iconPath('arrow-alt-left');
-		let nextIcon = this.iconPath('arrow-alt-right');
 		let dots = new Array((this.pages || []).length).fill(0);
 		if(dots.length)
 			dots[this.index||0] = 1;
