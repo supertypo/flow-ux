@@ -1,4 +1,5 @@
 import {BaseElement, html, css} from './base-element.js';
+import {i18nElementsMap, i18n} from "./flow-i18n.js";
 
 
 /**
@@ -44,7 +45,8 @@ export class FlowBtn extends BaseElement {
 		return {
 			disabled:{type:Boolean, reflect: true},
 			'on-click':{type:Function},
-			icon:{type:String, reflect:true}
+			icon:{type:String, reflect:true},
+			i18n:{type:Boolean, reflect: true}
 		}
 	}
 
@@ -181,6 +183,10 @@ export class FlowBtn extends BaseElement {
 				height:100%;box-sizing:border-box;
 				margin:0px;
 			}
+			:host([i18n]) slot,
+			:host(:not([i18n])) #text-element{
+				display:none
+			}
 		`;
 	}
 	constructor(){
@@ -189,11 +195,40 @@ export class FlowBtn extends BaseElement {
 		this.addEventListener("click", ()=>{
 			this.click();
 		})
+		this.i18nSupport = (this.getAttribute("i18n") != null);
+		if(this.i18nSupport){
+			i18nElementsMap.set(this, {});
+		}
 	}
 	render() {
 		let {icon=''} = this;
 		return html`<div 
-			class="wrapper">${icon?html`<fa-icon icon=${icon}></fa-icon>`:''} <slot></slot></div>`;
+			class="wrapper">${icon?html`<fa-icon icon=${icon}></fa-icon>`:''} <slot id="text-slot"></slot><span id="text-element"></span></div>`;
+	}
+
+	firstUpdated(...args){
+		super.firstUpdated(...args);
+		if(this.i18nSupport){
+			this.slotElement = this.renderRoot.querySelector("#text-slot")
+			this.textElement = this.renderRoot.querySelector("#text-element")
+			this.slotElement.addEventListener('slotchange', (e)=>{
+				this.slotElementChidren = this.slotElement.assignedNodes();
+				let text = [];
+				this.slotElementChidren.forEach(el=>{
+					text.push(el.textContent)
+				})
+				console.log("this.slotElementChidren", this.slotElementChidren, text)
+				this.__i18nText = text.join("");
+				this.setI18nValue(this.__i18nText?i18n.t(this.__i18nText):'')
+			})
+			
+		}
+	}
+
+	setI18nValue(text){
+		if(this.textElement){
+			this.textElement.innerHTML = text;
+		}
 	}
 
 	click() {
@@ -220,6 +255,20 @@ export class FlowBtn extends BaseElement {
 		}
 
 		if(form && form.submit())*/
+	}
+
+	connectedCallback(){
+		super.connectedCallback();
+		if(this.i18nSupport){
+			i18nElementsMap.set(this, {});
+		}
+	}
+
+	disconnectedCallback(){
+		super.disconnectedCallback();
+		if(this.i18nSupport){
+			i18nElementsMap.delete(this, {});
+		}
 	}
 }
 

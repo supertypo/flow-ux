@@ -1,6 +1,7 @@
 import {BaseElement, html, css, baseUrl} from './base-element.js';
 import { dpc, contain} from './helpers.js';
 import {jsQR} from '../resources/extern/jsQR/jsQR.js';
+import {T} from "./flow-i18n.js";
 //console.log("jsQR", jsQR)
 
 export class FlowQRCodeScanner extends BaseElement {
@@ -110,7 +111,7 @@ export class FlowQRCodeScanner extends BaseElement {
 		if(cameraDiscovery === false || stopped)
 			return '';
 		if(!cameras)
-			return html`<div class="wait-msg">Please wait. Getting cameras.</div>`;
+			return html`<div class="wait-msg" is="i18n-div">Please wait. Getting cameras.</div>`;
 		//if(selectedCamera)
 		//	return html`<div>Selected cameras: ${selectedCamera.label}</div>`
 
@@ -118,7 +119,7 @@ export class FlowQRCodeScanner extends BaseElement {
 		return html`
 		<div class="camera-selection">
 			<!--div class="select-msg">Select cameras</div-->
-			<flow-select label="Select cameras"
+			<flow-select label="${T('Select cameras')}"
 				@select="${this.onCameraSelect}" selected="${selected}">
 				${cameras.map(c=>{
 					return html`<flow-menu-item

@@ -1,6 +1,7 @@
 import {BaseElement, html, css, /*directive,*/ LitElement/*, parts as _parts*/} from './base-element.js';
 import {directive, AsyncDirective, PartType} from './base-element.js';
 export const i18nDirMap = new Map();
+export const i18nElementsMap = new Map();
 
 class i18n extends BaseElement{
 
@@ -274,9 +275,19 @@ let Mixin = (Base, tag)=>{
 Mixin(HTMLDivElement, 'div');
 Mixin(HTMLSpanElement, 'span')
 Mixin(HTMLParagraphElement, 'p')
+Mixin(HTMLLabelElement, 'label')
+Mixin(HTMLTableCellElement, 'td')
+Mixin(HTMLTableCellElement, 'th')
+Mixin(HTMLAnchorElement, 'a')
  
 
-
+export const i18nFormat = (str, ...values)=>{
+	str = i18n.t(str);
+	values.forEach(n=>{
+		str = str.replace('[n]', n)
+	})
+	return str;
+}
 
 let parts = [];
 
@@ -308,6 +319,11 @@ let onLocaleChange = ()=>{
 	i18nDirMap.forEach((v, dir)=>{
 		//console.log("dir", dir)
 		dir.setValue(dir.__text?i18n.t(dir.__text):'')
+	})
+
+	i18nElementsMap.forEach((v, ele)=>{
+		//console.log("dir", dir)
+		ele.setI18nValue(ele.__i18nText?i18n.t(ele.__i18nText):'')
 	})
 }
 
