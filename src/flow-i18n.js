@@ -1,5 +1,5 @@
 import {BaseElement, html, css, /*directive,*/ LitElement/*, parts as _parts*/} from './base-element.js';
-import {directive, AsyncDirective, PartType} from './base-element.js';
+import {directive, AsyncDirective} from './base-element.js';
 export const i18nDirMap = new Map();
 export const i18nElementsMap = new Map();
 
@@ -118,6 +118,12 @@ class i18n extends BaseElement{
 		onLocaleChange();
 	}
 
+	static cleanText(text){
+		return text
+		.replace(/<\!\-\-\?lit([^>]*)\$-\->/g, "")
+		.replace(/<\!\-\-\-\->/g, "")
+	}
+
 	constructor(){
 		super();
 		this.text = "";
@@ -158,7 +164,7 @@ class i18n extends BaseElement{
 
 	render() {
 		if(this.innerHTML_ == undefined){
-			this.innerHTML_ = this.innerHTML;
+			this.innerHTML_ = i18n.cleanText(this.innerHTML)
 			this.innerHTML = "";
 		}
 		//if(this.getAttribute("xx") == 1)
@@ -248,7 +254,7 @@ let Mixin = (Base, tag)=>{
 	class Child extends Base{
 		connectedCallback() {
 			if(!this.innerHTML_)
-				this.innerHTML_ = this.innerHTML;
+				this.innerHTML_ = i18n.cleanText(this.innerHTML);
 			this._cb = this._cb || this.onLocaleChange.bind(this);
 			window.addEventListener("flow-i18n-locale", this._cb)
 			this.onLocaleChange();
@@ -279,7 +285,12 @@ Mixin(HTMLLabelElement, 'label')
 Mixin(HTMLTableCellElement, 'td')
 Mixin(HTMLTableCellElement, 'th')
 Mixin(HTMLAnchorElement, 'a')
- 
+
+export const buildLitHTML = (...strParts)=>{
+	let strings = [...strParts];
+	strings.raw = [];
+	return html(strings);
+}
 
 export const i18nFormat = (str, ...values)=>{
 	str = i18n.t(str);
@@ -289,7 +300,13 @@ export const i18nFormat = (str, ...values)=>{
 	return str;
 }
 
-let parts = [];
+export const i18nHTMLFormat = (str, ...values)=>{
+	str = i18n.t(str);
+	values.forEach(n=>{
+		str = str.replace('[n]', n)
+	})
+	return buildLitHTML(str);
+}
 
 class I18nDirective extends AsyncDirective{
 	constructor(...args){

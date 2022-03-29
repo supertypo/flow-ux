@@ -218,7 +218,7 @@ export class FlowBtn extends BaseElement {
 					text.push(el.textContent)
 				})
 				console.log("this.slotElementChidren", this.slotElementChidren, text)
-				this.__i18nText = text.join("");
+				this.__i18nText = i18n.cleanText(text.join(""));
 				this.setI18nValue(this.__i18nText?i18n.t(this.__i18nText):'')
 			})
 			
