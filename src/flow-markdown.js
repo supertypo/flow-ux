@@ -40,7 +40,7 @@ export const markerdRenderer = {
     },
 
     codespan(text) {
-        console.log('codespan:',text);
+        //console.log('codespan:',text);
         text = text.replace(/&amp;lt;/g, "&lt;").replace(/&amp;gt;/g, "&gt;");
         return `<code>${text}</code>`;
     },
