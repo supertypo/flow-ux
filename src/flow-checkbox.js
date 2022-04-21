@@ -49,12 +49,13 @@ export class FlowCheckbox extends BaseElement {
 			}
 			.checkbox{
 				display:flex;align-items:center;
-			    user-select:none;
+			    user-select:none;position:relative;
 			}
 			.checkbox-input{
 			    position:absolute;
 			    opacity:0;
 			    z-index:0;
+				top:0px;
 			}
 			.checkbox-outer{
 				position:relative;
