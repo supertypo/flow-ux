@@ -191,7 +191,6 @@ export class FlowBtn extends BaseElement {
 	}
 	constructor(){
 		super()
-		this.setAttribute('role', 'button');
 		this.addEventListener("click", ()=>{
 			this.click();
 		})
@@ -208,6 +207,7 @@ export class FlowBtn extends BaseElement {
 
 	firstUpdated(...args){
 		super.firstUpdated(...args);
+		this.setAttribute('role', 'button');
 		if(this.i18nSupport){
 			this.slotElement = this.renderRoot.querySelector("#text-slot")
 			this.textElement = this.renderRoot.querySelector("#text-element")
