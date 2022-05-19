@@ -38,6 +38,7 @@ export class FlowCheckbox extends BaseElement {
 		return css`
 			:host{
 				display:inline-block;
+				margin-right: var(--flow-checkbox-margin-right, 10px);
 			}
 			:host(.block){
 				display: block;

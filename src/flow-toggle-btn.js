@@ -34,7 +34,10 @@ export class FlowToggleBtn extends FlowBtn {
 			:host([active]:not([disabled]):hover){
 				background-color:var(--flow-btn-hover-active-bg-color, var(--flow-btn-hover-border-color, var(--flow-primary-color, rgba(0,151,115,1))));
 				border-color:var(--flow-btn-hover-active-border-color, var(--flow-btn-hover-border-color, var(--flow-primary-color, rgba(0,151,115,1))));
-                color: var(--flow-btn-hover-active-color);
+                color: var(--flow-btn-hover-active-color, var(--flow-btn-hover-color, inherit));
+			}
+			:host([active][radio]){
+				cursor:default;
 			}
         `]
     }

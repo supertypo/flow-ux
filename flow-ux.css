@@ -327,6 +327,13 @@ flow-btn-group[vertical] :not(:first-child){
     border-top-right-radius:0px;
 }
 
+flow-btn-group, .flow-btn-group{
+    --flow-btn-hover-active-color:var(--flow-btn-active-invert-color, var(--flow-primary-invert-color, #FFF));;
+    --flow-btn-border-color:var(--flow-btn-group-btn-border-color, var(--flow-primary-color, #DDD));
+    --flow-btn-hover-border-color:var(--flow-btn-group-btn-hover-border-color, var(--flow-primary-color, #DDD));
+    --flow-btn-font-weight:var(--flow-btn-group-btn-font-weight, inherit);
+}
+
 
 /*** flow-app-layout **
 flow-app-layout{

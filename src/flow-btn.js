@@ -53,7 +53,7 @@ export class FlowBtn extends BaseElement {
 	static get styles(){
 		return css`
 			:host{
-				display:inline-block;
+				display:var(--flow-btn-display, inline-flex);
 				margin: var(--flow-btn-margin);
 				padding:var(--flow-btn-padding, 5px);
 				border: var(--flow-btn-border, 2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1))));
@@ -177,10 +177,11 @@ export class FlowBtn extends BaseElement {
 				min-width:var(--flow-btn-wrapper-min-width,50px);
 				text-align:center;
 				justify-content:center;
+				box-sizing:border-box;
 			}
 			:host([full-height-wrapper]) .wrapper,
 			:host([icon]) .wrapper{
-				height:100%;box-sizing:border-box;
+				height:100%;
 				margin:0px;
 			}
 			:host([i18n]) slot,
