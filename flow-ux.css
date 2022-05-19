@@ -288,6 +288,45 @@ flow-gridstack[dragmode="panel"] .grid-stack-item{
 flow-gridstack div.grid-stack-item-content{background:#DDD}
 flow-gridstack .gridstack-json{width:90%;height:200px;}
 
+.flow-btn-group, flow-btn-group{
+    display:inline-flex;
+    flex-direction:row;
+    margin:var(--flow-btn-group-margin, 5px 0px);
+    width:var(--flow-btn-group-width, fit-content);
+}
+.flow-btn-group[vertical], flow-btn-group[vertical]{
+    flex-direction:column;
+}
+.flow-btn-group:not([vertical]) :not(:last-child),
+flow-btn-group:not([vertical]) :not(:last-child){
+    border-right-width:0px;
+    border-top-right-radius:0px;
+    border-bottom-right-radius:0px;
+}
+flow-btn-group:not([vertical]) flow-toggle-btn[active]+flow-toggle-btn{
+    border-left-color:var(--flow-btn-active-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+}
+flow-btn-group:not([vertical]) flow-toggle-btn[active]:not([disabled])+flow-toggle-btn:hover{
+    border-left-color:var(--flow-btn-hover-active-border-color, var(--flow-btn-hover-border-color, var(--flow-primary-color, rgba(0,151,115,1))));
+}
+.flow-btn-group:not([vertical]) :not(:first-child),
+flow-btn-group:not([vertical]) :not(:first-child){
+    border-top-left-radius:0px;
+    border-bottom-left-radius:0px;
+}
+
+.flow-btn-group[vertical] :not(:last-child),
+flow-btn-group[vertical] :not(:last-child){
+    border-bottom-width:0px;
+    border-bottom-left-radius:0px;
+    border-bottom-right-radius:0px;
+}
+.flow-btn-group[vertical] :not(:first-child),
+flow-btn-group[vertical] :not(:first-child){
+    border-top-left-radius:0px;
+    border-top-right-radius:0px;
+}
+
 
 /*** flow-app-layout **
 flow-app-layout{
