@@ -80,6 +80,61 @@ export const rgbToHsl = ({r, g, b})=>{
 	return { h, s, l }
 }
 
+//colorChannelA and colorChannelB are ints ranging from 0 to 255
+export function colorChannelMixer(colorChannelA, colorChannelB, amountToMix){
+    var channelA = colorChannelA*amountToMix;
+    var channelB = colorChannelB*(1-amountToMix);
+    return parseInt(channelA+channelB);
+}
+//rgbA and rgbB are arrays, amountToMix ranges from 0.0 to 1.0
+//example (red): rgbA = [255,0,0]
+export function colorMixer(rgbA, rgbB, amountToMix=1){
+	rgbA = hexToRgb(rgbA)
+	rgbB = hexToRgb(rgbB)
+    var r = colorChannelMixer(rgbA.r,rgbB.r, amountToMix);
+    var g = colorChannelMixer(rgbA.g,rgbB.g, amountToMix);
+    var b = colorChannelMixer(rgbA.b,rgbB.b, amountToMix);
+    return "rgb("+r+","+g+","+b+")";
+}
+
+function mixCMYKS(...cmyks) {
+	let c = cmyks.map(cmyk => cmyk[0]).reduce((a, b) => a + b, 0) / cmyks.length;
+	let m = cmyks.map(cmyk => cmyk[1]).reduce((a, b) => a + b, 0) / cmyks.length;
+	let y = cmyks.map(cmyk => cmyk[2]).reduce((a, b) => a + b, 0) / cmyks.length;
+	let k = cmyks.map(cmyk => cmyk[3]).reduce((a, b) => a + b, 0) / cmyks.length;
+	return [c, m, y, k];
+}
+
+function mixHexs(...hexes) {
+	let rgbs = hexes.map(hex => hex2dec(hex)); 
+	let cmyks = rgbs.map(rgb => rgb2cmyk(...rgb));
+	let mixture_cmyk = mix_cmyks(...cmyks);
+	let mixture_rgb = cmyk2rgb(...mixture_cmyk);
+	let mixture_hex = rgb2hex(...mixture_rgb);
+	return mixture_hex;
+}
+
+export const rgb2cmyk = (r, g, b)=>{
+	let c = 1 - (r / 255);
+	let m = 1 - (g / 255);
+	let y = 1 - (b / 255);
+	let k = Math.min(c, m, y);
+	c = (c - k) / (1 - k);
+	m = (m - k) / (1 - k);
+	y = (y - k) / (1 - k);
+	return [c, m, y, k];
+}
+
+export const cmyk2rgb = (c, m, y, k)=>{
+	let r = c * (1 - k) + k;
+	let g = m * (1 - k) + k;
+	let b = y * (1 - k) + k;
+	r = (1 - r) * 255 + .5;
+	g = (1 - g) * 255 + .5;
+	b = (1 - b) * 255 + .5;
+	return [r, g, b];
+}
+
 export const parseRGBA = color=>{
 	let [r,g,b,a=100] = color.split("(")[1].split(")")[0].split(",");
 	return {r,g,b,a};
