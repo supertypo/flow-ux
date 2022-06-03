@@ -96,11 +96,11 @@ export class FlowCaptionBar extends BaseElement {
 		return [this.svgStyle, css`
 			/*div { border: 1px solid red; }*/
 			:host {
-				width: 100vw;
+				width:var(--flow-caption-bar-width, 100vw);
 				user-select:none;
 			}
 			.host {
-				width: calc(100vw - 8px);
+				width:var(--flow-caption-bar-host-width, calc(100vw - 8px));
 				min-height: 28px;
 				/* background-color: green; */
 				display: flex;
