@@ -206,6 +206,7 @@ let config = {
 		{"title":"Icelandic", "locale": "is" },
 		{"title":"日本語", "locale": "ja" },
 		{"title":"Korean", "locale": "ko" },
+		{"title":"Korean", "locale": "kr" },
 		{"title":"Lithuanian", "locale": "lt" },
 		{"title":"Norwegian", "locale": "nb" },
 		{"title":"Dutch", "locale": "nl" },
