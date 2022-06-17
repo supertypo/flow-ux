@@ -186,6 +186,9 @@ export class FlowInput extends BaseElement {
 			.wrapper:not([has-value]) .clear-btn{
 				display:none
 			}
+			.wrapper[has-label] input{
+				padding-top:var(--flow-input-with-label-input-padding-top, 15px)
+			}
 		`;
     }
     constructor() {
@@ -195,8 +198,9 @@ export class FlowInput extends BaseElement {
 		this.expression = false;
     }
 	render() {
-		return html`<label ?hidden=${!this.label}>${this.label||""}</label>
-		<div class="wrapper" @click=${this.onClick} ?has-value=${!!this.value}>
+		let isLabel = !!this.label;
+		return html`<label ?hidden=${!isLabel}>${this.label||""}</label>
+		<div class="wrapper" @click=${this.onClick} ?has-value=${!!this.value} ?has-label=${isLabel}>
 			<slot name="prefix"></slot>
 			<input class="input" type="${this.type}" spellcheck="false"
 				placeholder="${this.placeholder || ''}"

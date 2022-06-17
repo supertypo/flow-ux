@@ -25,6 +25,7 @@ import {ifDefined} from 'lit-html/directives/if-defined.js';
 export class FlowTextArea extends BaseElement {
 	static get properties() {
 		return {
+			value:{type:String},
 			height : { type : Number },
 			autosize : { type : Boolean },
 			autocomplete : { type : Boolean },
@@ -32,6 +33,7 @@ export class FlowTextArea extends BaseElement {
 			disabled : { type : Boolean, reflect : true },
 			placeholder : { type : String },
 			readonly : { type : Boolean },
+			label:{type:String},
 			maxlength : { type : Number }
 		}
 	}
@@ -39,9 +41,56 @@ export class FlowTextArea extends BaseElement {
 	static get styles() {
 		return css`
 		:host {
-			min-height: 32px;
+			display:var(--flow-input-display, inline-block);
+			vertical-align:middle;
+			font-family:var(--flow-font-family, "Julius Sans One");
+			font-weight:var(--flow-font-weight, bold);
+			width:var(--flow-input-width, 100%);
+			min-width:var(--flow-input-min-width, 100px);
+			max-width:var(--flow-input-max-width, 500px);
+			margin:var(--flow-input-margin, 5px 0px);
+			font-size:0px;
+		}
+		label{
+			font-size:var(--flow-input-label-font-size, 0.7rem);
+			padding:var(--flow-input-label-padding,2px 5px);
+			border: var(--flow-input-label-border, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+			border-radius:var(--flow-input-label-border-radius, 8px);
+			margin-left: var(--flow-input-label-margin-left,10px);
+			z-index: var(--flow-input-label-z-index, 1);
+			position: var(--flow-input-label-position, relative);
+			background-color:var(--flow-input-bg, inherit);
+		}
+		textarea{
+
+			width:var(--flow-input-input-width, 100%);
+			box-sizing:border-box;
+			height:var(--flow-input-height);
+			border: var(--flow-input-border, 2px) solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
+			border-radius:var(--flow-input-border-radius, 8px);
+			margin:0px;
+			padding:var(--flow-input-padding, 10px);
+			font-size:var(--flow-input-font-size, 1rem);
+			font-weight:var(--flow-input-font-weight, 400);
+			font-family:var(--flow-input-font-family);
+			line-height:var(--flow-input-line-height, 1.2);
+			box-shadow:var(--flow-input-box-shadow);
+			text-align:var(--flow-input-text-align);
+			min-width:var(--flow-input-input-min-width, 10px);
+			letter-spacing:var(--flow-input-letter-spacing, inherit);
+
 			min-width: 200px;
-			display: block;
+			min-height: 32px;
+			overflow: hidden;
+			overflow-y:hidden;
+			outline: none;
+			resize: none;
+			background-color: var(--flow-textarea-bg, var(--flow-input-bg, #fafafa));
+			color: var(--flow-textarea-color, var(--flow-input-color, inherit));
+			margin-top: var(--flow-input-wrapper-margin-top,-0.5rem);
+		}
+		textarea[has-label]{
+			padding-top:var(--flow-input-with-label-input-padding-top, 15px)
 		}
 		`;
 	}
@@ -64,7 +113,7 @@ export class FlowTextArea extends BaseElement {
 	}
 
 	get textarea() {
-		return this.shadowRoot && this.shadowRoot.getElementById(`textarea-${this.ident}`);
+		return this.renderRoot && this.renderRoot.querySelector('textarea');
 	}
 
 	get() {
@@ -78,26 +127,9 @@ export class FlowTextArea extends BaseElement {
 
 	render() {
 		//this.log("RENDERING TEXTAREA");
+		let isLabel = !!this.label;
 		return html`
-			<style>
-				#textarea-${this.ident} {
-					xheight : ${this.height};
-					border: 2px solid var(--flow-border-color, var(--flow-primary-color, #3f51b5));
-					border-radius: 12px;
-					min-width: 200px;
-					width:100%;
-					box-sizing:border-box;
-					min-height: 32px;
-					overflow-y:hidden;
-					font-family: "Open Sans";
-					overflow: hidden;
-					padding: 8px 16px 16px 16px;
-					outline: none;
-					resize: none;
-					background-color: var(--flow-textarea-bg, var(--flow-input-bg, #fafafa));
-					color: var(--flow-textarea-color, var(--flow-input-color, inherit));
-				}
-			</style>
+			<label ?hidden=${!isLabel}>${this.label||""}</label>
 			<textarea id="textarea-${this.ident}"
 				@input="${this.change}" 
 				autocomplete="${this.autocomplete}"
@@ -105,6 +137,7 @@ export class FlowTextArea extends BaseElement {
 				placeholder="${this.placeholder}"
 				?readonly="${this.readonly}"
 				?disabled="${this.disabled}"
+				?has-label="${isLabel}"
 				maxlength="${ifDefined(this.maxlength)}"
 				.value="${this.value}"
 			></textarea>
@@ -113,17 +146,13 @@ export class FlowTextArea extends BaseElement {
 	}
 
 	change() {
-		//this.log("TEXT AREA CHANGE");
-		let textarea = this.textarea; // this.shadowRoot.querySelector("textarea");
-		
+		let textarea = this.textarea;
 		textarea.style.height = 'auto';
 		let style = window.getComputedStyle(textarea);
-		let padding = 0;//-4;//parseFloat(style.getPropertyValue('padding-top')) + parseFloat(style.getPropertyValue('padding-bottom'));
-		let border = parseFloat(style.getPropertyValue('border-width')) * 2;// + parseFloat(style.getPropertyValue('padding-bottom'));
+		let border = parseFloat(style.getPropertyValue('border-width')) * 2;
 		textarea.style.height = (textarea.scrollHeight+border)+'px';
-		//let height = 
-		//this.height = (textarea.scrollHeight-padding)+'px';
-		//console.log(textarea.scrollHeight, height);
+		this.value = this.textarea.value;
+		this.fire("changed", {el:this, value:this.textarea.value});
 	}
 }
 
