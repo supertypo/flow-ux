@@ -13,6 +13,14 @@ import {BaseElement, html, css} from './base-element.js';
  * 	<flow-menu-item value="two">Two</flow-menu-item>
  * </flow-menu>
  */
+
+ export class SelectOption{
+	constructor(text, value){
+		this.text = text;
+		this.value = value;
+	}
+}
+
 export class FlowMenu extends BaseElement {
 	static get properties() {
 		return {
@@ -94,6 +102,31 @@ export class FlowMenu extends BaseElement {
 		return html`
 		<slot></slot>
 		`;
+	}
+	static SelectOption=SelectOption
+	static createOption(text, value){
+		return {text, value};
+	}
+	static createOptionItem(text, value){
+		let item = document.createElement("flow-menu-item");
+		item.setAttribute("value", value);
+		item.innerHTML = text;
+		return item;
+	}
+	static createOptionItems(items=[]){
+		return items.map(item=>{
+			return this.createOptionItem(item.text, item.value)
+		})
+	}
+	changeOptions(items=[]){
+		let children = this.querySelectorAll("*");
+		children.forEach(c=>{
+			c.remove();
+		});
+
+		FlowMenu.createOptionItems(items).forEach(el=>{
+			this.appendChild(el)
+		})
 	}
 	firstUpdated(){
 		this.renderRoot
@@ -181,6 +214,10 @@ export class FlowMenu extends BaseElement {
 	}
 	selectOne(value){
 		this._selected = [value];
+		this.selectionChanged();
+	}
+	select(values){
+		this._selected = values;
 		this.selectionChanged();
 	}
 	toggle(value){
