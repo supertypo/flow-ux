@@ -46,6 +46,7 @@ export class FlowSelect extends FlowMenu {
 			filterText:{type:String},
 			searchIcon:{type:String},
 			disabled:{type:Boolean, reflect:true},
+			placeholder:{type:String},
 			"right-align":{type:Boolean}
 		}
 	}
@@ -112,6 +113,12 @@ export class FlowSelect extends FlowMenu {
 				height:var(--flow-select-input-height);
 				width:var(--flow-select-input-width);
 			}
+			:host(.no-border) .input.selected{
+				border:0px;
+			}
+			[no-label] .input.selected{
+				padding-top:var(--flow-select-no-label-input-padding-top, 10px);
+			}
 			.input:focus{outline:none}
 			.input::-webkit-input-placeholder { color: var(--flow-input-placeholder, #888 ); }
 			.selected{
@@ -125,6 +132,9 @@ export class FlowSelect extends FlowMenu {
 				overflow: hidden;
     			text-overflow: ellipsis;
 			}
+			.placeholder{
+				color: var(--flow-input-placeholder, #888 );
+			}
 			[multiple] .input.selected span.item{
 				margin:var(--flow-select-selected-item-margin, 2px 4px 2px 0);
 				padding:var(--flow-select-selected-item-padding, 1px 5px);
@@ -136,6 +146,7 @@ export class FlowSelect extends FlowMenu {
 				display:var(--flow-select-selection-display, flex);
 				flex-wrap:var(--flow-select-selection-flex-wrap, wrap);
 				min-height:var(--flow-select-selected-min-height, 60px);
+				align-items:var(--flow-select-selection-align-items, center);
 			}
 
 			:host(:not([disabled])) .input.selected::after{
@@ -179,11 +190,14 @@ export class FlowSelect extends FlowMenu {
 	}
 	render() {
 		let iconSrc = this.iconPath(this.searchIcon || "search");
+		let isLabel = !!this.label;
 		return html
-		`<flow-dropdown ?multiple="${this.multiple}" ?disabled=${this.disabled}
+		`<flow-dropdown ?multiple="${this.multiple}"
+			?disabled=${this.disabled}
+			?no-label=${!isLabel}
 			?right-align=${this["right-align"]}>
 			<div slot="trigger">
-				<label ?hidden=${!this.label}>${this.label||""}</label>
+				<label ?hidden=${!isLabel}>${this.label||""}</label>
 				<div class="wrapper" @click=${this.onClick}>
 					<slot name="prefix"></slot>
 					<div class="input selected">
@@ -221,10 +235,17 @@ export class FlowSelect extends FlowMenu {
 		this.list.forEach(item=>{
 			let text = item.getAttribute(this.textAttr) || item.innerText;
 			map.set(item.getAttribute(this.valueAttr), text)
-		})
-		return this._selected.map(s=>html
-			`<span class="item" value="${s}">${map.get(s) || s}</span>`
-		)
+		});
+
+		let items = this._selected.map(s=>{
+			if(!s)
+				return '';
+			return html`<span class="item" value="${s}">${map.get(s) || s}</span>`
+		}).filter(a=>!!a);
+
+		if(items.length)
+			return items
+		return html`<span class="placeholder">${this.placeholder||""}</span>`;
 	}
 
 	selectionChanged(){
