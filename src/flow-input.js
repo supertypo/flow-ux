@@ -91,6 +91,7 @@ export class FlowInput extends BaseElement {
 				border: var(--flow-input-label-border, 2px) solid  var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border-radius:var(--flow-input-label-border-radius, 8px);
 				margin-left: var(--flow-input-label-margin-left,10px);
+				margin-right: var(--flow-input-label-margin-right,20px);
 				z-index: var(--flow-input-label-z-index, 1);
 				position: var(--flow-input-label-position, relative);
 				background-color:var(--flow-input-bg, inherit);

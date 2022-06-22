@@ -48,6 +48,7 @@ export class FlowDropdown extends BaseElement {
 			xMargin:{type:Number, value:10},
 			yMargin:{type:Number, value:10},
 			yOffset:{type:Number, value:8},
+			yOverflowMargin:{type:Number, value:-10}
 		}
 	}
 
@@ -126,9 +127,8 @@ export class FlowDropdown extends BaseElement {
 	firstUpdated(){
 		if(this.classList.contains("right-align"))
 			this["right-align"] = true;
-		this.renderRoot
-			.querySelector(".trigger")
-			.addEventListener("click", this._onClick.bind(this));
+		this.triggerEl = this.renderRoot.querySelector(".trigger");
+		this.triggerEl.addEventListener("click", this._onClick.bind(this));
 		this.dropdownEl = this.renderRoot.querySelector(".dropdown");
 		this.dropdownContentEl = this.renderRoot.querySelector(".dropdown-content");
 	}
@@ -191,27 +191,40 @@ export class FlowDropdown extends BaseElement {
 		this.updateDropdownSize();
 	}
 	updateDropdownSize(){
-		let {dropdownContentEl, dropdownEl, scrollParants} = this;
+		let {dropdownContentEl, dropdownEl, scrollParants, triggerEl} = this;
 
-		if(!dropdownContentEl||!dropdownEl||!scrollParants||!scrollParants.length)
+		if(!triggerEl||!dropdownContentEl||!dropdownEl||!scrollParants||!scrollParants.length)
 			return
 
 		let parentBox = dropdownEl.getBoundingClientRect();
 		if(!this.absolute){
 			let {left, bottom, right} = parentBox;
 			let width = window.innerWidth;
+			let height = window.innerHeight;
+			let DCElStyle = dropdownContentEl.style;
 			bottom -= this.yOffset;
 			if(this["right-align"]){
-				dropdownContentEl.style.maxWidth = `${right-this.xMargin}px`;
-				dropdownContentEl.style.left = 'initial';
-				dropdownContentEl.style.right = `${width-right}px`;
+				DCElStyle.maxWidth = `${right-this.xMargin}px`;
+				DCElStyle.left = 'initial';
+				DCElStyle.right = `${width-right}px`;
 			}else{
-				dropdownContentEl.style.maxWidth = `calc(100vw - ${left+this.xMargin}px)`;
-				dropdownContentEl.style.right = 'initial';
-				dropdownContentEl.style.left = `${left}px`;
+				DCElStyle.maxWidth = `calc(100vw - ${left+this.xMargin}px)`;
+				DCElStyle.right = 'initial';
+				DCElStyle.left = `${left}px`;
 			}
-			dropdownContentEl.style.top = `${bottom}px`;
-			dropdownContentEl.style.maxHeight = `calc(100vh - ${bottom+this.yMargin}px)`;
+			DCElStyle.bottom = 'unset';
+			DCElStyle.top = `${bottom}px`;
+			let maxHeight = height-(bottom+this.yMargin);
+			DCElStyle.maxHeight = `${maxHeight}px`;//`calc(100vh - ${bottom+this.yMargin}px)`;
+			//let box = dropdownContentEl.getBoundingClientRect();
+			//console.log("box.height", height, maxHeight, DCElStyle.maxHeight);
+			let triggerELBox = triggerEl.getBoundingClientRect();
+			let maxHeightInUpperPosition = triggerELBox.top+this.yOverflowMargin;
+			if (maxHeight < maxHeightInUpperPosition){
+				DCElStyle.top = 'unset';
+				DCElStyle.bottom = `calc(100vh - ${triggerELBox.top}px)`;
+				DCElStyle.maxHeight = `${maxHeightInUpperPosition}px`;
+			}
 			return
 		}
 
@@ -238,9 +251,9 @@ export class FlowDropdown extends BaseElement {
 			width,
 			height
 		)*/
-		dropdownContentEl.style.transform = `translate(${left}px, ${top}px)`;
-		dropdownContentEl.style.maxWidth = width+"px";
-		dropdownContentEl.style.maxHeight = height+"px";
+		DCElStyle.transform = `translate(${left}px, ${top}px)`;
+		DCElStyle.maxWidth = width+"px";
+		DCElStyle.maxHeight = height+"px";
 	}
 	connectedCallback(){
     	super.connectedCallback();
