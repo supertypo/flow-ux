@@ -125,6 +125,18 @@ export class FlowSelect extends FlowMenu {
 				overflow: hidden;
     			text-overflow: ellipsis;
 			}
+			[multiple] .input.selected span.item{
+				margin:var(--flow-select-selected-item-margin, 2px 4px 2px 0);
+				padding:var(--flow-select-selected-item-padding, 1px 5px);
+				border-radius:var(--flow-select-selected-item-border-radius, 5px);
+				border:var(--flow-select-selected-item-border, 1px solid var(--flow-primary-color, #DDD));
+				line-height:var(--flow-input-line-height, 1.3);
+			}
+			[multiple] .input.selected{
+				display:var(--flow-select-selection-display, flex);
+				flex-wrap:var(--flow-select-selection-flex-wrap, wrap);
+				min-height:var(--flow-select-selected-min-height, 60px);
+			}
 
 			:host(:not([disabled])) .input.selected::after{
 				content:"";display:inline-block;
