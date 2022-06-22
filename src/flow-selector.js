@@ -1,8 +1,8 @@
 import {FlowSelect} from './flow-select.js';
-import {html, css} from './base-element.js';
+import {css} from './base-element.js';
 
 
-class FlowSelector extends FlowSelect{
+export class FlowSelector extends FlowSelect{
 
     
     static get properties(){
