@@ -54,9 +54,9 @@ export class FlowMenu extends BaseElement {
 			color:var(--flow-menu-item-color, var(--flow-color));
 			pointer-events:auto;
 		}
-		::slotted(flow-menu-item:hover),
-		::slotted(.menu-item:hover),
-		.menu-item:hover{
+		::slotted(flow-menu-item:hover:not(.disabled)),
+		::slotted(.menu-item:hover:not(.disabled)),
+		.menu-item:hover:not(.disabled){
 			background-color:var(--flow-menu-item-hover-bg, #DDD);
 			color:var(--flow-menu-item-hover-color, #000);
 		}
@@ -89,6 +89,20 @@ export class FlowMenu extends BaseElement {
 			max-width:var(--flow-menu-gridfull-item-max-width, initial);
 			flex:var(--flow-menu-gridfull-item-flex, 1);
 		}
+		::slotted(div.divider),
+		::slotted(div.section){
+			padding:var(--flow-menu-divider-padding, 10px);
+			box-shadow:var(--flow-menu-divider-box-shadow, var(--flow-box-shadow));
+			margin:var(--flow-menu-divider-margin, 0 0 5px 0);
+			background-color:var(--flow-menu-divider-bg-color, var(--flow-background-inverse-soft));
+			color:var(--flow-menu-divider-color, var(--flow-background-color));
+		}
+		::slotted(flow-menu-item.disabled),
+		::slotted(.menu-item.disabled),
+		.menu-item.disabled{
+			cursor:var(--flow-menu-disabled-item-cursor, default);
+			opacity:var(--flow-menu-disabled-item-opacity, 0.7);
+		}
 		`;
 	}
 	constructor(){
@@ -104,18 +118,22 @@ export class FlowMenu extends BaseElement {
 		`;
 	}
 	static SelectOption=SelectOption
-	static createOption(text, value){
-		return {text, value};
+	static createOption(text, value, cls=""){
+		return {text, value, cls};
 	}
-	static createOptionItem(text, value){
-		let item = document.createElement("flow-menu-item");
+	static createOptionItem(text, value, cls=""){
+		let isDivider = cls.includes("divider")||cls.includes("section")
+		let item = document.createElement(isDivider?"div":"flow-menu-item");
+		if(cls){
+			item.setAttribute("class", cls);
+		}
 		item.setAttribute("value", value);
 		item.innerHTML = text;
 		return item;
 	}
 	static createOptionItems(items=[]){
 		return items.map(item=>{
-			return this.createOptionItem(item.text, item.value)
+			return this.createOptionItem(item.text, item.value, item.cls||"")
 		})
 	}
 	changeOptions(items=[]){
@@ -204,7 +222,7 @@ export class FlowMenu extends BaseElement {
 
 	_onClick(e){
 		let target = e.target.closest(this.selector);
-		if(!target)
+		if(!target || target.classList.contains("disabled"))
 			return
 		let value = target.getAttribute(this.valueAttr);
 		if(this.multiple)
