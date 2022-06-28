@@ -38,6 +38,7 @@ export class FlowFormControl extends BaseElement {
 			display:flex;
 			align-items:flex-start;
 			margin:10px 0px;
+			flex-wrap:var(--flow-form-control-flex-wrap, wrap);
 		}
 		.icon-box,
 		.expandable-icon-box{
@@ -72,7 +73,10 @@ export class FlowFormControl extends BaseElement {
 		.info-box{
 			flex:1;
 			max-width:300px;
-			padding:0px 10px;
+			padding:var(--flow-form-control-info-box-padding, 0px 10px);
+			box-sizing:border-box;
+			min-width:var(--flow-form-control-info-box-min-width, initial);
+			font-size:var(--flow-form-control-info-box-font-size, inherit);
 		}
 		.info-box ::slotted(*){
 			margin:unset;

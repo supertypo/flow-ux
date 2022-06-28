@@ -152,6 +152,12 @@ body.flow-theme-dark{
     --flow-code-fun: #81a2be;
 }
 
+body.small-screen{
+    --flow-form-control-info-box-min-width:100%;
+    --flow-form-control-info-box-font-size:0.7rem;
+    --flow-form-control-info-box-padding:0px 10px 0px 30px;
+}
+
 .hide{display:none;}
 
 flow-checkbox.block{margin:5px 0px;}
