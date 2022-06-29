@@ -1,4 +1,8 @@
-import {BaseElement, html, css, dpc, ScrollbarStyle} from './base-element.js';
+import {
+	BaseElement, html, css, dpc,
+	ScrollbarStyle,
+	isSmallScreen
+} from './base-element.js';
 
 /**
  * @export
@@ -42,6 +46,8 @@ export class FlowDropdown extends BaseElement {
 	static get properties() {
 		return {
 			opened:{type:Boolean, reflect:true},
+			modal:{type:Boolean},
+			backdrop:{type:Boolean},
 			disabled:{type:Boolean, reflect:true},
 			absolute:{type:Boolean, reflect:true},
 			"right-align":{type:Boolean},
@@ -95,7 +101,8 @@ export class FlowDropdown extends BaseElement {
 			box-sizing:border-box;
 			transform:translate(var(--flow-transform-translate-x), var(--flow-transform-translate-y));
 		}
-		:host([opened]) .dropdown-content{display:block;}
+		:host([opened]) .dropdown-content,
+		:host([opened]:not([absolute])) .backdrop{display:block;}
 		:host(.right-align) .dropdown-content,
 		:host([right-align]) .dropdown-content{
 			left:var(--flow-dropdown-content-left, initial);
@@ -109,6 +116,15 @@ export class FlowDropdown extends BaseElement {
 		:host(:not([absolute])) .dropdown-content{
 			position:fixed;z-index:1010;
 		}
+		:host(:not([absolute])) .backdrop{
+			position:fixed;z-index:1009;
+			top:0px;
+			bottom:0px;
+			left:0px;
+			right:0px;
+			display:none;
+			background:var(--flow-dropdown-backdrop-bg, var(--flow-backdrop-bg))
+		}
 		`];
 	}
 	render() {
@@ -116,9 +132,15 @@ export class FlowDropdown extends BaseElement {
 			<div class="trigger"><slot name="trigger"></slot></div><div class="dropdown">
 				<div class="dropdown-content">
 					<slot></slot>
-				</div>
+				</div>${this.renderBackdrop()}
 			</div>
 		`;
+	}
+	renderBackdrop(){
+		if(!this.backdrop && !isSmallScreen)
+			return '';
+		
+		return html`<a href="javascript:void(0)" class="backdrop"></a>`;
 	}
 	constructor(){
 		super();
@@ -156,9 +178,7 @@ export class FlowDropdown extends BaseElement {
 	onWindowClick(e){
 		if(!this.opened)
 			return
-		let dropdown = false;
 		let target = e.target;
-		//alert("target:"+ e.composedPath())
 		//let log = document.createElement("pre");
 		//let data = [];
 		//for (let k in e){
@@ -170,11 +190,13 @@ export class FlowDropdown extends BaseElement {
 			this.opened = false;
 			return
 		}
-		dropdown = target.flowDropdown || target.closest?.('flow-dropdown');
+		let dropdown = target.flowDropdown || target.closest?.('flow-dropdown');
+		let isBackdrop = target.classList?.contains("backdrop")||false;
 		if(!dropdown){
 			let path = e.path || (typeof e.composedPath == "function" ? e.composedPath() : null);
 			let p = path?.[0] || target;
 			while(p){
+				isBackdrop = isBackdrop||p.classList?.contains("backdrop")||false;
 				//data.push(p.tagName)
 				if(p.flowDropdown){
 					dropdown = p.flowDropdown;
@@ -193,6 +215,9 @@ export class FlowDropdown extends BaseElement {
 		}
 		if(!dropdown || dropdown!=this){
 			//log.innerHTML = JSON.stringify(data, null, " ");
+			this.opened = false;
+		//if clicked on this DD's backdrop and this DD is not a modal
+		}else if(isBackdrop && !this.modal){
 			this.opened = false;
 		}
 	}

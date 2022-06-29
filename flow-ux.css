@@ -89,6 +89,7 @@ body{
     --flow-code-dec: #f5871f;
     --flow-code-var: #c82829;
     --flow-code-fun: #4271ae;
+    --flow-backdrop-bg: rgba(255, 255, 255, 0.5);
 }
 
 body.flow-theme-dark{
@@ -150,6 +151,7 @@ body.flow-theme-dark{
     --flow-code-dec: #de935f;
     --flow-code-var: #cc6666;
     --flow-code-fun: #81a2be;
+    --flow-backdrop-bg: rgba(10, 10, 10, 0.5);
 }
 
 body.small-screen{

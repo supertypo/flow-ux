@@ -43,6 +43,8 @@ export class FlowSelect extends FlowMenu {
 			label:{type:String},
 			textAttr:{type:String},
 			showfilter:{type:Boolean},
+			backdrop:{type:Boolean},
+			modal:{type:Boolean},
 			filterText:{type:String},
 			searchIcon:{type:String},
 			disabled:{type:Boolean, reflect:true},
@@ -192,7 +194,8 @@ export class FlowSelect extends FlowMenu {
 		let iconSrc = this.iconPath(this.searchIcon || "search");
 		let isLabel = !!this.label;
 		return html
-		`<flow-dropdown ?multiple="${this.multiple}"
+		`<flow-dropdown ?multiple="${this.multiple}" ?backdrop="${this.backdrop}"
+			?modal="${this.modal}"
 			?disabled=${this.disabled}
 			?no-label=${!isLabel}
 			?right-align=${this["right-align"]}>
