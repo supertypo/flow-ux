@@ -158,14 +158,24 @@ export class FlowDropdown extends BaseElement {
 			return
 		let dropdown = false;
 		let target = e.target;
+		//alert("target:"+ e.composedPath())
+		//let log = document.createElement("pre");
+		//let data = [];
+		//for (let k in e){
+		//	data.push(k)
+		//}
+		//log.innerHTML = JSON.stringify(data, null, " ");
+		//target.parentNode.appendChild(log)
 		if(!target){
 			this.opened = false;
 			return
 		}
 		dropdown = target.flowDropdown || target.closest?.('flow-dropdown');
 		if(!dropdown){
-			let p = e.path?.[0] || target;
+			let path = e.path || (typeof e.composedPath == "function" ? e.composedPath() : null);
+			let p = path?.[0] || target;
 			while(p){
+				//data.push(p.tagName)
 				if(p.flowDropdown){
 					dropdown = p.flowDropdown;
 					break;
@@ -181,8 +191,10 @@ export class FlowDropdown extends BaseElement {
 				p = p.parentNode;
 			}
 		}
-		if(!dropdown || dropdown!=this)
+		if(!dropdown || dropdown!=this){
+			//log.innerHTML = JSON.stringify(data, null, " ");
 			this.opened = false;
+		}
 	}
 	onWindowResize(){
 		this.updateDropdownSize();
