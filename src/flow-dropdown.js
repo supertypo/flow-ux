@@ -234,7 +234,7 @@ export class FlowDropdown extends BaseElement {
 			let maxHeightInUpperPosition = triggerELBox.top+this.yOverflowMargin;
 			if (maxHeight < maxHeightInUpperPosition){
 				DCElStyle.top = 'unset';
-				DCElStyle.bottom = `calc(100vh - ${triggerELBox.top}px)`;
+				DCElStyle.bottom = `calc(100% - ${triggerELBox.top}px)`;
 				DCElStyle.maxHeight = `${maxHeightInUpperPosition}px`;
 			}
 			return
