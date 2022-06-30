@@ -22,7 +22,7 @@ export class FlowSelector extends FlowSelect{
             flow-dropdown{
                 width:var(--flow-selector-dropdown-width, auto);
             }
-            .selected{
+            .input.selected{
                 min-height:var(--flow-selector-selected-min-height, 50px);
                 min-width:var(--flow-selector-selected-min-width, 10px);
                 width:var(--flow-selector-selected-width, 100%);
@@ -31,10 +31,10 @@ export class FlowSelector extends FlowSelect{
                 padding:var(--flow-selector-selected-padding, 16px 30px 10px 10px);
                 flex-wrap:var(--flow-selector-selected-flex-wrap, wrap);
             }
-            .selected::after{
+            .input.selected::after{
                 top:calc(50% - 2px);
             }
-            .selected .item{
+            .input.selected .item{
                 margin:var(--flow-selector-item-margin, 0px);
                 font-size:var(--flow-selector-item-line-height, 1rem);
                 line-height:var(--flow-selector-item-line-height, 1.1);

@@ -123,7 +123,7 @@ export class FlowSelect extends FlowMenu {
 			}
 			.input:focus{outline:none}
 			.input::-webkit-input-placeholder { color: var(--flow-input-placeholder, #888 ); }
-			.selected{
+			.input.selected{
 				min-width:var(--flow-select-selected-min-width, 100px);
 				max-width:var(--flow-select-selected-max-width, 500px);
 				min-height:var(--flow-select-selected-min-height, 44px);
@@ -201,7 +201,7 @@ export class FlowSelect extends FlowMenu {
 			?right-align=${this["right-align"]}>
 			<div slot="trigger">
 				<label ?hidden=${!isLabel}>${this.label||""}</label>
-				<div class="wrapper" @click=${this.onClick}>
+				<div class="wrapper" @click=${this.onWrapperClick}>
 					<slot name="prefix"></slot>
 					<div class="input selected">
 						${this.renderSelected()}&nbsp;
@@ -227,6 +227,9 @@ export class FlowSelect extends FlowMenu {
 				</div>
 			</div>
 		</flow-dropdown>`;
+	}
+	onWrapperClick(){
+		//
 	}
 
 	renderItems(){

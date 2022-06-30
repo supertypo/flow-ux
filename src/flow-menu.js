@@ -54,9 +54,9 @@ export class FlowMenu extends BaseElement {
 			color:var(--flow-menu-item-color, var(--flow-color));
 			pointer-events:auto;
 		}
-		::slotted(flow-menu-item:hover:not(.disabled)),
-		::slotted(.menu-item:hover:not(.disabled)),
-		.menu-item:hover:not(.disabled){
+		::slotted(flow-menu-item:hover:not(.disabled):not(.selected)),
+		::slotted(.menu-item:hover:not(.disabled):not(.selected)),
+		.menu-item:hover:not(.disabled):not(.selected){
 			background-color:var(--flow-menu-item-hover-bg, #DDD);
 			color:var(--flow-menu-item-hover-color, #000);
 		}
