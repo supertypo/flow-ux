@@ -28,6 +28,7 @@ export class FlowFormControl extends BaseElement {
 			icon:{type: String},
 			expandIcon:{type: String},
 			expandable:{type:Boolean},
+			focusable:{type:Boolean},
 			expanded:{type:Boolean, reflect:true}
 		}
 	}
@@ -60,6 +61,11 @@ export class FlowFormControl extends BaseElement {
 		}
 		.title-box{
 			user-select:none;line-height:24px;cursor:pointer;
+		}
+		:host([focusable]) .title-box:focus,
+		:host([focusable]) .input-box:focus{
+			display:var(--flow-form-control-focus-display, inline-block);
+			outline:var(--flow-form-control-focus-outline, dotted);
 		}
 		.input-box{
 			width: var(--flow-form-control-input-box-width,100px);
@@ -115,11 +121,19 @@ export class FlowFormControl extends BaseElement {
 				<use href="${icon2Src}"></use>
 				</svg></div>`: ''
 			}
-			<div class="input-box">
+			${
+			this.focusable?
+			html`<div class="input-box" tabindex="0">
 				<label @click="${this.click}" class="title-box" 
 					data-flow-expandable="toggle"><slot name="title"></slot></label>
 				<div class="input"><slot></slot><slot name="input"></slot></div>
-			</div>
+			</div>`:
+			html`<div class="input-box">
+				<label @click="${this.click}" class="title-box" 
+					data-flow-expandable="toggle"><slot name="title"></slot></label>
+				<div class="input"><slot></slot><slot name="input"></slot></div>
+			</div>`
+			}
 			<div class="info-box"><slot name="info"></slot></div>
 		`;
 
@@ -135,22 +149,33 @@ export class FlowFormControl extends BaseElement {
 			this[action]();
 	}
 
-/*	
-	firstUpdated(){
-		this.renderRoot.addEventListener("click", this._onClick.bind(this));
+	firstUpdated(...args){
+		super.firstUpdated(...args);
+		this.label = this.renderRoot.querySelector("label.title-box");
+		this.inputBox = this.renderRoot.querySelector(".input-box");
 	}
 
-	_onClick(e){
-		let target = e.target.closest("[data-flow-expandable]")
-		if(!target)
-			return
-		let action = target.getAttribute("data-flow-expandable") || 'toggle';
+	/*	
 
-		if(["toggle", "open", "close"].includes(action))
-			this[action]();
+		_onClick(e){
+			let target = e.target.closest("[data-flow-expandable]")
+			if(!target)
+				return
+			let action = target.getAttribute("data-flow-expandable") || 'toggle';
+
+			if(["toggle", "open", "close"].includes(action))
+				this[action]();
+		}
+	*/
+
+	focus(){
+		//console.log("focus:this.label", this.label)
+		if(this.inputBox){
+			this.inputBox.focus()
+		}else{
+			super.focus();
+		}
 	}
-*/
-
 	open(){
 		this.expanded = true;
 	}

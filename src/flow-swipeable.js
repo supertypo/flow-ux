@@ -47,15 +47,19 @@ export class FlowSwipeable{
 		this.locked = false;
 		this.i = 0;
 		this.onResize();
+		this.updateCount();
 		this.init();
+	}
+	updateCount(){
+		let el = this.element;
+		this.count = el.children.length;
+		el.style.setProperty("--swipeable-n", this.count);
+		this.updateFixedPositionsOffset();
 	}
 
 	init(){
 		let el = this.element;
-		el.style.setProperty("--swipeable-n", this.count);
-		this.updateFixedPositionsOffset();
-
-		let onResize = this.onResize.bind(this);
+		//let onResize = this.onResize.bind(this);
 		let onTouchStart = this.onTouchStart.bind(this);
 		let onDrag = this.onDrag.bind(this);
 		let onTouchEnd = this.onTouchEnd.bind(this);
@@ -70,6 +74,15 @@ export class FlowSwipeable{
 
 		el.addEventListener("mouseup", onTouchEnd, false);
 		el.addEventListener("touchend", onTouchEnd, false);
+
+		if (typeof MutationObserver != 'undefined'){
+			const observer = new MutationObserver(()=>{
+				this.updateCount();
+			});
+			observer.observe(el, {childList:true});
+		}
+
+		
 
 		this.startResizeListener();
 	}

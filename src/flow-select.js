@@ -190,6 +190,11 @@ export class FlowSelect extends FlowMenu {
 		super();
 		this.textAttr = "data-text";
 	}
+	//focus(){
+	//	console.log("focus", this, this.dropdown?.scrollIntoView())
+	//	//this.wrapperEl?.focus();
+	//	//super.focus();
+	//}
 	render() {
 		let iconSrc = this.iconPath(this.searchIcon || "search");
 		let isLabel = !!this.label;
@@ -264,6 +269,7 @@ export class FlowSelect extends FlowMenu {
 		super.firstUpdated();
 		if(this.classList.contains("right-align"))
 			this["right-align"] = true;
+		this.wrapperEl = this.renderRoot.querySelector("flow-dropdown .wrapper");
 		this.dropdown = this.renderRoot.querySelector("flow-dropdown");
 		let slot = this.renderRoot.querySelector('slot.menu-list');
 		this.listSlot = slot;
