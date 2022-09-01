@@ -99,7 +99,7 @@ export class FlowExpandable extends BaseElement {
 			font-size:0.8em;
 		}
 		:host(:not([expand])) .content{display:none}
-		:host([expand]:not([static-icon])) svg{
+		:host([expand]:not([static-icon])) .icon-box > svg{
 			transform:rotate(90deg)
 		}
 		`;

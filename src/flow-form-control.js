@@ -100,7 +100,7 @@ export class FlowFormControl extends BaseElement {
 		:host([expandable]:not([expanded])) .info-box ::slotted(*){
 			display:none;
 		}
-		:host([expanded]:not([static-icon])) .expandable-icon-box svg{
+		:host([expanded]:not([static-icon])) .expandable-icon-box > svg{
 			transform:rotate(90deg)
 		}
 		`;
