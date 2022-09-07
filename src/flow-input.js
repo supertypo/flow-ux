@@ -53,6 +53,8 @@ export class FlowInput extends BaseElement {
 			readonly:{type:Boolean},
 			expression:{type:Boolean},
 			maxlength:{type:Number},
+			max:{type:Number},
+			min:{type:Number},
 			"clear-btn":{type:Boolean, reflect:true}
 		}
 	}
@@ -209,6 +211,8 @@ export class FlowInput extends BaseElement {
 				placeholder="${this.placeholder || ''}"
 				pattern="${this.pattern||''}"
 				maxlength="${this.maxlength||''}"
+				max="${this.max||''}"
+				min="${this.min||''}"
 				?readonly=${this.readonly}
 				?disabled=${this.disabled} 
 				@change=${this.onChange}
