@@ -1,6 +1,6 @@
 import {BaseElement, html, css} from './base-element.js';
 import {ifDefined} from 'lit-html/directives/if-defined.js';
-
+import {T} from './flow-i18n.js';
 /**
  * @export
  * @class FlowTextArea
@@ -93,6 +93,9 @@ export class FlowTextArea extends BaseElement {
 		textarea[has-label]{
 			padding-top:var(--flow-input-with-label-input-padding-top, 15px)
 		}
+		.length-msg{
+			font-size:var(--flow-textarea-length-msg-font-size, var(--flow-input-length-msg-font-size, 0.6rem));
+		}
 		`;
 	}
 
@@ -142,8 +145,18 @@ export class FlowTextArea extends BaseElement {
 				maxlength="${ifDefined(this.maxlength)}"
 				.value="${this.value}"
 			></textarea>
+			${this.renderRemainingCharsMsg()}
 		`;
 
+	}
+	renderRemainingCharsMsg(){
+		if (!this.maxlength){
+			return ''
+		}
+
+		let n = Math.max(0, this.maxlength - (this.textarea?.value.length||0));
+		let msg = n==1? T("character left"):T("characters left");
+		return html`<span class="length-msg">${n} ${msg}</span>`;
 	}
 
 	change() {
