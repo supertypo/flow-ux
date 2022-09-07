@@ -20,13 +20,22 @@ export class FlowRadios extends FlowMenu {
 		super();
 		this.valueAttr = "inputvalue";
 		this.selector = "flow-radio";
+		this.name = this.name||"radio-"+Date.now();
 	}
 	updateList(){
 		this.list.forEach(item=>{
 			let value = item.getAttribute(this.valueAttr)
-			item.onclick = ()=>{};//<--- iphone issue
 			item.setChecked(this.isSelected(value));
 		});
+	}
+	onSlotChange(){
+		this.list.forEach(item=>{
+			if (!item.getAttribute("name")){
+				item.setAttribute("name", this.name)
+			}
+			item.onclick = ()=>{};//<--- iphone issue
+		});
+		this.updateList();
 	}
 }
 

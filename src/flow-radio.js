@@ -106,9 +106,10 @@ export class FlowRadio extends BaseElement {
 	constructor(){
 		super();
 		this.checked = false;
+		this.name = this.name||"radio-"+Date.now();
 	}
 	render(){
-        let name = this.name||"radio-"+Date.now();
+        let {name} = this;
 		return html`
 		<label class="radio">
 			<input class="radio-input" type="radio" @change="${this.onChange}" 

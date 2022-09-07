@@ -157,9 +157,12 @@ export class FlowMenu extends BaseElement {
 				//let items = slot.assignedElements();
 				//this.items = items
 				//TODO update selection 
-				this.updateList();
+				this.onSlotChange()
 			});
 		}
+	}
+	onSlotChange(){
+		this.updateList();
 	}
 	updated(changes){
 		//this.log("changes", changes)

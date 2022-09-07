@@ -8,6 +8,7 @@ import {BaseElement, html, css} from './base-element.js';
 * @property {Boolean} [disabled]
 * @property {String} [btnText]
 * @property {String} [value]
+* @property {Number} [maxlength] set maxlength of input
 *
 *
 * @cssvar {font-family} [--flow-font-family="Julius Sans One"]
@@ -51,6 +52,7 @@ export class FlowInput extends BaseElement {
 			label:{type:String},
 			readonly:{type:Boolean},
 			expression:{type:Boolean},
+			maxlength:{type:Number},
 			"clear-btn":{type:Boolean, reflect:true}
 		}
 	}
@@ -206,6 +208,7 @@ export class FlowInput extends BaseElement {
 			<input class="input" type="${this.type}" spellcheck="false"
 				placeholder="${this.placeholder || ''}"
 				pattern="${this.pattern||''}"
+				maxlength="${this.maxlength||''}"
 				?readonly=${this.readonly}
 				?disabled=${this.disabled} 
 				@change=${this.onChange}

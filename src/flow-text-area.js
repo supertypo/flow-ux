@@ -80,8 +80,8 @@ export class FlowTextArea extends BaseElement {
 			min-width:var(--flow-input-input-min-width, 10px);
 			letter-spacing:var(--flow-input-letter-spacing, inherit);
 
-			min-width: 200px;
-			min-height: 32px;
+			min-width: var(--flow-textarea-min-width, 200px);
+			min-height: var(--flow-textarea-min-height, 32px);
 			overflow: hidden;
 			overflow-y:hidden;
 			outline: none;
