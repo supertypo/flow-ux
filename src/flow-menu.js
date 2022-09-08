@@ -145,6 +145,7 @@ export class FlowMenu extends BaseElement {
 		FlowMenu.createOptionItems(items).forEach(el=>{
 			this.appendChild(el)
 		})
+		this.onSlotChange();
 	}
 	firstUpdated(){
 		this.renderRoot
@@ -200,7 +201,7 @@ export class FlowMenu extends BaseElement {
 		}
 		selected = selected.filter(s=>s!==undefined).map(s=>s+"");
 		//this.log("updated:selected", selected)
-		this._selected = selected;
+		this.select(selected);
 	}
 
 	get list(){
@@ -232,6 +233,15 @@ export class FlowMenu extends BaseElement {
 			this.toggle(value);
 		else
 			this.selectOne(value)
+	}
+	selectFirst(){
+		let item = this.list[0];
+		if (item){
+			let value = item.getAttribute(this.valueAttr);
+			this.selectOne(value);
+			return value;
+		}
+		return "";
 	}
 	selectOne(value){
 		this._selected = [value];
