@@ -102,7 +102,8 @@ export class FlowInput extends BaseElement {
 			}
 			.btn{
 				position:relative;
-				padding:5px;
+				padding:var(--flow-input-btn-padding, 5px);
+				min-width:var(--flow-input-btn-min-width, 10px);
 				background-color:var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				border: 2px solid var(--flow-border-color, var(--flow-primary-color, rgba(0,151,115,1)));
 				overflow:hidden;
@@ -110,7 +111,7 @@ export class FlowInput extends BaseElement {
 				border-top-left-radius: var(--flow-input-btn-tlbr, 0px);
     			border-bottom-left-radius: var(--flow-input-btn-blbr, 0px);
     			color:var(--flow-border-invert-color, var(--flow-primary-invert-color, #FFF));
-    			display: flex;
+    			display:var(--flow-input-btn-display, flex);
 			    justify-content: center;
 			    align-items: center;
 			}
