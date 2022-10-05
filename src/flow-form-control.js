@@ -40,12 +40,19 @@ export class FlowFormControl extends BaseElement {
 			align-items:flex-start;
 			margin:10px 0px;
 			flex-wrap:var(--flow-form-control-flex-wrap, wrap);
+			position:var(--flow-form-control-position, initial);
 		}
 		.icon-box,
 		.expandable-icon-box{
 			width:30px;
 			max-width:30px;
 			text-align:center;
+			align-self:var(--flow-form-control-icon-box-align-self,initial);
+			position:var(--flow-form-control-icon-box-position,initial);
+			top:var(--flow-form-control-icon-box-top,initial);
+			bottom:var(--flow-form-control-icon-box-bottom,initial);
+			left:var(--flow-form-control-icon-box-left,initial);
+			right:var(--flow-form-control-icon-box-right,initial);
 		}
 		.expandable-icon-box svg{cursor:pointer}
 		:host([icon="none"]) .icon-box{display:none}
@@ -69,6 +76,7 @@ export class FlowFormControl extends BaseElement {
 		}
 		.input-box{
 			width: var(--flow-form-control-input-box-width,100px);
+			padding: var(--flow-form-control-input-box-padding, 0px);
 			flex:1;
 		}
 		.input{margin:5px 5px 5px 0px;}

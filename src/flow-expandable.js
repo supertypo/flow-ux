@@ -36,6 +36,7 @@ export class FlowExpandable extends BaseElement {
 		}
 		.icon-box{
 			width:30px;
+			position:var(--flow-expandable-icon-box-position,initial);
 			max-width:var(--flow-expandable-icon-box-max-width,30px);
 			text-align:center;
 		}
