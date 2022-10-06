@@ -217,7 +217,7 @@ export class FlowInput extends BaseElement {
 				max="${this.max||''}"
 				min="${this.min||''}"
 				enterkeyhint="${this.enterkeyhint||'done'}"
-				tabindex="${this['tab-index']||''}"
+				tabindex="${this['tab-index']==undefined?'':this['tab-index']}"
 				?readonly=${this.readonly}
 				?disabled=${this.disabled}
 				@change=${this.onChange}
