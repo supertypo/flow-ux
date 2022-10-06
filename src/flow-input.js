@@ -55,6 +55,8 @@ export class FlowInput extends BaseElement {
 			maxlength:{type:Number},
 			max:{type:Number},
 			min:{type:Number},
+			enterkeyhint:{type:String},
+			"tab-index":{type:Number},
 			"clear-btn":{type:Boolean, reflect:true}
 		}
 	}
@@ -214,8 +216,10 @@ export class FlowInput extends BaseElement {
 				maxlength="${this.maxlength||''}"
 				max="${this.max||''}"
 				min="${this.min||''}"
+				enterkeyhint="${this.enterkeyhint||'done'}"
+				tabindex="${this['tab-index']||''}"
 				?readonly=${this.readonly}
-				?disabled=${this.disabled} 
+				?disabled=${this.disabled}
 				@change=${this.onChange}
 				@input=${this.onInput}
 				.value="${this.value}" />
