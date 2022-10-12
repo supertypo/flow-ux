@@ -24,7 +24,7 @@ import {BaseElement, html, css} from './base-element.js';
 export class FlowMenu extends BaseElement {
 	static get properties() {
 		return {
-			selected:{type:String},
+			selected:{type:String, reflect:true},
 			selector:{type:String},
 			valueAttr:{type:String},
 			multiple:{type:Boolean}
@@ -261,9 +261,15 @@ export class FlowMenu extends BaseElement {
 	}
 	selectionChanged(){
 		this.updateList()
-		let selected = this._selected.slice(0)
-		if(!this.multiple)
+		let selected = this._selected.slice(0);
+		let selected_str;
+		if(!this.multiple){
 			selected = selected[0];
+			selected_str = selected;
+		}else{
+			selected_str = JSON.stringify(selected)
+		}
+		this.selected = selected_str;
 		this.fire("select", {selected}, {bubbles:true})
 	}
 	get value(){
