@@ -1,4 +1,5 @@
 import {BaseElement, html, css} from './base-element.js';
+import {ifDefined} from 'lit-html/directives/if-defined.js';
 
 
 /**
@@ -212,7 +213,7 @@ export class FlowInput extends BaseElement {
 			<slot name="prefix"></slot>
 			<input class="input" type="${this.type}" spellcheck="false"
 				placeholder="${this.placeholder || ''}"
-				pattern="${this.pattern||''}"
+				pattern="${ifDefined(this.pattern)}"
 				maxlength="${this.maxlength||''}"
 				max="${this.max||''}"
 				min="${this.min||''}"
