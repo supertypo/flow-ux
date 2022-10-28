@@ -113,7 +113,7 @@ export class FlowRadio extends BaseElement {
 		return html`
 		<label class="radio">
 			<input class="radio-input" type="radio" @change="${this.onChange}" 
-				?disabled=${this.readonly} .checked="${this.checked}"
+				?disabled=${this.readonly} ?checked="${this.checked}"
 				.name="${name}" .value="${this.inputValue||'ON'}">
 			<div class="radio-outer"><div class="outline"></div></div>
 			<slot></slot>
@@ -160,6 +160,12 @@ export class FlowRadio extends BaseElement {
 				this.setChecked(false);
 			}
 		});
+	}
+	updated(updates){
+		super.updated(updates);
+		if (updates.has("checked")){
+			this.fireChangeEvent();
+		}
 	}
 }
 
