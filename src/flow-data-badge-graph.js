@@ -19,7 +19,7 @@ import {FlowSampler} from './flow-sampler.js';
 * @cssvar {color} [--flow-data-badge-caption]
 * @cssvar {color} [--flow-data-field-value=#333]
 * @example
-*   <flow-data-badge-canvas title="text">value</flow-data-badge-canvas>
+*   <flow-data-badge-graph title="text">value</flow-data-badge-graph>
 *
 */
 export class FlowDataBadgeGraph extends Flowd3Element {
@@ -83,7 +83,7 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 				box-shadow: 2px 2px 1px rgba(1, 123, 104, 0.1);
 				border-radius: 10px;
 				/*
-				min-width: var(--flow-data-badge-graph-with,240px);
+				min-width: var(--flow-data-badge-graph-width,240px);
 				min-height: var(--flow-data-badge-graph-height,80px);				
 				*/				
 			}
@@ -181,9 +181,6 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 
 
 	draw(){
-		let margin = this.getMargin();
-		let {height, width} = this.el_d3.getBoundingClientRect();
-
         if(!this.sampler)
 			return;
 
@@ -194,6 +191,16 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 		}
 
         const { data } = sampler;
+		this.redraw(data);
+	}
+
+	redraw(data){
+
+		let margin = this.getMargin();
+		let {height, width} = this.el_d3.getBoundingClientRect();
+
+		//console.log("data", data)
+
 		let [min,max] = d3.extent(data, d => d.date);
 		//console.log("processing min-max[1]",min,max);
 		min = max - 1000*this.range;//@anton why we are extending this min?
@@ -203,13 +210,11 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 		.domain([min,max])
 		//.domain(d3.extent(data, d => d.date))//.nice()
 		.range([margin.left, width - margin.right])
-		
-
 
 		const y = d3.scaleLinear()
-//		.domain([min,max])//.nice()
+		//.domain([min,max])//.nice()
 		.domain(d3.extent(data, d => d.value))//.nice()
-//		.domain([0, d3.max(data, d => d.value)]).nice()
+		//.domain([0, d3.max(data, d => d.value)]).nice()
 		.range([height - margin.bottom, margin.top]);
 		/*
 		const xAxis = g => g
@@ -248,17 +253,7 @@ export class FlowDataBadgeGraph extends Flowd3Element {
 				
 		this.path.datum(data)
 			.attr('d',area);
-
-		/*
-		el.append("g")
-			.call(xAxis);
-  
-		el.append("g")
-			.call(yAxis);
-		*/
-
 	}
 }
 
-//FlowDataBadgeGraph.define('flow-data-badge-graph');
 FlowDataBadgeGraph.define('flow-data-badge-graph');
