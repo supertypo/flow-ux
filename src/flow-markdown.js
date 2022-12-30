@@ -441,37 +441,43 @@ export class FlowMarkdown extends BaseElement {
     }
 }
 
-
-let defined = false;
-let registerComponent =()=>{
-	if(defined)
-		return
-	defined = true;
-
-	marked.use({renderer: markerdRenderer})
-
-	FlowMarkdown.define('flow-markdown');
-}
-
-let check = ()=>{
-	loaded++;
-	if(loaded == 2)
-		registerComponent();
-}
-
-let loaded = 0;
-
-[
-	'extern/marked/marked.min.js',
-	'extern/dom-purify/purify.min.js'
-].forEach(file=>{
-	if(file.indexOf("marked/") > -1 && window.marked)
-		return check();
-
-	let s = document.createElement("script");
-	s.src = `${baseUrl}resources/${file}`;
-	document.head.appendChild(s);
-	s.onload = ()=>{
-		check();
-	}
+FlowMarkdown.define('flow-markdown',[
+    baseUrl+'resources/extern/marked/marked.min.js',
+    baseUrl+'resources/extern/dom-purify/purify.min.js',
+],() => {
+    marked.use({renderer: markerdRenderer})    
 });
+
+// let defined = false;
+// let registerComponent =()=>{
+// 	if(defined)
+// 		return
+// 	defined = true;
+
+// 	marked.use({renderer: markerdRenderer})
+
+// 	FlowMarkdown.define('flow-markdown');
+// }
+
+// let check = ()=>{
+// 	loaded++;
+// 	if(loaded == 2)
+// 		registerComponent();
+// }
+
+// let loaded = 0;
+
+// [
+// 	'extern/marked/marked.min.js',
+// 	'extern/dom-purify/purify.min.js'
+// ].forEach(file=>{
+// 	if(file.indexOf("marked/") > -1 && window.marked)
+// 		return check();
+
+// 	let s = document.createElement("script");
+// 	s.src = `${baseUrl}resources/${file}`;
+// 	document.head.appendChild(s);
+// 	s.onload = ()=>{
+// 		check();
+// 	}
+// });

@@ -31,19 +31,19 @@ export class BaseElement extends LitElement{
 	}
 
 	static hashCode(str){//java String#hashCode
-	    var hash = 0;
-	    for (var i = 0; i < str.length; i++) {
-	       hash = str.charCodeAt(i) + ((hash << 5) - hash);
-	    }
-	    return hash;
+		var hash = 0;
+		for (var i = 0; i < str.length; i++) {
+			hash = str.charCodeAt(i) + ((hash << 5) - hash);
+		}
+		return hash;
 	} 
 
 	static intToRGB(i){
-	    var c = (i & 0x00FFFFFF)
-	        .toString(16)
-	        .toUpperCase();
+		var c = (i & 0x00FFFFFF)
+			.toString(16)
+			.toUpperCase();
 
-	    return "00000".substring(0, 6 - c.length) + c;
+		return "00000".substring(0, 6 - c.length) + c;
 	}
 
 	/**
@@ -60,9 +60,9 @@ export class BaseElement extends LitElement{
 	* @param {String} name name of tag i.e. 'my-cool-element'
 	* @since 0.0.1
 	*/
-	static define(name, deps){
+	static define(name, deps, ready){
 		if(deps) {
-			DeferComponent(this,name,deps);
+			DeferComponent(this,name,deps,ready);
 		}
 		else
 			this.defineElement(name);

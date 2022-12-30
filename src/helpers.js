@@ -180,7 +180,7 @@ const resolveConditions = (src) => {
 	return src;
 }
 
-export const DeferComponent = (ctor, name, deps) => {
+export const DeferComponent = (ctor, name, deps, ready) => {
 
 	if(deps && typeof deps == 'object' && !Array.isArray(deps))
 		deps = resolveConditions(deps);
@@ -219,19 +219,23 @@ export const DeferComponent = (ctor, name, deps) => {
             count++;
             let el
             if(/\.css$/.test(src)){
-            	el = document.createElement("link");
-            	el.setAttribute("rel", "stylesheet");
-            	el.setAttribute("type", "text/css")
-            	el.href = src;
+				el = document.createElement("link");
+				el.setAttribute("rel", "stylesheet");
+				el.setAttribute("type", "text/css")
+				el.href = src;
             }else{
-            	el = document.createElement("script");
-            	el.src = src;
+				el = document.createElement("script");
+				el.src = src;
             }
             document.head.appendChild(el);
             el.onload = ()=>{
                 count--;
-                if(!count)
+                if(!count) {
+					if (ready && typeof ready === 'function') {
+						ready();
+					}
                     ctor.defineElement(name);
+				}
             }        
         }
 	}

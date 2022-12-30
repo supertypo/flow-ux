@@ -1,9 +1,9 @@
 import { BaseElement, html, css, baseUrl } from './base-element.js';
-if (!window.PR) {
-	let prettify = document.createElement("script");
-	prettify.src = baseUrl + 'resources/extern/google-prettify/prettify.js';
-	document.head.appendChild(prettify);
-}
+// if (!window.PR) {
+// 	let prettify = document.createElement("script");
+// 	prettify.src = baseUrl + 'resources/extern/google-prettify/prettify.js';
+// 	document.head.appendChild(prettify);
+// }
 
 /**
  * @export
@@ -302,4 +302,10 @@ export class FlowCode extends BaseElement {
 	}
 }
 
-FlowCode.define("flow-code");
+FlowCode.define("flow-code",[baseUrl + 'resources/extern/google-prettify/prettify.js']);
+
+// if (!window.PR) {
+// 	let prettify = document.createElement("script");
+// 	prettify.src = baseUrl + 'resources/extern/google-prettify/prettify.js';
+// 	document.head.appendChild(prettify);
+// }
