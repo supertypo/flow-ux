@@ -204,6 +204,7 @@ let config = {
 		{"title":"Hungarian", "locale": "hu" },
 		{"title":"Italiano", "locale": "it" },
 		{"title":"Icelandic", "locale": "is" },
+		{"title":"Indonesian", "locale": "id" },
 		{"title":"日本語", "locale": "ja" },
 		{"title":"Korean", "locale": "ko" },
 		{"title":"Korean", "locale": "kr" },
