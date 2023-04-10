@@ -213,7 +213,8 @@ let config = {
 		{"title":"Dutch", "locale": "nl" },
 		{"title":"Norwegian", "locale": "no" },
 		{"title":"Polski", "locale": "pl" },
-		{"title":"PortuguÃªs", "locale": "pt" },
+		{"title":"Português", "locale": "pt" },
+		{"title":"Português (Brazil)", "locale": "pt_BR" },
 		{"title":"Romanian", "locale": "ro" },
 		{"title":"Русский", "locale": "ru" },
 		{"title":"Slovak", "locale": "sk" },
@@ -227,14 +228,13 @@ let config = {
 		{"title":"Urdu", "locale": "ur" },
 		{"title":"Vietnamese", "locale": "vi" },
 		{"title":"Mongolian", "locale": "mn" },
-		{"title":"中文", "locale": "zh_HANS" },
-		{"title":"繁體中文", "locale": "zh_HANT" }
+		{"title":"中文", "locale": "zh" }
 	],
 	aliases : {
 		"en-GB": "en",
 		"en-US": "en",
-		"zh-CN": "zh_HANS",
-		"zh-TW": "zh_HANT"
+		"zh-CN": "zh",
+		"zh-TW": "zh"
 	}
 
 }
