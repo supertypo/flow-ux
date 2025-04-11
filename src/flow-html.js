@@ -1,4 +1,4 @@
-import {html} from 'lit-element';
+import {html} from 'lit';
 
 export const flowHtml = (strings, tags, ...values)=>{
 	strings = strings.slice(1).map(str=>{

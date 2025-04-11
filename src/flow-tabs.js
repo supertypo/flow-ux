@@ -1,5 +1,5 @@
 import {BaseElement, html, css} from './base-element.js';
-import {repeat} from 'lit-html/directives/repeat.js';
+import {repeat} from 'lit/directives/repeat.js';
 import {i18n, T} from './flow-i18n.js';
 
 /**

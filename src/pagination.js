@@ -1,5 +1,5 @@
-import {html, css} from 'lit-element';
-import {repeat} from 'lit-html/directives/repeat.js';
+import {html, css} from 'lit';
+import {repeat} from 'lit/directives/repeat.js';
 import {isSmallScreen} from './helpers.js';
 
 export const paginationStyle = css`

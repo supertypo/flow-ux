@@ -1,5 +1,5 @@
 import {BaseElement, html, css} from './base-element.js';
-import {ifDefined} from 'lit-html/directives/if-defined.js';
+import {ifDefined} from 'lit/directives/if-defined.js';
 import {T} from './flow-i18n.js';
 /**
  * @export
