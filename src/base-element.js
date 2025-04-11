@@ -7,9 +7,9 @@ import { LitElement, html, css } from 'lit';
 import { AsyncQueueSubscriber } from './flow-async.js';
 
 export * from 'lit';
-export * from 'lit/html.js';
-export * from 'lit/directive.js';
-export * from 'lit/async-directive.js';
+export * from 'lit-html';
+export * from 'lit-html/directive.js';
+export * from 'lit-html/async-directive.js';
 
 import {
 	baseUrl, debug, FlowIconPath, FlowIcons, resolveIcon,
